@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2FA QR Code - DialysisTrack</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .header {
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .status {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .qr-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 20px 0;
+            border: 3px dashed #667eea;
+        }
+
+        .qr-code {
+            max-width: 300px;
+            height: auto;
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto;
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .info-box h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .info-box p {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 8px;
+        }
+
+        .secret-code {
+            background: #fff;
+            border: 2px solid #667eea;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 15px 0;
+            word-break: break-all;
+        }
+
+        .steps {
+            text-align: left;
+            margin-top: 20px;
+        }
+
+        .step {
+            display: flex;
+            align-items: start;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .step-number {
+            background: #667eea;
+            color: white;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-content h4 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .step-content p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid #e5e7eb;
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .success-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+        }
+
+        .note {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            text-align: left;
+        }
+
+        .note strong {
+            color: #856404;
+        }
+
+        .note p {
+            color: #856404;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="success-icon">🔐</div>
+            <h1>Two-Factor Authentication</h1>
+            <span class="status">✅ 2FA is Working!</span>
+        </div>
+
+        <div class="qr-container">
+            <img id="qrCode" class="qr-code" alt="2FA QR Code">
+        </div>
+
+        <div class="note">
+            <strong>⚠️ Note:</strong>
+            <p>If the QR code doesn't display, use the secret key below to manually add the account to your
+                authenticator app.</p>
+        </div>
+
+        <div class="info-box">
+            <h3>📱 Setup Instructions</h3>
+            <p><strong>Account:</strong> admin@dialysistrack.com</p>
+            <p><strong>Secret Key:</strong></p>
+            <div class="secret-code" id="secretKey">00500fcf3ba21665c06abf8c6e199bd5d3a8898c</div>
+        </div>
+
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h4>Install Authenticator App</h4>
+                    <p>Download Google Authenticator, Microsoft Authenticator, or Authy on your phone</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h4>Add Account Manually</h4>
+                    <p>Choose "Enter a setup key" and paste the secret key above</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h4>Verify Setup</h4>
+                    <p>Enter the 6-digit code from your app to complete setup</p>
+                </div>
+            </div>
+
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h4>Save Backup Codes</h4>
+                    <p>You'll receive 10 backup codes - store them safely!</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><strong>✅ All 2FA Endpoints Working:</strong></p>
+            <p>✓ Setup • ✓ Verify • ✓ Status • ✓ Disable • ✓ Backup Codes</p>
+        </div>
+    </div>
+
+    <script>
+        // Embed QR code directly
+        const qrCodeData = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAiYAAAImAQAAAABPtXzrAAAE50lEQVR4nO1dUW6jMBAdQ6R+khv0KPRm1R5pb5AcpQdYiXxWIvLKM/bYsAaqspmy2/c+ECHwFKSn6fjNeOo87ce9+QskRGCpAyx1gKUOsNQBljrAUgdY6gBLHWCpAyx1gKUOsCzAMy7549DKJaJuDN+ORP1A8UDUen/pxnR7x7eOR3qjBizfTLudiJBYxZ6128vHVpyIeMvQxi8mjx3pjRqwfDeWu3PuHE5CUL26U5StCLjz3r0Od+de9MGrc+5Rv2UXmn2PR4Dl+CyntS/vJ+p/sqBZphyBg7LPvx7yWxqwVAGWD7LEtJbIOffk6SqxOOQHNxfi7t19hOVTaMBSBVg+mO9yRkuyGuN1Ga/k4votnSHf/RjAYsFycwEnouvzu5MF26V7DzE2BNpwdj3nM47KHIYf8Vv2odn5vAAs/0y+20/aGhzRk3fUtXIguoXbbqfwxYnTCn/cN2rA8q09skvyw6LxK06vL6xd79nzlavIGRYAFgPt+pTCRjkOmtby0o0VGwTM2tXlHLS7AbAYaZckvEr1IdbVqOfgq0u3IOV44IIbtLsKsBjlDJQqvCTa7XN1WGttfFYEX/gMqwCLRdwdgib5gppiQaKxJiwBWWUrUTlFbGh3EWCxW6v5PxZnXpIETRxSfI5lNsTdVYDFyt99CV6uNDDcTtMeB3Z6WcXhlnAI17T97IhvtA/NzucFYDFg6UMacD23XirBjPCRcwYuWrjXtyfvXm7h2xt36hz7jXai2UvAAItFzkDtdJlG2nyTF2za/qi+GXyGdYDFSrsXFetlbp5p5istkVMzGNpdAlisahOXZCzM900U3oME3xiG0YuzAbAYeWSUoigVKYRkCqkikT3fbDtAu8sAi1ltgiGl3+TgqmUmAtYtQDkRhnaXARaz2kSX4mmf12opXcg3F6JGvrsOsJiwtD5uiggG2I9nDr7s4LKXGzsbnDvfy2sP+i270Ox7PAIsx2ch/btfLsm8ttzkfROzne25gIy4uwiw2HlkjDbVeosehzIHlru0OgztLgMsJvluqy0KYwq5U9mqMybP6eZ3aHcZYPmqfRMZyWKYbbPEWm0DYDHJd73KcUyDneSgd2pnei69Ie6uAyxWHpmfHEinkKWu3XhILZFZ9NDuAsBikjOMOsRpajtkz1em6sWVnHzEWm0dYDHyGSiWftt0ltLf4uZoNpTrN2h3GWAx0S7p+NJRG8c0xuZZOTklRtzdBljs1mqj2mNt4YfNhvBONgtDu2sAi5V2BZIz5FaGtKuCUWa5qE1sAiyWcZdyakApXSiyhyKZYEC7qwCLkUdG0VgYi+HneYR/jMDzzBfaXQNYjOpqpDvbib8oehwmbTjpTLfBQ7tLAIsBS6/2GI/r91JN41ZHddDEMgs9kCkRjjvgD/lGO9HsJWCAxcgjY5SbgIdYUstb1cp9bdgnvA2wWLB0IsIk2zcd1y9GWZwoIuOl5VoYPxJvOeQb7UOz83kBWIxqwlTMgRxyO2+AjuOdWQzoxVkHWIy1S0XhYTIyL1XYpmYDtLsMsJjHXZ+7cnSOSNpKnGflQLubAMtX/J8fn5zeSbow20oMj2wDYDH1GS7hWBaByxk4xTwymVsG7a4CLI9kcbP/2PMp3I/0Rg1YqgBLHWCpAyx1gKUOsNQBljrAUgdY6gBLHWCpAyx1gKUOs4/9j+Q3eyyvrUg1/ngAAAABJRU5ErkJggg==";
+
+        // Set QR code image
+        document.getElementById('qrCode').src = qrCodeData;
+
+        // Set secret key
+        document.getElementById('secretKey').textContent = '00500fcf3ba21665c06abf8c6e199bd5d3a8898c';
+    </script>
+</body>
+
+</html>

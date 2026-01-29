@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Comprehensive UML Diagrams for DialysisTrack - Dialysis Management System">
+    <title>DialysisTrack - UML Diagrams & System Design</title>
+
+    <!-- Mermaid JS for rendering diagrams -->
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="diagrams-style.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-brand">
+                <span class="logo-icon">🏥</span>
+                <h1>DialysisTrack</h1>
+            </div>
+            <div class="nav-subtitle">System Design & UML Diagrams</div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Comprehensive UML Diagrams</h1>
+            <p class="hero-subtitle">Dialysis Management System - Architecture & Design Documentation</p>
+            <div class="hero-badges">
+                <span class="badge badge-primary">Django Backend</span>
+                <span class="badge badge-success">React Frontend</span>
+                <span class="badge badge-info">SQLite Database</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Table of Contents -->
+    <section class="toc-section">
+        <div class="container">
+            <h2 class="section-title">📑 Table of Contents</h2>
+            <div class="toc-grid">
+                <a href="#dfd" class="toc-card">
+                    <div class="toc-icon">📊</div>
+                    <h3>Data Flow Diagrams</h3>
+                    <p>System process flows</p>
+                </a>
+                <a href="#usecase" class="toc-card">
+                    <div class="toc-icon">👥</div>
+                    <h3>Use Case Diagrams</h3>
+                    <p>Actor interactions</p>
+                </a>
+                <a href="#class" class="toc-card">
+                    <div class="toc-icon">🏗️</div>
+                    <h3>Class Diagrams</h3>
+                    <p>Domain models</p>
+                </a>
+                <a href="#sequence" class="toc-card">
+                    <div class="toc-icon">🔄</div>
+                    <h3>Sequence Diagrams</h3>
+                    <p>Process workflows</p>
+                </a>
+                <a href="#erd" class="toc-card">
+                    <div class="toc-icon">🗄️</div>
+                    <h3>ER Diagram</h3>
+                    <p>Database schema</p>
+                </a>
+                <a href="#activity" class="toc-card">
+                    <div class="toc-icon">⚡</div>
+                    <h3>Activity Diagrams</h3>
+                    <p>Business processes</p>
+                </a>
+                <a href="#component" class="toc-card">
+                    <div class="toc-icon">🧩</div>
+                    <h3>Component Diagram</h3>
+                    <p>System architecture</p>
+                </a>
+                <a href="#deployment" class="toc-card">
+                    <div class="toc-icon">🚀</div>
+                    <h3>Deployment Diagram</h3>
+                    <p>Infrastructure setup</p>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Data Flow Diagrams -->
+    <section id="dfd" class="diagram-section">
+        <div class="container">
+            <h2 class="section-title">📊 Data Flow Diagrams</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Level 0 - Context Diagram</h3>
+                    <p>High-level view showing external entities interacting with the DialysisTrack system</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph External_Entities
+                        Admin[Admin]
+                        Doctor[Doctor]
+                        Nurse[Nurse]
+                        Receptionist[Receptionist]
+                        Patient[Patient]
+                        end
+
+                        subgraph DialysisTrack_System
+                        DTS[DialysisTrack System]
+                        end
+
+                        Admin -->|Manage System| DTS
+                        Doctor -->|Patient Treatment| DTS
+                        Nurse -->|Monitor Sessions| DTS
+                        Receptionist -->|Registration & Scheduling| DTS
+                        Patient -->|Appointments| DTS
+
+                        DTS -->|Reports & Analytics| Admin
+                        DTS -->|Treatment Records| Doctor
+                        DTS -->|Queue Updates| Nurse
+                        DTS -->|Bookings & Bills| Receptionist
+                        DTS -->|Appointment Confirmations| Patient
+
+                        style DTS fill:#4a90e2,stroke:#333,stroke-width:3px,color:#fff
+                        style Admin fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                        style Doctor fill:#27ae60,stroke:#333,stroke-width:2px,color:#fff
+                        style Nurse fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
+                        style Receptionist fill:#9b59b6,stroke:#333,stroke-width:2px,color:#fff
+                        style Patient fill:#34495e,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Level 1 - System Processes</h3>
+                    <p>Core processes and data stores within the system</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Users
+                        U1[Admin]
+                        U2[Doctor]
+                        U3[Nurse]
+                        U4[Receptionist]
+                        U5[Patient]
+                        end
+
+                        subgraph Core_Processes
+                        P1[1.0<br />User Authentication]
+                        P2[2.0<br />Patient Management]
+                        P3[3.0<br />Appointment Scheduling]
+                        P4[4.0<br />Queue Management]
+                        P5[5.0<br />Treatment Recording]
+                        P6[6.0<br />Machine Management]
+                        P7[7.0<br />Billing & Payments]
+                        P8[8.0<br />Reports & Analytics]
+                        end
+
+                        subgraph Data_Stores
+                        DS1[(User Database)]
+                        DS2[(Patient Database)]
+                        DS3[(Appointment Database)]
+                        DS4[(Queue Database)]
+                        DS5[(Session Database)]
+                        DS6[(Machine Database)]
+                        DS7[(Billing Database)]
+                        end
+
+                        U1 & U2 & U3 & U4 & U5 -->|Login Credentials| P1
+                        P1 -->|User Data| DS1
+
+                        U4 -->|Patient Info| P2
+                        P2 <-->|Patient Records| DS2
+
+                            U4 & U5 -->|Schedule Request| P3
+                            P3 <-->|Appointment Data| DS3
+
+                                U3 -->|Check-in Patient| P4
+                                P4 <-->|Queue Data| DS4
+
+                                    U2 & U3 -->|Session Details| P5
+                                    P5 <-->|Treatment Records| DS5
+
+                                        U1 & U3 -->|Machine Status| P6
+                                        P6 <-->|Machine Data| DS6
+
+                                            U4 -->|Payment Info| P7
+                                            P7 <-->|Billing Data| DS7
+
+                                                U1 & U2 -->|Query Parameters| P8
+                                                P8 -->|Analytics Data| U1 & U2
+
+                                                style P1 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                                                style P2 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                                                style P3 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                                                style P4 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                                                style P5 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                                                style P6 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                                                style P7 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                                                style P8 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+
+                                                style DS1 fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                                                style DS2 fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                                                style DS3 fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                                                style DS4 fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                                                style DS5 fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                                                style DS6 fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                                                style DS7 fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Level 2 - Patient Management Process</h3>
+                    <p>Detailed patient management workflow</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Input
+                        R[Receptionist]
+                        end
+
+                        subgraph Patient_Management_Process
+                        P1[2.1<br />Register Patient]
+                        P2[2.2<br />Update Patient Info]
+                        P3[2.3<br />Search Patient]
+                        P4[2.4<br />View Medical History]
+                        end
+
+                        subgraph Data_Validation
+                        V1[Validate Input]
+                        V2[Check Duplicates]
+                        end
+
+                        subgraph Database
+                        DB[(Patient Database)]
+                        end
+
+                        R -->|New Patient Data| P1
+                        R -->|Update Request| P2
+                        R -->|Search Query| P3
+                        R -->|History Request| P4
+
+                        P1 --> V1
+                        V1 --> V2
+                        V2 -->|Store| DB
+
+                        P2 --> V1
+                        V1 -->|Update| DB
+
+                        P3 -->|Query| DB
+                        DB -->|Results| P3
+
+                        P4 -->|Query| DB
+                        DB -->|History| P4
+
+                        P3 & P4 -->|Display| R
+
+                        style P1 fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                        style P2 fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                        style P3 fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                        style P4 fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                        style V1 fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
+                        style V2 fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
+                        style DB fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Level 2 - Queue Management Process</h3>
+                    <p>Detailed queue and machine allocation workflow</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Input
+                        N[Nurse/Staff]
+                        P[Patient]
+                        end
+
+                        subgraph Queue_Process
+                        Q1[4.1<br />Check-in Patient]
+                        Q2[4.2<br />Assign Priority]
+                        Q3[4.3<br />Allocate Machine]
+                        Q4[4.4<br />Update Queue Status]
+                        Q5[4.5<br />Calculate Wait Time]
+                        end
+
+                        subgraph Decision
+                        D1{Emergency?}
+                        D2{Machine Available?}
+                        end
+
+                        subgraph Database
+                        QDB[(Queue Database)]
+                        MDB[(Machine Database)]
+                        ADB[(Appointment Database)]
+                        end
+
+                        P -->|Arrival| Q1
+                        Q1 --> D1
+
+                        D1 -->|Yes| Q2
+                        D1 -->|No| Q2
+                        Q2 -->|Set Priority| QDB
+
+                        Q2 --> D2
+                        D2 -->|Yes| Q3
+                        D2 -->|No| Q5
+
+                        Q3 -->|Assign Machine| MDB
+                        Q3 --> Q4
+
+                        Q5 -->|Estimate| QDB
+                        Q5 --> Q4
+
+                        Q4 -->|Update Status| QDB
+                        Q4 -->|Notify| N
+
+                        ADB -->|Scheduled Info| Q1
+
+                        style Q1 fill:#9b59b6,stroke:#333,stroke-width:2px,color:#fff
+                        style Q2 fill:#9b59b6,stroke:#333,stroke-width:2px,color:#fff
+                        style Q3 fill:#9b59b6,stroke:#333,stroke-width:2px,color:#fff
+                        style Q4 fill:#9b59b6,stroke:#333,stroke-width:2px,color:#fff
+                        style Q5 fill:#9b59b6,stroke:#333,stroke-width:2px,color:#fff
+                        style D1 fill:#e67e22,stroke:#333,stroke-width:2px,color:#fff
+                        style D2 fill:#e67e22,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Case Diagrams -->
+    <section id="usecase" class="diagram-section alt-bg">
+        <div class="container">
+            <h2 class="section-title">👥 Use Case Diagrams</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Overall System Use Cases</h3>
+                    <p>All actors and their primary interactions with the system</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Actors
+                        Admin[👨‍💼 Admin]
+                        Doctor[👨‍⚕️ Doctor]
+                        Nurse[👩‍⚕️ Nurse]
+                        Receptionist[👤 Receptionist]
+                        Patient[🧑 Patient]
+                        end
+
+                        subgraph DialysisTrack_System
+                        UC1[Login/Logout]
+                        UC2[Manage Users]
+                        UC3[Register Patient]
+                        UC4[Update Patient Info]
+                        UC5[Schedule Appointment]
+                        UC6[View Appointments]
+                        UC7[Check-in Patient]
+                        UC8[Manage Queue]
+                        UC9[Record Treatment]
+                        UC10[View Medical Records]
+                        UC11[Monitor Machines]
+                        UC12[Schedule Maintenance]
+                        UC13[Generate Bills]
+                        UC14[Process Payments]
+                        UC15[Generate Reports]
+                        UC16[View Analytics]
+                        UC17[Manage Staff Schedule]
+                        end
+
+                        Admin --> UC1
+                        Admin --> UC2
+                        Admin --> UC15
+                        Admin --> UC16
+                        Admin --> UC17
+                        Admin --> UC12
+
+                        Doctor --> UC1
+                        Doctor --> UC9
+                        Doctor --> UC10
+                        Doctor --> UC16
+
+                        Nurse --> UC1
+                        Nurse --> UC7
+                        Nurse --> UC8
+                        Nurse --> UC9
+                        Nurse --> UC10
+                        Nurse --> UC11
+
+                        Receptionist --> UC1
+                        Receptionist --> UC3
+                        Receptionist --> UC4
+                        Receptionist --> UC5
+                        Receptionist --> UC6
+                        Receptionist --> UC13
+                        Receptionist --> UC14
+
+                        Patient --> UC6
+
+                        style UC1 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                        style UC2 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                        style UC3 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                        style UC5 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                        style UC9 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                        style UC13 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-grid">
+                <div class="diagram-card">
+                    <div class="diagram-header">
+                        <h3>Patient Registration Use Case</h3>
+                        <p>Registration workflow steps</p>
+                    </div>
+                    <div class="diagram-content">
+                        <div class="mermaid">
+                            graph TB
+                            R[Receptionist]
+
+                            subgraph Patient_Registration
+                            UC[Register New Patient]
+                            UC1[Enter Personal Details]
+                            UC2[Enter Medical History]
+                            UC3[Enter Emergency Contact]
+                            UC4[Generate Patient ID]
+                            UC5[Save to Database]
+                            end
+
+                            R --> UC
+                            UC --> UC1
+                            UC1 --> UC2
+                            UC2 --> UC3
+                            UC3 --> UC4
+                            UC4 --> UC5
+
+                            UC5 -.->|extends| E1[Validate Data]
+                            UC5 -.->|includes| I1[Check Duplicates]
+
+                            style UC fill:#e74c3c,stroke:#333,stroke-width:3px,color:#fff
+                            style UC1 fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                            style E1 fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram-card">
+                    <div class="diagram-header">
+                        <h3>Appointment Scheduling Use Case</h3>
+                        <p>Booking and scheduling workflow</p>
+                    </div>
+                    <div class="diagram-content">
+                        <div class="mermaid">
+                            graph TB
+                            R[Receptionist]
+                            P[Patient]
+
+                            subgraph Appointment_Scheduling
+                            UC[Schedule Appointment]
+                            UC1[Select Patient]
+                            UC2[Choose Date & Time]
+                            UC3[Select Shift]
+                            UC4[Check Availability]
+                            UC5[Confirm Booking]
+                            UC6[Send Notification]
+                            end
+
+                            R --> UC
+                            P -.->|request| UC
+
+                            UC --> UC1
+                            UC1 --> UC2
+                            UC2 --> UC3
+                            UC3 --> UC4
+                            UC4 -->|Available| UC5
+                            UC4 -->|Not Available| UC2
+                            UC5 --> UC6
+
+                            UC4 -.->|includes| I1[Check Machine Status]
+                            UC6 -.->|extends| E1[Send SMS/Email]
+
+                            style UC fill:#27ae60,stroke:#333,stroke-width:3px,color:#fff
+                            style UC4 fill:#f39c12,stroke:#333,stroke-width:2px,color:#fff
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Class Diagram -->
+    <section id="class" class="diagram-section">
+        <div class="container">
+            <h2 class="section-title">🏗️ Class Diagrams</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Core Domain Model</h3>
+                    <p>Main entities and their relationships in the system</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        classDiagram
+                        class User {
+                        +int id
+                        +string username
+                        +string email
+                        +string role
+                        +string department
+                        +string phone_number
+                        +login()
+                        +logout()
+                        +updateProfile()
+                        }
+
+                        class Patient {
+                        +int id
+                        +string patient_id
+                        +string first_name
+                        +string last_name
+                        +date date_of_birth
+                        +string gender
+                        +string blood_type
+                        +string phone_number
+                        +string primary_diagnosis
+                        +decimal dry_weight
+                        +boolean is_emergency
+                        +getFullName()
+                        +calculateAge()
+                        }
+
+                        class Appointment {
+                        +int id
+                        +date appointment_date
+                        +string shift
+                        +time scheduled_time
+                        +string status
+                        +string machine_number
+                        +schedule()
+                        +reschedule()
+                        +cancel()
+                        }
+
+                        class Queue {
+                        +int id
+                        +string queue_number
+                        +string priority
+                        +string status
+                        +datetime check_in_time
+                        +int estimated_wait_time
+                        +string assigned_machine
+                        +addToQueue()
+                        +updateStatus()
+                        }
+
+                        class DialysisSession {
+                        +int id
+                        +int pre_bp_systolic
+                        +int post_bp_systolic
+                        +int blood_flow_rate
+                        +decimal ultrafiltration_volume
+                        +text complications
+                        +text nurse_notes
+                        +recordVitals()
+                        +completeSession()
+                        }
+
+                        class DialysisMachine {
+                        +int id
+                        +string machine_id
+                        +string name
+                        +string status
+                        +date last_maintenance_date
+                        +int total_sessions
+                        +updateStatus()
+                        +scheduleMaintenance()
+                        }
+
+                        class Bill {
+                        +int id
+                        +string bill_number
+                        +decimal total_amount
+                        +decimal paid_amount
+                        +string status
+                        +calculateTotal()
+                        +generateBill()
+                        }
+
+                        class Payment {
+                        +int id
+                        +string payment_id
+                        +decimal amount
+                        +string payment_method
+                        +string status
+                        +processPayment()
+                        +verifyPayment()
+                        }
+
+                        User "1" -- "0..1" Patient : has profile
+                        Patient "1" -- "*" Appointment : schedules
+                        Patient "1" -- "*" Queue : in
+                        Patient "1" -- "*" Bill : receives
+                        Appointment "1" -- "0..1" Queue : generates
+                        Queue "1" -- "1" DialysisSession : has
+                        DialysisMachine "1" -- "*" Queue : serves
+                        Bill "1" -- "*" Payment : has
+                        User "1" -- "*" Queue : manages
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sequence Diagrams -->
+    <section id="sequence" class="diagram-section alt-bg">
+        <div class="container">
+            <h2 class="section-title">🔄 Sequence Diagrams</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Patient Registration Sequence</h3>
+                    <p>Step-by-step patient registration process</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        sequenceDiagram
+                        actor R as Receptionist
+                        participant UI as Frontend UI
+                        participant API as Django API
+                        participant Auth as Auth Service
+                        participant DB as Database
+
+                        R->>UI: Enter patient details
+                        UI->>UI: Validate input
+                        UI->>API: POST /api/patients/register
+                        API->>Auth: Verify user permissions
+                        Auth-->>API: Permission granted
+                        API->>DB: Check duplicate patient_id
+                        alt Patient exists
+                        DB-->>API: Patient found
+                        API-->>UI: Error: Patient exists
+                        UI-->>R: Show error message
+                        else New patient
+                        DB-->>API: No duplicate
+                        API->>DB: INSERT patient data
+                        DB-->>API: Patient created
+                        API-->>UI: Success response
+                        UI-->>R: Registration complete
+                        end
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Appointment Scheduling Sequence</h3>
+                    <p>Complete appointment booking workflow</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        sequenceDiagram
+                        actor R as Receptionist
+                        participant UI as Frontend
+                        participant API as Booking API
+                        participant Scheduler as Scheduler Service
+                        participant MachineDB as Machine DB
+                        participant AppointDB as Appointment DB
+
+                        R->>UI: Request new appointment
+                        UI->>API: GET /api/patients/{id}
+                        API-->>UI: Patient details
+
+                        R->>UI: Select date & shift
+                        UI->>API: GET /api/appointments/available-slots
+                        API->>Scheduler: Check availability
+                        Scheduler->>MachineDB: Query machine status
+                        MachineDB-->>Scheduler: Available machines
+                        Scheduler->>AppointDB: Query existing appointments
+                        AppointDB-->>Scheduler: Booked slots
+                        Scheduler-->>API: Available time slots
+                        API-->>UI: Display available slots
+
+                        R->>UI: Confirm booking
+                        UI->>API: POST /api/appointments/create
+                        API->>Scheduler: Reserve slot
+                        Scheduler->>AppointDB: INSERT appointment
+                        AppointDB-->>Scheduler: Appointment created
+                        Scheduler-->>API: Booking confirmed
+                        API-->>UI: Success response
+                        UI-->>R: Appointment scheduled
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Payment Processing Sequence</h3>
+                    <p>Billing and payment workflow (Cash & UPI)</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        sequenceDiagram
+                        actor R as Receptionist
+                        actor P as Patient
+                        participant UI as Frontend
+                        participant BillingAPI as Billing API
+                        participant PaymentAPI as Payment API
+                        participant DB as Database
+
+                        R->>UI: Generate bill
+                        UI->>BillingAPI: POST /api/billing/generate
+                        BillingAPI->>DB: Calculate charges
+                        DB-->>BillingAPI: Bill details
+                        BillingAPI->>DB: Create bill record
+                        DB-->>BillingAPI: Bill created
+                        BillingAPI-->>UI: Bill generated
+                        UI-->>R: Display bill
+
+                        R->>UI: Select payment method
+                        alt UPI Payment
+                        P->>UI: Scan QR code
+                        UI->>PaymentAPI: POST /api/payments/upi
+                        PaymentAPI->>DB: Record UPI payment
+                        PaymentAPI->>BillingAPI: Update bill status
+                        BillingAPI->>DB: Mark as paid
+                        else Cash Payment
+                        R->>UI: Enter cash amount
+                        UI->>PaymentAPI: POST /api/payments/cash
+                        PaymentAPI->>DB: Record cash payment
+                        PaymentAPI->>BillingAPI: Update bill status
+                        BillingAPI->>DB: Mark as paid
+                        end
+
+                        DB-->>UI: Payment confirmed
+                        UI-->>R: Show receipt
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ER Diagram -->
+    <section id="erd" class="diagram-section">
+        <div class="container">
+            <h2 class="section-title">🗄️ Entity Relationship Diagram</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Complete Database Schema</h3>
+                    <p>All tables, their attributes, and relationships</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        erDiagram
+                        USER ||--o{ STAFF_SCHEDULE : has
+                        USER ||--o{ APPOINTMENT : creates
+                        USER ||--o{ QUEUE : manages
+                        USER ||--o| PATIENT : "has profile"
+
+                        PATIENT ||--o{ APPOINTMENT : schedules
+                        PATIENT ||--o{ QUEUE : joins
+                        PATIENT ||--o{ DIALYSIS_SESSION : undergoes
+                        PATIENT ||--o{ BILL : receives
+
+                        APPOINTMENT ||--o| QUEUE : generates
+
+                        QUEUE ||--|| DIALYSIS_SESSION : has
+                        QUEUE }o--|| DIALYSIS_MACHINE : "uses"
+
+                        DIALYSIS_MACHINE ||--o{ MAINTENANCE_LOG : has
+
+                        BILL ||--o{ PAYMENT : has
+
+                        USER {
+                        int id PK
+                        string username UK
+                        string email UK
+                        string role
+                        string department
+                        boolean is_active
+                        }
+
+                        PATIENT {
+                        int id PK
+                        string patient_id UK
+                        string first_name
+                        string last_name
+                        date date_of_birth
+                        string gender
+                        string blood_type
+                        string phone_number
+                        text primary_diagnosis
+                        boolean is_emergency
+                        }
+
+                        APPOINTMENT {
+                        int id PK
+                        int patient_id FK
+                        date appointment_date
+                        string shift
+                        time scheduled_time
+                        string status
+                        }
+
+                        QUEUE {
+                        int id PK
+                        int patient_id FK
+                        string queue_number UK
+                        string priority
+                        string status
+                        datetime check_in_time
+                        }
+
+                        DIALYSIS_SESSION {
+                        int id PK
+                        int queue_id FK
+                        int pre_bp_systolic
+                        int post_bp_systolic
+                        int blood_flow_rate
+                        text complications
+                        }
+
+                        DIALYSIS_MACHINE {
+                        int id PK
+                        string machine_id UK
+                        string name
+                        string status
+                        int total_sessions
+                        }
+
+                        BILL {
+                        int id PK
+                        string bill_number UK
+                        int patient_id FK
+                        decimal total_amount
+                        decimal paid_amount
+                        string status
+                        }
+
+                        PAYMENT {
+                        int id PK
+                        int bill_id FK
+                        string payment_id UK
+                        decimal amount
+                        string payment_method
+                        string status
+                        }
+
+                        STAFF_SCHEDULE {
+                        int id PK
+                        int staff_id FK
+                        date shift_date
+                        string shift_type
+                        boolean is_present
+                        }
+
+                        MAINTENANCE_LOG {
+                        int id PK
+                        int machine_id FK
+                        date maintenance_date
+                        text description
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Activity Diagrams -->
+    <section id="activity" class="diagram-section alt-bg">
+        <div class="container">
+            <h2 class="section-title">⚡ Activity Diagrams</h2>
+
+            <div class="diagram-grid">
+                <div class="diagram-card">
+                    <div class="diagram-header">
+                        <h3>Patient Registration Activity</h3>
+                        <p>Registration workflow with validation</p>
+                    </div>
+                    <div class="diagram-content">
+                        <div class="mermaid">
+                            graph TB
+                            Start([Start]) --> Input[Enter patient details]
+                            Input --> Validate{Validate Input}
+
+                            Validate -->|Invalid| Error1[Show error]
+                            Error1 --> Input
+
+                            Validate -->|Valid| CheckDup{Check duplicates}
+
+                            CheckDup -->|Found| Error2[Show duplicate error]
+                            Error2 --> Input
+
+                            CheckDup -->|Not Found| GenID[Generate Patient ID]
+                            GenID --> SaveData[Save to database]
+                            SaveData --> ShowSuccess[Show success]
+                            ShowSuccess --> End([End])
+
+                            style Start fill:#2ecc71,stroke:#333,stroke-width:2px
+                            style End fill:#e74c3c,stroke:#333,stroke-width:2px
+                            style Validate fill:#f39c12,stroke:#333,stroke-width:2px
+                            style CheckDup fill:#f39c12,stroke:#333,stroke-width:2px
+                        </div>
+                    </div>
+                </div>
+
+                <div class="diagram-card">
+                    <div class="diagram-header">
+                        <h3>Appointment Booking Activity</h3>
+                        <p>Complete booking process flow</p>
+                    </div>
+                    <div class="diagram-content">
+                        <div class="mermaid">
+                            graph TB
+                            Start([Start]) --> SelectPatient[Select Patient]
+                            SelectPatient --> ChooseDate[Choose Date]
+                            ChooseDate --> SelectShift[Select Shift]
+                            SelectShift --> CheckAvail{Available?}
+
+                            CheckAvail -->|No| ShowAlt[Show alternatives]
+                            ShowAlt --> ChooseDate
+
+                            CheckAvail -->|Yes| ShowSlots[Display time slots]
+                            ShowSlots --> SelectTime[Select time]
+                            SelectTime --> Confirm{Confirm?}
+
+                            Confirm -->|No| Cancel([Cancelled])
+                            Confirm -->|Yes| CreateAppt[Create appointment]
+                            CreateAppt --> SendNotif[Send notification]
+                            SendNotif --> Success([Complete])
+
+                            style Start fill:#2ecc71,stroke:#333,stroke-width:2px
+                            style Success fill:#e74c3c,stroke:#333,stroke-width:2px
+                            style CheckAvail fill:#f39c12,stroke:#333,stroke-width:2px
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Dialysis Session Activity</h3>
+                    <p>Complete treatment session workflow</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        Start([Session Start]) --> CheckIn[Patient Check-in]
+                        CheckIn --> AddQueue[Add to Queue]
+                        AddQueue --> Priority{Priority?}
+
+                        Priority -->|Emergency| High[High Priority]
+                        Priority -->|Scheduled| Normal[Normal Priority]
+                        Priority -->|Walk-in| Low[Low Priority]
+
+                        High & Normal & Low --> CheckMachine{Machine Available?}
+                        CheckMachine -->|No| Wait[Wait]
+                        Wait --> CheckMachine
+
+                        CheckMachine -->|Yes| AssignMachine[Assign Machine]
+                        AssignMachine --> PreVitals[Record Pre-Vitals]
+                        PreVitals --> StartDialysis[Start Dialysis]
+                        StartDialysis --> Monitor[Monitor Patient]
+                        Monitor --> CheckTime{Complete?}
+
+                        CheckTime -->|No| Monitor
+                        CheckTime -->|Yes| PostVitals[Record Post-Vitals]
+                        PostVitals --> CheckComp{Complications?}
+
+                        CheckComp -->|Yes| Document[Document Issues]
+                        Document --> NotifyDoc[Notify Doctor]
+                        NotifyDoc --> EndSession
+
+                        CheckComp -->|No| EndSession[End Session]
+                        EndSession --> UpdateRecords[Update Records]
+                        UpdateRecords --> End([Complete])
+
+                        style Start fill:#2ecc71,stroke:#333,stroke-width:2px
+                        style End fill:#e74c3c,stroke:#333,stroke-width:2px
+                        style Priority fill:#f39c12,stroke:#333,stroke-width:2px
+                        style CheckMachine fill:#f39c12,stroke:#333,stroke-width:2px
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Component Diagram -->
+    <section id="component" class="diagram-section">
+        <div class="container">
+            <h2 class="section-title">🧩 Component Diagram</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>System Architecture Components</h3>
+                    <p>Three-tier architecture showing all components and their interactions</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Client_Layer
+                        Browser[Web Browser]
+
+                        subgraph React_Frontend
+                        Components[React Components]
+                        Router[React Router]
+                        StateManagement[State Management]
+                        APIClient[Axios API Client]
+                        end
+                        end
+
+                        subgraph Application_Layer
+                        subgraph Django_Backend
+                        URLRouter[URL Router]
+
+                        subgraph Apps
+                        UsersApp[Users App]
+                        PatientsApp[Patients App]
+                        AppointmentsApp[Appointments App]
+                        QueueApp[Queue App]
+                        MachinesApp[Machines App]
+                        BillingApp[Billing App]
+                        end
+
+                        subgraph Middleware
+                        Auth[Authentication]
+                        CORS[CORS]
+                        end
+
+                        DRF[Django REST Framework]
+                        JWT[JWT Authentication]
+                        end
+                        end
+
+                        subgraph Data_Layer
+                        ORM[Django ORM]
+                        Database[(SQLite Database)]
+                        end
+
+                        Browser --> Components
+                        Components --> APIClient
+                        APIClient --> URLRouter
+                        URLRouter --> Auth
+                        Auth --> JWT
+
+                        URLRouter --> UsersApp
+                        URLRouter --> PatientsApp
+                        URLRouter --> AppointmentsApp
+                        URLRouter --> QueueApp
+                        URLRouter --> MachinesApp
+                        URLRouter --> BillingApp
+
+                        UsersApp & PatientsApp & AppointmentsApp & QueueApp & MachinesApp & BillingApp --> DRF
+                        DRF --> ORM
+                        ORM --> Database
+
+                        style Browser fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                        style Database fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Deployment Diagram -->
+    <section id="deployment" class="diagram-section alt-bg">
+        <div class="container">
+            <h2 class="section-title">🚀 Deployment Diagram</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Production Deployment Architecture</h3>
+                    <p>Infrastructure setup and deployment configuration</p>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid">
+                        graph TB
+                        subgraph Clients
+                        Desktop[Desktop Browser]
+                        Mobile[Mobile Browser]
+                        Tablet[Tablet Browser]
+                        end
+
+                        subgraph Production_Server
+                        subgraph Docker_Containers
+                        Nginx[Nginx Reverse Proxy<br />Port 80/443]
+
+                        subgraph Frontend_Container
+                        React[React App<br />Static Files]
+                        end
+
+                        subgraph Backend_Container
+                        Gunicorn[Gunicorn WSGI<br />Port 8000]
+                        Django[Django Application]
+                        end
+                        end
+
+                        subgraph Database
+                        PostgreSQL[(PostgreSQL<br />Port 5432)]
+                        end
+
+                        subgraph Storage
+                        Static[Static Files]
+                        Media[Media Files]
+                        end
+                        end
+
+                        subgraph Development
+                        Vite[Vite Dev Server<br />Port 5173]
+                        DjangoDev[Django Dev Server<br />Port 8000]
+                        SQLite[(SQLite Database)]
+                        end
+
+                        Desktop & Mobile & Tablet -->|HTTPS| Nginx
+                        Nginx --> React
+                        Nginx --> Gunicorn
+                        Gunicorn --> Django
+                        Django --> PostgreSQL
+                        Django --> Media
+                        Nginx --> Static
+
+                        Vite -.->|Dev| DjangoDev
+                        DjangoDev -.-> SQLite
+
+                        style Nginx fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
+                        style React fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
+                        style Django fill:#27ae60,stroke:#333,stroke-width:2px,color:#fff
+                        style PostgreSQL fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>DialysisTrack</h3>
+                    <p>Comprehensive Dialysis Management System</p>
+                </div>
+                <div class="footer-section">
+                    <h4>Technology Stack</h4>
+                    <ul>
+                        <li>Backend: Django 4.2.7 + DRF</li>
+                        <li>Frontend: React.js 18.2.0 + Vite</li>
+                        <li>Database: SQLite / PostgreSQL</li>
+                        <li>Deployment: Docker + Nginx</li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Project Details</h4>
+                    <ul>
+                        <li>Developer: Gaurav</li>
+                        <li>Project: Final Year (TYBCA)</li>
+                        <li>Year: 2025-26</li>
+                        <li>GitHub: gaurav012005/DialysisTrack</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 DialysisTrack. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollTopBtn" title="Go to top">↑</button>
+
+    <script>
+        // Initialize Mermaid with responsive settings
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#4a90e2',
+                primaryTextColor: '#fff',
+                primaryBorderColor: '#333',
+                lineColor: '#666',
+                secondaryColor: '#27ae60',
+                tertiaryColor: '#f39c12'
+            },
+            flowchart: {
+                curve: 'basis',
+                padding: 20,
+                useMaxWidth: true,
+                htmlLabels: true
+            },
+            sequence: {
+                diagramMarginX: 30,
+                diagramMarginY: 10,
+                actorMargin: 50,
+                width: 150,
+                height: 65,
+                boxMargin: 10,
+                useMaxWidth: true
+            },
+            er: {
+                useMaxWidth: true
+            },
+            class: {
+                useMaxWidth: true
+            },
+            gantt: {
+                useMaxWidth: true
+            },
+            logLevel: 'error',
+            securityLevel: 'loose',
+            startOnLoad: true,
+            arrowMarkerAbsolute: false,
+            flowchart: {
+                htmlLabels: true,
+                useMaxWidth: true
+            }
+        });
+
+        // Force diagram resize on window resize
+        let resizeTimer;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimer);
+            resizeTimer = setTimeout(function () {
+                location.reload();
+            }, 500);
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Scroll to top button functionality
+        const scrollTopBtn = document.getElementById('scrollTopBtn');
+
+        window.addEventListener('scroll', () => {
+            if (window.pageYOffset > 300) {
+                scrollTopBtn.classList.add('show');
+            } else {
+                scrollTopBtn.classList.remove('show');
+            }
+        });
+
+        scrollTopBtn.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Add animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('fade-in');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.diagram-card, .toc-card').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+
+</html>

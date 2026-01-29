@@ -1,0 +1,96 @@
+{
+    "name": "DialysisTrack - Queue Management System",
+    "short_name": "DialysisTrack",
+    "description": "Comprehensive dialysis queue management system for healthcare facilities",
+    "start_url": "/",
+    "scope": "/",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#2563eb",
+    "orientation": "any",
+    "categories": [
+        "medical",
+        "health",
+        "productivity"
+    ],
+    "icons": [
+        {
+            "src": "/icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "/icons/icon-maskable-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "/icons/icon-maskable-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ],
+    "screenshots": [
+        {
+            "src": "/screenshots/dashboard.png",
+            "sizes": "1280x720",
+            "type": "image/png",
+            "form_factor": "wide",
+            "label": "Dashboard view with statistics"
+        },
+        {
+            "src": "/screenshots/mobile-queue.png",
+            "sizes": "750x1334",
+            "type": "image/png",
+            "form_factor": "narrow",
+            "label": "Queue management on mobile"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "Dashboard",
+            "short_name": "Dashboard",
+            "description": "View main dashboard",
+            "url": "/dashboard",
+            "icons": [
+                {
+                    "src": "/icons/icon-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Queue",
+            "short_name": "Queue",
+            "description": "Manage patient queue",
+            "url": "/queue",
+            "icons": [
+                {
+                    "src": "/icons/icon-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        },
+        {
+            "name": "Patients",
+            "short_name": "Patients",
+            "description": "View patient records",
+            "url": "/patients",
+            "icons": [
+                {
+                    "src": "/icons/icon-192x192.png",
+                    "sizes": "192x192"
+                }
+            ]
+        }
+    ]
+}

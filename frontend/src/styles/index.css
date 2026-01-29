@@ -1,0 +1,384 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ==========================================
+   DialysisTrack - Modern 3D Hospital Theme
+   Premium Medical UI with 3D Effects
+   ========================================== */
+
+/* CSS Variables for Hospital Theme */
+:root {
+  /* Medical Color Palette */
+  --hospital-primary: #0891b2;
+  --hospital-primary-dark: #0e7490;
+  --hospital-primary-light: #06b6d4;
+  --hospital-secondary: #10b981;
+  --hospital-accent: #6366f1;
+  --hospital-danger: #ef4444;
+  --hospital-warning: #f59e0b;
+
+  /* Neutral Medical Colors */
+  --medical-white: #ffffff;
+  --medical-light: #f0f9ff;
+  --medical-gray: #f1f5f9;
+  --medical-dark: #0f172a;
+  --medical-text: #334155;
+}
+
+/* Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+  background-attachment: fixed;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Animated Medical Background Pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.03) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Medical Cross Pattern */
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><path d="M30 20 L30 40 M20 30 L40 30" stroke="rgba(6,182,212,0.05)" stroke-width="2" fill="none"/></svg>');
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Custom Component Classes */
+.card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(8, 145, 178, 0.1), 0 8px 16px rgba(8, 145, 178, 0.08);
+  border: 1px solid rgba(229, 231, 235, 1);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  bottom: -1px;
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.2), rgba(16, 185, 129, 0.2));
+  border-radius: 0.75rem;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px) rotateX(2deg);
+  box-shadow: 0 20px 40px rgba(8, 145, 178, 0.2), 0 30px 60px rgba(8, 145, 178, 0.15), 0 0 20px rgba(6, 182, 212, 0.4);
+}
+
+.card:hover::before {
+  opacity: 1;
+}
+
+.medical-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(240, 249, 255, 0.8) 100%);
+  border: 2px solid rgba(6, 182, 212, 0.1);
+  border-radius: 0.75rem;
+  padding: 1.5rem;
+  box-shadow: 0 4px 6px rgba(8, 145, 178, 0.1), 0 8px 16px rgba(8, 145, 178, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.medical-card:hover {
+  border-color: #0891b2;
+  box-shadow: 0 10px 20px rgba(8, 145, 178, 0.15), 0 20px 40px rgba(8, 145, 178, 0.1), 0 0 20px rgba(6, 182, 212, 0.4);
+  transform: translateY(-4px);
+}
+
+.btn-primary {
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%);
+  color: white;
+  box-shadow: 0 4px 6px rgba(8, 145, 178, 0.1), 0 8px 16px rgba(8, 145, 178, 0.08);
+  transform-style: preserve-3d;
+  position: relative;
+  overflow: hidden;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  transition: left 0.5s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(8, 145, 178, 0.15), 0 20px 40px rgba(8, 145, 178, 0.1), 0 0 20px rgba(6, 182, 212, 0.4);
+}
+
+.btn-primary:hover::before {
+  left: 100%;
+}
+
+.btn-primary:active {
+  transform: translateY(-1px) scale(1);
+}
+
+.btn-secondary {
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+  color: #334155;
+  box-shadow: 0 2px 4px rgba(8, 145, 178, 0.1), 0 4px 8px rgba(8, 145, 178, 0.05);
+  border: 2px solid rgba(8, 145, 178, 0.1);
+  cursor: pointer;
+}
+
+.btn-secondary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(8, 145, 178, 0.1), 0 8px 16px rgba(8, 145, 178, 0.08);
+  border-color: #0891b2;
+}
+
+.btn-success {
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+  color: white;
+  box-shadow: 0 4px 6px rgba(16, 185, 129, 0.1), 0 8px 16px rgba(16, 185, 129, 0.08);
+  border: none;
+  cursor: pointer;
+}
+
+.btn-success:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 10px 20px rgba(16, 185, 129, 0.15), 0 20px 40px rgba(16, 185, 129, 0.1), 0 0 20px rgba(16, 185, 129, 0.4);
+}
+
+.input-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 0.75rem;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid rgba(8, 145, 178, 0.2);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+  color: #334155;
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: #0891b2;
+  box-shadow: 0 0 0 4px rgba(6, 182, 212, 0.1), 0 2px 4px rgba(8, 145, 178, 0.1), 0 4px 8px rgba(8, 145, 178, 0.05);
+  transform: translateY(-1px);
+}
+
+.input-field::placeholder {
+  color: #94a3b8;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(8, 145, 178, 0.1), 0 4px 8px rgba(8, 145, 178, 0.05);
+  transition: all 0.3s ease;
+}
+
+.badge:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(8, 145, 178, 0.1), 0 8px 16px rgba(8, 145, 178, 0.08);
+}
+
+.badge-primary {
+  background: linear-gradient(135deg, rgba(6, 182, 212, 0.1) 0%, rgba(8, 145, 178, 0.15) 100%);
+  color: #0e7490;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+}
+
+.badge-success {
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1) 0%, rgba(5, 150, 105, 0.15) 100%);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.badge-danger {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.15) 100%);
+  color: #dc2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.badge-warning {
+  background: linear-gradient(135deg, rgba(245, 158, 11, 0.1) 0%, rgba(217, 119, 6, 0.15) 100%);
+  color: #d97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+/* Custom Scrollbar with Medical Theme */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #0891b2 0%, #0e7490 100%);
+  border-radius: 10px;
+  box-shadow: inset 0 2px 4px rgba(255, 255, 255, 0.3);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #06b6d4 0%, #0891b2 100%);
+  box-shadow: 0 0 10px rgba(6, 182, 212, 0.5);
+}
+
+/* Loading Animation */
+@keyframes pulse-medical {
+
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05);
+  }
+}
+
+.loading-pulse {
+  animation: pulse-medical 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+/* Heartbeat Animation for Emergency */
+@keyframes heartbeat {
+
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  14% {
+    transform: scale(1.15);
+  }
+
+  28% {
+    transform: scale(1);
+  }
+
+  42% {
+    transform: scale(1.15);
+  }
+
+  70% {
+    transform: scale(1);
+  }
+}
+
+.heartbeat-animation {
+  animation: heartbeat 1.5s ease-in-out infinite;
+}
+
+/* Floating Effect for Cards */
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+/* Skeleton Loader */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite;
+  border-radius: 0.5rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+
+  .card,
+  .medical-card {
+    padding: 1rem;
+  }
+
+  .btn-primary,
+  .btn-secondary,
+  . btn-success {
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+  }
+}

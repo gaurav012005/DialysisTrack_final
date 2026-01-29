@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dialysis Queue Management System</title>
+    
+    <!-- Preload critical resources -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Tailwind CSS via CDN for development (remove in production if using built CSS) -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <style>
+      /* Loading animation */
+      #loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.5s ease-out;
+      }
+      
+      .loading-spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid #ffffff33;
+        border-top: 5px solid #ffffff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin-bottom: 20px;
+      }
+      
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      
+      .loading-text {
+        color: white;
+        font-size: 18px;
+        font-weight: 500;
+      }
+      
+      /* Hide loading screen when app loads */
+      .loaded #loading {
+        opacity: 0;
+        pointer-events: none;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Loading Screen -->
+    <div id="loading">
+      <div class="loading-spinner"></div>
+      <div class="loading-text">Loading Dialysis Queue System...</div>
+    </div>
+
+    <!-- React Root -->
+    <div id="root"></div>
+
+    <script type="module">
+      // Remove loading screen when app is ready
+      window.addEventListener('load', function() {
+        setTimeout(() => {
+          document.body.classList.add('loaded');
+          setTimeout(() => {
+            const loadingElement = document.getElementById('loading');
+            if (loadingElement) {
+              loadingElement.remove();
+            }
+          }, 500);
+        }, 1000);
+      });
+
+      // Error handling for failed imports
+      window.addEventListener('error', (e) => {
+        console.error('Application error:', e.error);
+        const loadingElement = document.getElementById('loading');
+        if (loadingElement) {
+          loadingElement.innerHTML = `
+            <div style="text-align: center; color: white;">
+              <div style="font-size: 48px; margin-bottom: 20px;">⚠️</div>
+              <h2 style="margin-bottom: 10px;">Application Error</h2>
+              <p style="margin-bottom: 20px; opacity: 0.8;">Failed to load the application</p>
+              <button onclick="window.location.reload()" style="background: white; color: #667eea; border: none; padding: 10px 20px; border-radius: 5px; cursor: pointer;">
+                Reload Page
+              </button>
+            </div>
+          `;
+        }
+      });
+    </script>
+
+    <!-- Main React Application -->
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

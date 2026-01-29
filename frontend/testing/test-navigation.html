@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navigation Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .test-section { margin: 20px 0; padding: 15px; border: 1px solid #ccc; }
+        .success { color: green; }
+        .error { color: red; }
+        button { padding: 10px 15px; margin: 5px; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>Frontend Navigation Test</h1>
+    
+    <div class="test-section">
+        <h3>Backend Connection Test</h3>
+        <button onclick="testBackend()">Test Backend Connection</button>
+        <div id="backend-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>Authentication Test</h3>
+        <button onclick="testLogin()">Test Login</button>
+        <div id="auth-result"></div>
+    </div>
+
+    <div class="test-section">
+        <h3>API Endpoints Test</h3>
+        <button onclick="testPatients()">Test Patients API</button>
+        <button onclick="testQueue()">Test Queue API</button>
+        <button onclick="testMachines()">Test Machines API</button>
+        <div id="api-result"></div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        let authToken = null;
+
+        async function testBackend() {
+            const result = document.getElementById('backend-result');
+            try {
+                const response = await fetch(`${API_BASE}/auth/`);
+                const data = await response.json();
+                result.innerHTML = `<div class="success">✅ Backend connected: ${data.message}</div>`;
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Backend connection failed: ${error.message}</div>`;
+            }
+        }
+
+        async function testLogin() {
+            const result = document.getElementById('auth-result');
+            try {
+                const response = await fetch(`${API_BASE}/auth/login/`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: 'admin@test.com', password: 'admin123' })
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    authToken = data.access;
+                    result.innerHTML = `<div class="success">✅ Login successful: ${data.user.email}</div>`;
+                } else {
+                    const error = await response.json();
+                    result.innerHTML = `<div class="error">❌ Login failed: ${error.detail}</div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Login error: ${error.message}</div>`;
+            }
+        }
+
+        async function testPatients() {
+            const result = document.getElementById('api-result');
+            if (!authToken) {
+                result.innerHTML = '<div class="error">❌ Please login first</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/patients/`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `<div class="success">✅ Patients API working: ${data.results?.length || data.length || 0} patients found</div>`;
+                } else {
+                    result.innerHTML = `<div class="error">❌ Patients API failed: ${response.status}</div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Patients API error: ${error.message}</div>`;
+            }
+        }
+
+        async function testQueue() {
+            const result = document.getElementById('api-result');
+            if (!authToken) {
+                result.innerHTML = '<div class="error">❌ Please login first</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/queue/`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `<div class="success">✅ Queue API working: ${data.results?.length || data.length || 0} items in queue</div>`;
+                } else {
+                    result.innerHTML = `<div class="error">❌ Queue API failed: ${response.status}</div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Queue API error: ${error.message}</div>`;
+            }
+        }
+
+        async function testMachines() {
+            const result = document.getElementById('api-result');
+            if (!authToken) {
+                result.innerHTML = '<div class="error">❌ Please login first</div>';
+                return;
+            }
+
+            try {
+                const response = await fetch(`${API_BASE}/machines/`, {
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    result.innerHTML = `<div class="success">✅ Machines API working: ${data.results?.length || data.length || 0} machines found</div>`;
+                } else {
+                    result.innerHTML = `<div class="error">❌ Machines API failed: ${response.status}</div>`;
+                }
+            } catch (error) {
+                result.innerHTML = `<div class="error">❌ Machines API error: ${error.message}</div>`;
+            }
+        }
+    </script>
+</body>
+</html>
