@@ -1,0 +1,168 @@
+/* ==========================================
+   Typography Enhancements for Premium UI
+   ========================================== */
+
+/* Import Premium Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+/* Base Typography */
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'cv11', 'ss01';
+}
+
+/* Headings with Poppins */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-family: 'Poppins', 'Inter', sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 600;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+/* Improved Text Contrast - Fix Faint Text */
+.text-gray-400 {
+    color: #6b7280 !important;
+}
+
+.dark .text-gray-400 {
+    color: #9ca3af !important;
+}
+
+.text-gray-500 {
+    color: #475569 !important;
+}
+
+.dark .text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+.text-gray-600 {
+    color: #334155 !important;
+}
+
+.dark .text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+.text-gray-700 {
+    color: #1e293b !important;
+}
+
+.dark .text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+/* Card Labels - Make More Visible */
+.card-label,
+.stat-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: #475569 !important;
+}
+
+.dark .card-label,
+.dark .stat-label {
+    color: #94a3b8 !important;
+}
+
+/* Card Values */
+.card-value,
+.stat-value {
+    font-size: 2rem;
+    font-weight: 700;
+    font-family: 'Poppins', sans-serif;
+    color: #0f172a;
+}
+
+.dark .card-value,
+.dark .stat-value {
+    color: #f1f5f9;
+}
+
+/* Section Headings */
+.section-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #1e293b !important;
+    margin-bottom: 1rem;
+}
+
+.dark .section-title {
+    color: #f1f5f9 !important;
+}
+
+/* Table Headers */
+table thead th {
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+/* Button Text */
+button {
+    font-weight: 600;
+    letter-spacing: 0.01em;
+}
+
+/* Form Labels - Better Visibility */
+label {
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: #334155 !important;
+}
+
+.dark label {
+    color: #e5e7eb !important;
+}
+
+/* Input Text */
+input,
+select,
+textarea {
+    font-size: 0.9375rem;
+    font-weight: 400;
+}
+
+/* Currency/Number Display */
+.currency-amount {
+    font-family: 'Poppins', sans-serif;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+/* Status Text */
+.status-text {
+    font-weight: 600;
+    font-size: 0.8125rem;
+}
+
+/* Links */
+a {
+    font-weight: 500;
+    transition: color 0.2s ease;
+}

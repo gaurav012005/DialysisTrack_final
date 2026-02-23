@@ -42,6 +42,9 @@
                 <span class="badge badge-success">React Frontend</span>
                 <span class="badge badge-info">SQLite Database</span>
             </div>
+            <button class="download-all-btn" onclick="downloadAllDiagrams()">
+                📥 Download All Diagrams
+            </button>
         </div>
     </header>
 
@@ -94,6 +97,159 @@
         </div>
     </section>
 
+    <!-- FD Symbols Section -->
+    <section id="fd-symbols" class="diagram-section">
+        <div class="container">
+            <h2 class="section-title">🔣 DFD Symbols Guide</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>Data Flow Diagram Symbols (Gane-Sarson Notation)</h3>
+                    <p>Standard symbols used in all DFD diagrams throughout this documentation</p>
+                </div>
+                <div class="diagram-content">
+                    <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+                        <thead>
+                            <tr
+                                style="background: linear-gradient(135deg, #667eea20, #764ba220); border-bottom: 3px solid #4a90e2;">
+                                <th style="padding: 15px; text-align: left; font-weight: 700;">Symbol</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 700;">Name</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 700;">Description</th>
+                                <th style="padding: 15px; text-align: left; font-weight: 700;">Example</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #e1e8ed;">
+                                <td style="padding: 15px;">
+                                    <div
+                                        style="background: #3498db; color: white; padding: 10px 20px; border-radius: 10px; text-align: center; font-weight: 600;">
+                                        Process</div>
+                                </td>
+                                <td style="padding: 15px; font-weight: 600;">Process</td>
+                                <td style="padding: 15px;">Represents a function or transformation that changes inputs
+                                    into outputs (Rounded rectangle)</td>
+                                <td style="padding: 15px;"><code>User Authentication</code>,
+                                    <code>Generate Report</code>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e1e8ed; background: #f8f9fa;">
+                                <td style="padding: 15px;">
+                                    <div
+                                        style="border: 3px solid #e74c3c; padding: 10px 20px; text-align: center; font-weight: 600; color: #e74c3c;">
+                                        Entity</div>
+                                </td>
+                                <td style="padding: 15px; font-weight: 600;">External Entity</td>
+                                <td style="padding: 15px;">Represents a person, organization, or system outside the
+                                    system boundary (Rectangle/Square)</td>
+                                <td style="padding: 15px;"><code>Patient</code>, <code>Doctor</code>, <code>Admin</code>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e1e8ed;">
+                                <td style="padding: 15px;">
+                                    <div
+                                        style="border-left: 4px solid #2ecc71; border-right: 4px solid #2ecc71; padding: 10px 20px; text-align: center; font-weight: 600; color: #2ecc71;">
+                                        Data Store</div>
+                                </td>
+                                <td style="padding: 15px; font-weight: 600;">Data Store</td>
+                                <td style="padding: 15px;">Represents a repository for data such as a database table or
+                                    file (Open-ended rectangle)</td>
+                                <td style="padding: 15px;"><code>Patient Database</code>, <code>Queue Data</code></td>
+                            </tr>
+                            <tr style="background: #f8f9fa;">
+                                <td style="padding: 15px;">
+                                    <div style="text-align: center; font-size: 24px; color: #f39c12;">→</div>
+                                </td>
+                                <td style="padding: 15px; font-weight: 600;">Data Flow</td>
+                                <td style="padding: 15px;">Represents the movement of data between processes, entities,
+                                    and data stores (Labeled arrow)</td>
+                                <td style="padding: 15px;"><code>Patient Info</code>, <code>Login Credentials</code>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Functional Decomposition Diagram -->
+    <section id="functional-decomposition" class="diagram-section alt-bg">
+        <div class="container">
+            <h2 class="section-title">🌳 Functional Decomposition Diagram</h2>
+
+            <div class="diagram-card">
+                <div class="diagram-header">
+                    <h3>System Function Hierarchy</h3>
+                    <p>Hierarchical breakdown of DialysisTrack system into manageable functional modules</p>
+                    <button class="download-btn" onclick="downloadDiagram(this, 'functional-decomposition')">⬇️ Download
+                        SVG</button>
+                </div>
+                <div class="diagram-content">
+                    <div class="mermaid" id="diagram-functional-decomposition">
+                        graph TD
+                        System["DialysisTrack System"]
+
+                        %% Level 1
+                        M1["User & Access Management"]
+                        M2["Patient Care Management"]
+                        M3["Facility & Resource Management"]
+                        M4["Billing & Operations"]
+
+                        System --- M1
+                        System --- M2
+                        System --- M3
+                        System --- M4
+
+                        %% Level 2 - User Management
+                        M1 --- M1_1["1.1 Authentication JWT"]
+                        M1 --- M1_2["1.2 Role-Based Permissions"]
+                        M1 --- M1_3["1.3 Staff Profile Management"]
+
+                        %% Level 2 - Patient Care
+                        M2 --- M2_1["2.1 Patient Registration"]
+                        M2 --- M2_2["2.2 Appointment Scheduling"]
+                        M2 --- M2_3["2.3 Queue Management"]
+                        M2 --- M2_4["2.4 Treatment Session Logging"]
+
+                        %% Level 2 - Facility
+                        M3 --- M3_1["3.1 Machine Inventory"]
+                        M3 --- M3_2["3.2 Maintenance Tracking"]
+                        M3 --- M3_3["3.3 Bed/Station Allocation"]
+
+                        %% Level 2 - Billing & Ops
+                        M4 --- M4_1["4.1 Invoice Generation"]
+                        M4 --- M4_2["4.2 Payment Processing"]
+                        M4 --- M4_3["4.3 Reporting & Analytics"]
+
+                        %% Styling
+                        style System fill:#4a90e2,stroke:#333,stroke-width:4px,color:#fff
+                        style M1 fill:#e74c3c,stroke:#333,stroke-width:3px,color:#fff
+                        style M2 fill:#27ae60,stroke:#333,stroke-width:3px,color:#fff
+                        style M3 fill:#f39c12,stroke:#333,stroke-width:3px,color:#fff
+                        style M4 fill:#9b59b6,stroke:#333,stroke-width:3px,color:#fff
+
+                        style M1_1 fill:#e74c3c20,stroke:#e74c3c,stroke-width:2px
+                        style M1_2 fill:#e74c3c20,stroke:#e74c3c,stroke-width:2px
+                        style M1_3 fill:#e74c3c20,stroke:#e74c3c,stroke-width:2px
+
+                        style M2_1 fill:#27ae6020,stroke:#27ae60,stroke-width:2px
+                        style M2_2 fill:#27ae6020,stroke:#27ae60,stroke-width:2px
+                        style M2_3 fill:#27ae6020,stroke:#27ae60,stroke-width:2px
+                        style M2_4 fill:#27ae6020,stroke:#27ae60,stroke-width:2px
+
+                        style M3_1 fill:#f39c1220,stroke:#f39c12,stroke-width:2px
+                        style M3_2 fill:#f39c1220,stroke:#f39c12,stroke-width:2px
+                        style M3_3 fill:#f39c1220,stroke:#f39c12,stroke-width:2px
+
+                        style M4_1 fill:#9b59b620,stroke:#9b59b6,stroke-width:2px
+                        style M4_2 fill:#9b59b620,stroke:#9b59b6,stroke-width:2px
+                        style M4_3 fill:#9b59b620,stroke:#9b59b6,stroke-width:2px
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- Data Flow Diagrams -->
     <section id="dfd" class="diagram-section">
         <div class="container">
@@ -103,9 +259,11 @@
                 <div class="diagram-header">
                     <h3>Level 0 - Context Diagram</h3>
                     <p>High-level view showing external entities interacting with the DialysisTrack system</p>
+                    <button class="download-btn" onclick="downloadDiagram(this, 'context-diagram')">⬇️ Download
+                        SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-context-diagram">
                         graph TB
                         subgraph External_Entities
                         Admin[Admin]
@@ -226,9 +384,12 @@
                 <div class="diagram-header">
                     <h3>Level 2 - Patient Management Process</h3>
                     <p>Detailed patient management workflow</p>
+                    <button class="download-btn"
+                        onclick="downloadDiagram(this, 'diagram-level-2-patient-management-process')">⬇️ Download
+                        SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-level-2-patient-management-process">
                         graph TB
                         subgraph Input
                         R[Receptionist]
@@ -285,9 +446,12 @@
                 <div class="diagram-header">
                     <h3>Level 2 - Queue Management Process</h3>
                     <p>Detailed queue and machine allocation workflow</p>
+                    <button class="download-btn"
+                        onclick="downloadDiagram(this, 'diagram-level-2-queue-management-process')">⬇️ Download
+                        SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-level-2-queue-management-process">
                         graph TB
                         subgraph Input
                         N[Nurse/Staff]
@@ -357,9 +521,11 @@
                 <div class="diagram-header">
                     <h3>Overall System Use Cases</h3>
                     <p>All actors and their primary interactions with the system</p>
+                    <button class="download-btn" onclick="downloadDiagram(this, 'diagram-overall-system-use-cases')">⬇️
+                        Download SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-overall-system-use-cases">
                         graph TB
                         subgraph Actors
                         Admin[👨‍💼 Admin]
@@ -433,9 +599,12 @@
                     <div class="diagram-header">
                         <h3>Patient Registration Use Case</h3>
                         <p>Registration workflow steps</p>
+                        <button class="download-btn"
+                            onclick="downloadDiagram(this, 'diagram-patient-registration-use-case')">⬇️ Download
+                            SVG</button>
                     </div>
                     <div class="diagram-content">
-                        <div class="mermaid">
+                        <div class="mermaid" id="diagram-patient-registration-use-case">
                             graph TB
                             R[Receptionist]
 
@@ -469,9 +638,12 @@
                     <div class="diagram-header">
                         <h3>Appointment Scheduling Use Case</h3>
                         <p>Booking and scheduling workflow</p>
+                        <button class="download-btn"
+                            onclick="downloadDiagram(this, 'diagram-appointment-scheduling-use-case')">⬇️ Download
+                            SVG</button>
                     </div>
                     <div class="diagram-content">
-                        <div class="mermaid">
+                        <div class="mermaid" id="diagram-appointment-scheduling-use-case">
                             graph TB
                             R[Receptionist]
                             P[Patient]
@@ -518,9 +690,11 @@
                 <div class="diagram-header">
                     <h3>Core Domain Model</h3>
                     <p>Main entities and their relationships in the system</p>
+                    <button class="download-btn" onclick="downloadDiagram(this, 'diagram-core-domain-model')">⬇️
+                        Download SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-core-domain-model">
                         classDiagram
                         class User {
                         +int id
@@ -641,9 +815,12 @@
                 <div class="diagram-header">
                     <h3>Patient Registration Sequence</h3>
                     <p>Step-by-step patient registration process</p>
+                    <button class="download-btn"
+                        onclick="downloadDiagram(this, 'diagram-patient-registration-sequence')">⬇️ Download
+                        SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-patient-registration-sequence">
                         sequenceDiagram
                         actor R as Receptionist
                         participant UI as Frontend UI
@@ -676,9 +853,12 @@
                 <div class="diagram-header">
                     <h3>Appointment Scheduling Sequence</h3>
                     <p>Complete appointment booking workflow</p>
+                    <button class="download-btn"
+                        onclick="downloadDiagram(this, 'diagram-appointment-scheduling-sequence')">⬇️ Download
+                        SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-appointment-scheduling-sequence">
                         sequenceDiagram
                         actor R as Receptionist
                         participant UI as Frontend
@@ -717,9 +897,11 @@
                 <div class="diagram-header">
                     <h3>Payment Processing Sequence</h3>
                     <p>Billing and payment workflow (Cash & UPI)</p>
+                    <button class="download-btn"
+                        onclick="downloadDiagram(this, 'diagram-payment-processing-sequence')">⬇️ Download SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-payment-processing-sequence">
                         sequenceDiagram
                         actor R as Receptionist
                         actor P as Patient
@@ -769,9 +951,11 @@
                 <div class="diagram-header">
                     <h3>Complete Database Schema</h3>
                     <p>All tables, their attributes, and relationships</p>
+                    <button class="download-btn" onclick="downloadDiagram(this, 'diagram-complete-database-schema')">⬇️
+                        Download SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-complete-database-schema">
                         erDiagram
                         USER ||--o{ STAFF_SCHEDULE : has
                         USER ||--o{ APPOINTMENT : creates
@@ -897,9 +1081,12 @@
                     <div class="diagram-header">
                         <h3>Patient Registration Activity</h3>
                         <p>Registration workflow with validation</p>
+                        <button class="download-btn"
+                            onclick="downloadDiagram(this, 'diagram-patient-registration-activity')">⬇️ Download
+                            SVG</button>
                     </div>
                     <div class="diagram-content">
-                        <div class="mermaid">
+                        <div class="mermaid" id="diagram-patient-registration-activity">
                             graph TB
                             Start([Start]) --> Input[Enter patient details]
                             Input --> Validate{Validate Input}
@@ -929,9 +1116,12 @@
                     <div class="diagram-header">
                         <h3>Appointment Booking Activity</h3>
                         <p>Complete booking process flow</p>
+                        <button class="download-btn"
+                            onclick="downloadDiagram(this, 'diagram-appointment-booking-activity')">⬇️ Download
+                            SVG</button>
                     </div>
                     <div class="diagram-content">
-                        <div class="mermaid">
+                        <div class="mermaid" id="diagram-appointment-booking-activity">
                             graph TB
                             Start([Start]) --> SelectPatient[Select Patient]
                             SelectPatient --> ChooseDate[Choose Date]
@@ -962,9 +1152,11 @@
                 <div class="diagram-header">
                     <h3>Dialysis Session Activity</h3>
                     <p>Complete treatment session workflow</p>
+                    <button class="download-btn" onclick="downloadDiagram(this, 'diagram-dialysis-session-activity')">⬇️
+                        Download SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-dialysis-session-activity">
                         graph TB
                         Start([Session Start]) --> CheckIn[Patient Check-in]
                         CheckIn --> AddQueue[Add to Queue]
@@ -1015,9 +1207,12 @@
                 <div class="diagram-header">
                     <h3>System Architecture Components</h3>
                     <p>Three-tier architecture showing all components and their interactions</p>
+                    <button class="download-btn"
+                        onclick="downloadDiagram(this, 'diagram-system-architecture-components')">⬇️ Download
+                        SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-system-architecture-components">
                         graph TB
                         subgraph Client_Layer
                         Browser[Web Browser]
@@ -1092,9 +1287,12 @@
                 <div class="diagram-header">
                     <h3>Production Deployment Architecture</h3>
                     <p>Infrastructure setup and deployment configuration</p>
+                    <button class="download-btn"
+                        onclick="downloadDiagram(this, 'diagram-production-deployment-architecture')">⬇️ Download
+                        SVG</button>
                 </div>
                 <div class="diagram-content">
-                    <div class="mermaid">
+                    <div class="mermaid" id="diagram-production-deployment-architecture">
                         graph TB
                         subgraph Clients
                         Desktop[Desktop Browser]
@@ -1117,7 +1315,7 @@
                         end
 
                         subgraph Database
-                        PostgreSQL[(PostgreSQL<br />Port 5432)]
+                        MySQL[(MySQL<br />Port 3306)]
                         end
 
                         subgraph Storage
@@ -1136,7 +1334,7 @@
                         Nginx --> React
                         Nginx --> Gunicorn
                         Gunicorn --> Django
-                        Django --> PostgreSQL
+                        Django --> MySQL
                         Django --> Media
                         Nginx --> Static
 
@@ -1146,7 +1344,7 @@
                         style Nginx fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
                         style React fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
                         style Django fill:#27ae60,stroke:#333,stroke-width:2px,color:#fff
-                        style PostgreSQL fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+                        style MySQL fill:#00758f,stroke:#333,stroke-width:2px,color:#fff
                     </div>
                 </div>
             </div>
@@ -1166,7 +1364,7 @@
                     <ul>
                         <li>Backend: Django 4.2.7 + DRF</li>
                         <li>Frontend: React.js 18.2.0 + Vite</li>
-                        <li>Database: SQLite / PostgreSQL</li>
+                        <li>Database: MySQL (Production) / SQLite (Development)</li>
                         <li>Deployment: Docker + Nginx</li>
                     </ul>
                 </div>
@@ -1294,6 +1492,123 @@
         document.querySelectorAll('.diagram-card, .toc-card').forEach(el => {
             observer.observe(el);
         });
+
+        // Download diagram as SVG function
+        function downloadDiagram(button, diagramName) {
+            const diagramCard = button.closest('.diagram-card');
+            const svgElement = diagramCard.querySelector('.mermaid svg');
+
+            if (!svgElement) {
+                alert('Diagram not loaded yet. Please wait for the diagram to render.');
+                return;
+            }
+
+            // Clone the SVG to modify it
+            const clonedSvg = svgElement.cloneNode(true);
+
+            // Set explicit dimensions if they don't exist
+            if (!clonedSvg.hasAttribute('width')) {
+                clonedSvg.setAttribute('width', svgElement.clientWidth);
+            }
+            if (!clonedSvg.hasAttribute('height')) {
+                clonedSvg.setAttribute('height', svgElement.clientHeight);
+            }
+
+            // Serialize the SVG
+            const serializer = new XMLSerializer();
+            let svgString = serializer.serializeToString(clonedSvg);
+
+            // Add XML declaration and namespace
+            svgString = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + svgString;
+
+            // Create blob and download
+            const blob = new Blob([svgString], { type: 'image/svg+xml' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `dialysistrack-${diagramName}.svg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Download all diagrams function
+        function downloadAllDiagrams() {
+            // Find all mermaid diagrams that have IDs (for download)
+            const allDiagrams = document.querySelectorAll('.mermaid[id^="diagram-"]');
+
+            if (allDiagrams.length === 0) {
+                alert('No diagrams found to download. Please wait for diagrams to render.');
+                return;
+            }
+
+            // Show confirmation
+            const confirmDownload = confirm(`This will download ${allDiagrams.length} diagrams as SVG files. Continue?`);
+            if (!confirmDownload) return;
+
+            // Change button text to show progress
+            const downloadBtn = document.querySelector('.download-all-btn');
+            const originalText = downloadBtn.innerHTML;
+            downloadBtn.disabled = true;
+            downloadBtn.innerHTML = '⏳ Downloading...';
+
+            let downloaded = 0;
+
+            // Download each diagram with a delay to avoid browser blocking
+            allDiagrams.forEach((diagram, index) => {
+                setTimeout(() => {
+                    const svgElement = diagram.querySelector('svg');
+
+                    if (!svgElement) {
+                        console.warn(`Diagram ${index + 1} not rendered yet, skipping...`);
+                        return;
+                    }
+
+                    // Clone and serialize SVG
+                    const clonedSvg = svgElement.cloneNode(true);
+                    if (!clonedSvg.hasAttribute('width')) {
+                        clonedSvg.setAttribute('width', svgElement.clientWidth);
+                    }
+                    if (!clonedSvg.hasAttribute('height')) {
+                        clonedSvg.setAttribute('height', svgElement.clientHeight);
+                    }
+
+                    const serializer = new XMLSerializer();
+                    let svgString = serializer.serializeToString(clonedSvg);
+                    svgString = '<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n' + svgString;
+
+                    // Create download
+                    const blob = new Blob([svgString], { type: 'image/svg+xml' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+
+                    // Get diagram ID from the element
+                    const diagramId = diagram.id.replace('diagram-', '');
+                    link.download = `dialysistrack-${diagramId}.svg`;
+
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+
+                    downloaded++;
+
+                    // Update button text with progress
+                    downloadBtn.innerHTML = `⏳ Downloaded ${downloaded}/${allDiagrams.length}...`;
+
+                    // Reset button when complete
+                    if (downloaded === allDiagrams.length) {
+                        setTimeout(() => {
+                            downloadBtn.disabled = false;
+                            downloadBtn.innerHTML = originalText;
+                            alert(`✅ Successfully downloaded ${downloaded} diagrams!`);
+                        }, 300);
+                    }
+                }, index * 300); // 300ms delay between downloads
+            });
+        }
     </script>
 </body>
 

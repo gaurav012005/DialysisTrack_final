@@ -159,10 +159,10 @@ const PatientDashboard = () => {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 p-6">
+        <div className="min-h-screen bg-gray-50 p-4 sm:p-6">
             {/* Header */}
             <div className="mb-8">
-                <h1 className="text-3xl font-bold text-gray-800">Patient Portal</h1>
+                <h1 className="text-2xl sm:text-3xl font-bold text-gray-800">Patient Portal</h1>
                 <p className="text-gray-600 mt-2">
                     Welcome, {dashboardData.patient_info.name}!
                 </p>
@@ -170,7 +170,7 @@ const PatientDashboard = () => {
 
             {/* Tabs */}
             <div className="mb-6 border-b border-gray-200">
-                <nav className="-mb-px flex space-x-8">
+                <nav className="-mb-px flex overflow-x-auto space-x-4 sm:space-x-8 -mx-1 px-1">
                     {['overview', 'appointments', 'sessions', 'bills'].map((tab) => (
                         <button
                             key={tab}
@@ -190,7 +190,7 @@ const PatientDashboard = () => {
             {activeTab === 'overview' && (
                 <div>
                     {/* Statistics Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-8">
                         <div className="bg-white rounded-lg shadow p-6">
                             <div className="text-sm text-gray-600">Total Sessions</div>
                             <div className="text-2xl font-bold text-gray-900 mt-2">

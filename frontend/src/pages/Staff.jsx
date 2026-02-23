@@ -3,6 +3,7 @@ import AddStaffModal from '../components/AddStaffModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import RefreshButton from '../components/RefreshButton';
+import toast from '../utils/toast';
 
 const Staff = () => {
   const [staffMembers, setStaffMembers] = useState([]);
@@ -62,12 +63,12 @@ const Staff = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Staff Management</h1>
-          <p className="text-gray-600">Manage hospital staff and shifts</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Staff Management</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Manage hospital staff and shifts</p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setShowAddModal(true)}
             className="btn-primary"
@@ -225,14 +226,14 @@ const toggleStaffStatus = async (staffId, newStatus, fetchStaff) => {
 
     if (response.ok) {
       fetchStaff();
-      alert('Staff status updated!');
+      toast.success('Staff status updated!');
     } else {
       const errorText = await response.text();
       throw new Error(`Failed to update staff: ${response.status} - ${errorText}`);
     }
   } catch (error) {
     console.error('Failed to update staff status:', error);
-    alert(`Error updating staff status: ${error.message}`);
+    toast.error(`Error updating staff status: ${error.message}`);
   }
 };
 

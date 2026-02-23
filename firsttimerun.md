@@ -80,7 +80,7 @@ npm run dev
 |-------|-------|
 | **Username** | admin@dialysis.com |
 | **Email** | admin@dialysis.com |
-| **Password** | Admin@2026 |
+| **Password** | admin123 |
 
 **What can you do in Django Admin?**
 - ✅ Add, Edit, Delete Patients
@@ -216,7 +216,7 @@ Django Admin is a powerful web-based interface where you can:
 ### **Access Django Admin:**
 **URL:** http://localhost:8000/admin
 **Email:** admin@dialysis.com
-**Password:** Admin@2026
+**Password:** admin123
 
 ### **What You Can Do:**
 

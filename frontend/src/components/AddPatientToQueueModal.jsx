@@ -80,19 +80,19 @@ const AddPatientToQueueModal = ({ isOpen, onClose, onAdd }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg w-96">
-        <h2 className="text-xl font-bold mb-4">Add Patient to Queue</h2>
+    <div className="fixed inset-0 bg-black bg-opacity-50 dark:bg-opacity-75 flex items-center justify-center z-50">
+      <div className="bg-white dark:bg-slate-800 p-6 rounded-lg w-96 shadow-xl">
+        <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Add Patient to Queue</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Select Patient</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Select Patient</label>
             {loading ? (
-              <div className="text-sm text-gray-500">Loading patients...</div>
+              <div className="text-sm text-gray-500 dark:text-gray-400">Loading patients...</div>
             ) : (
               <select
                 value={patientId}
                 onChange={(e) => setPatientId(e.target.value)}
-                className="input-field"
+                className="input-field w-full"
                 required
               >
                 <option value="">Choose a patient...</option>
@@ -105,11 +105,11 @@ const AddPatientToQueueModal = ({ isOpen, onClose, onAdd }) => {
             )}
           </div>
           <div className="mb-4">
-            <label className="block text-sm font-medium mb-2">Priority</label>
+            <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Priority</label>
             <select
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
-              className="input-field"
+              className="input-field w-full"
             >
               <option value="scheduled">Scheduled</option>
               <option value="emergency">Emergency</option>

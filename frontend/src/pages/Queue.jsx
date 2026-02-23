@@ -4,6 +4,7 @@ import AddPatientToQueueModal from '../components/AddPatientToQueueModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import RefreshButton from '../components/RefreshButton';
+import { AlertTriangle } from 'lucide-react';
 
 const Queue = () => {
   const [queue, setQueue] = useState([]);
@@ -170,8 +171,8 @@ const Queue = () => {
     <div className="space-y-6">
       {/* Page Header */}
       <div>
-        <h1 className="text-3xl font-bold text-gray-900">Queue Management</h1>
-        <p className="text-gray-600">Real-time dialysis queue and patient status</p>
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Queue Management</h1>
+        <p className="text-gray-600 text-sm sm:text-base">Real-time dialysis queue and patient status</p>
       </div>
 
       {/* Queue Stats */}
@@ -196,7 +197,7 @@ const Queue = () => {
       {emergencyCases.length > 0 && (
         <div>
           <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center">
-            <span className="text-red-500 mr-2">🚨</span>
+            <AlertTriangle className="w-5 h-5 text-red-500 mr-2" />
             Emergency Cases (Priority)
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -257,7 +258,7 @@ const Queue = () => {
       {/* Queue Controls */}
       <div className="card">
         <h3 className="text-lg font-bold mb-4">Queue Controls</h3>
-        <div className="flex space-x-4">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setShowAddModal(true)}
             className="btn-primary"
@@ -267,7 +268,7 @@ const Queue = () => {
           <RefreshButton onClick={fetchQueue} loading={loading} />
           <button
             onClick={() => markAllEmergency()}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg"
+            className="btn-danger"
           >
             Emergency Mode
           </button>

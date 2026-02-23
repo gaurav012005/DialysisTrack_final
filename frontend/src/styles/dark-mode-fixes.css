@@ -1,0 +1,1469 @@
+/* ==========================================
+   Form & Input Dark Mode Fixes
+   ========================================== */
+
+/* Form Inputs */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="time"],
+input[type="tel"],
+select,
+textarea {
+    background-color: white;
+    color: var(--text-primary);
+    border: 1px solid var(--border-primary);
+    transition: all 0.3s ease;
+}
+
+.dark input[type="text"],
+.dark input[type="email"],
+.dark input[type="password"],
+.dark input[type="number"],
+.dark input[type="date"],
+.dark input[type="time"],
+.dark input[type="tel"],
+.dark select,
+.dark textarea {
+    background-color: #1e293b;
+    color: #e2e8f0;
+    border-color: #475569;
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="password"]:focus,
+.dark input[type="number"]:focus,
+.dark input[type="date"]:focus,
+.dark input[type="time"]:focus,
+.dark input[type="tel"]:focus,
+.dark select:focus,
+.dark textarea:focus {
+    background-color: #0f172a;
+    border-color: #06b6d4;
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(6, 182, 212, 0.5);
+}
+
+/* Form Labels */
+label {
+    color: var(--text-primary);
+}
+
+.dark label {
+    color: #e2e8f0;
+}
+
+/* Modal Backgrounds */
+.modal-overlay {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+.dark .modal-overlay {
+    background-color: rgba(0, 0, 0, 0.75);
+}
+
+.modal-content {
+    background-color: white;
+    color: var(--text-primary);
+}
+
+.dark .modal-content {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+/* Form Field Groups */
+.form-group label,
+.form-label {
+    color: #374151;
+}
+
+.dark .form-group label,
+.dark .form-label {
+    color: #e2e8f0;
+}
+
+/* Placeholder Text */
+input::placeholder,
+textarea::placeholder,
+select::placeholder {
+    color: #9ca3af;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder,
+.dark select::placeholder {
+    color: #6b7280;
+}
+
+/* Disabled Inputs */
+input:disabled,
+select:disabled,
+textarea:disabled {
+    background-color: #f3f4f6;
+    color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.dark input:disabled,
+.dark select:disabled,
+.dark textarea:disabled {
+    background-color: #374151;
+    color: #6b7280;
+}
+
+/* ==========================================
+   Universal Table Dark Mode - Premium Look
+   ========================================== */
+.dark table {
+    color: #f1f5f9 !important;
+    background-color: #0f172a !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    width: 100% !important;
+}
+
+.dark table thead {
+    background-color: #1e293b !important;
+}
+
+.dark table thead th {
+    color: #cbd5e1 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.1em !important;
+    padding: 0.85rem 1.5rem !important;
+    border-bottom: 2px solid #334155 !important;
+    font-size: 0.7rem !important;
+    text-align: left !important;
+    background-color: #1e293b !important;
+}
+
+.dark table tbody {
+    background-color: #0f172a !important;
+}
+
+.dark table tbody tr {
+    transition: background-color 0.2s ease !important;
+    border-bottom: 1px solid rgba(51, 65, 85, 0.4) !important;
+}
+
+.dark table tbody tr:hover {
+    background-color: rgba(30, 41, 59, 0.6) !important;
+}
+
+.dark table td {
+    color: #f1f5f9 !important;
+    padding: 1rem 1.5rem !important;
+    vertical-align: middle !important;
+}
+
+/* Fix for nested borders from divide-y classes */
+.dark table,
+.dark table * {
+    border-color: rgba(51, 65, 85, 0.4) !important;
+}
+
+/* Text Hierarchy */
+.dark table td .font-medium,
+.dark table td .text-gray-900,
+.dark table td strong {
+    color: #ffffff !important;
+}
+
+.dark table td .text-gray-400,
+.dark table td .text-gray-500,
+.dark table td .text-xs,
+.dark table td .text-sm:not(.font-medium) {
+    color: #94a3b8 !important;
+}
+
+/* Action Link Colors (Primary Blue & Success Green) */
+.dark .text-blue-600,
+.dark .text-primary-600,
+.dark button.text-blue-600,
+.dark button.text-primary-600 {
+    color: #38bdf8 !important;
+    font-weight: 600 !important;
+}
+
+.dark .text-green-600,
+.dark .text-success-600,
+.dark button.text-green-600 {
+    color: #4ade80 !important;
+    font-weight: 600 !important;
+}
+
+.dark .text-red-600,
+.dark button.text-red-600 {
+    color: #fb7185 !important;
+}
+
+/* Container Styling - Matching the 'Sessions' table look */
+.dark .overflow-hidden.rounded-lg.shadow,
+.dark .bg-white.rounded-lg.shadow.overflow-hidden {
+    background-color: #0f172a !important;
+    border: 1px solid #334155 !important;
+    border-radius: 0.75rem !important;
+    overflow: hidden !important;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Remove padding from cards that contain tables to match Sessions look */
+.dark .card:has(table) {
+    padding: 0 !important;
+    overflow: hidden !important;
+    background-color: #0f172a !important;
+    border: 1px solid #334155 !important;
+}
+
+.dark .card:has(table) .overflow-x-auto {
+    padding: 0 !important;
+}
+
+.dark .card:has(table) table {
+    border-radius: 0 !important;
+}
+
+.dark .card {
+    background-color: #1e293b !important;
+}
+
+/* Headings in Dark Mode */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+    color: #f1f5f9 !important;
+}
+
+/* Paragraph Text */
+.dark p {
+    color: #cbd5e1 !important;
+}
+
+/* Links */
+.dark a {
+    color: #38bdf8 !important;
+}
+
+.dark a:hover {
+    color: #7dd3fc !important;
+}
+
+/* ==========================================
+   Global Text Visibility - Fix Black Fonts
+   ========================================== */
+.dark,
+.dark div:not([class*="bg-"]):not([class*="btn-"]):not([class*="card"]):not([class*="modal"]),
+.dark span:not([class*="text-"]):not([class*="bg-"]),
+.dark label:not([class*="text-"]) {
+    color: #cbd5e1 !important;
+}
+
+.dark strong,
+.dark b,
+.dark .font-bold,
+.dark .font-semibold,
+.dark .font-medium:not([class*="text-"]) {
+    color: #f8fafc !important;
+}
+
+/* Icon / SVG visibility in Dark Mode */
+.dark svg:not([class*="text-"]) {
+    color: #94a3b8 !important;
+}
+
+/* Divider Visibility */
+.dark .border-t,
+.dark .border-b,
+.dark .border-l,
+.dark .border-r,
+.dark .border {
+    border-color: rgba(51, 65, 85, 0.5) !important;
+}
+
+/* Select Dropdown */
+.dark select option {
+    background-color: #1e293b;
+    color: #e2e8f0;
+}
+
+/* Checkbox and Radio */
+.dark input[type="checkbox"],
+.dark input[type="radio"] {
+    border-color: #475569;
+}
+
+.dark input[type="checkbox"]:checked,
+.dark input[type="radio"]:checked {
+    background-color: #06b6d4;
+    border-color: #06b6d4;
+}
+
+/* ==========================================
+   COMPREHENSIVE GRAY TEXT FIXES FOR DARK MODE
+   ========================================== */
+
+/* Fix all gray text colors in dark mode */
+.dark .text-gray-400,
+.dark .text-gray-500,
+.dark .text-gray-600,
+.dark .text-gray-700,
+.dark .text-gray-800,
+.dark .text-gray-900 {
+    color: #e2e8f0 !important;
+}
+
+/* Specific overrides for different shades */
+.dark .text-gray-300 {
+    color: #f1f5f9 !important;
+}
+
+.dark .text-gray-400 {
+    color: #e2e8f0 !important;
+}
+
+.dark .text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+.dark .text-gray-800 {
+    color: #f1f5f9 !important;
+}
+
+.dark .text-gray-900 {
+    color: #f8fafc !important;
+}
+
+/* Fix table header text */
+.dark th.text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix card text */
+.dark .card .text-gray-600,
+.dark .card .text-gray-700,
+.dark .card .text-gray-800 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix description text */
+.dark p.text-gray-600,
+.dark p.text-gray-500,
+.dark p.text-gray-400 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix span text */
+.dark span.text-gray-500,
+.dark span.text-gray-600,
+.dark span.text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix div text */
+.dark div.text-gray-600,
+.dark div.text-gray-700,
+.dark div.text-gray-800 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix label text */
+.dark label.text-gray-700,
+.dark label.text-gray-600 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix small text */
+.dark .text-sm.text-gray-500,
+.dark .text-sm.text-gray-600,
+.dark .text-sm.text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix list items */
+.dark li.text-gray-600,
+.dark li.text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix button text */
+.dark button.text-gray-600,
+.dark button.text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix link text */
+.dark a.text-gray-600,
+.dark a.text-gray-700 {
+    color: #06b6d4 !important;
+}
+
+/* Fix heading subtitles */
+.dark h1+p.text-gray-600,
+.dark h2+p.text-gray-600,
+.dark h3+p.text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix form helper text */
+.dark .text-sm.text-gray-500.mt-1,
+.dark .text-sm.text-gray-600.mt-1 {
+    color: #94a3b8 !important;
+}
+
+/* Fix table cell text */
+.dark td.text-gray-500,
+.dark td.text-gray-600,
+.dark td.text-gray-700,
+.dark td.text-gray-900 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix uppercase text */
+.dark .uppercase.text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+/* Fix status badges with gray text */
+.dark .badge.text-gray-600,
+.dark .badge.text-gray-700 {
+    color: #1e293b !important;
+    background-color: #cbd5e1 !important;
+}
+
+/* Fix empty state text */
+.dark .text-gray-400.mt-2,
+.dark .text-gray-500.text-lg {
+    color: #94a3b8 !important;
+}
+
+/* Fix chart labels */
+.dark .recharts-text {
+    fill: #cbd5e1 !important;
+}
+
+.dark .recharts-legend-item-text {
+    color: #cbd5e1 !important;
+}
+
+/* Fix modal text */
+.dark .modal-content .text-gray-600,
+.dark .modal-content .text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix alert/notification text */
+.dark .alert .text-gray-600,
+.dark .notification .text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix sidebar text */
+.dark .sidebar .text-gray-600,
+.dark .sidebar .text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix dropdown text */
+.dark .dropdown .text-gray-600,
+.dark .dropdown .text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix tooltip text */
+.dark .tooltip .text-gray-600 {
+    color: #1e293b !important;
+}
+
+/* Fix breadcrumb text */
+.dark .breadcrumb .text-gray-600 {
+    color: #94a3b8 !important;
+}
+
+/* Fix pagination text */
+.dark .pagination .text-gray-600,
+.dark .pagination .text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix footer text */
+.dark footer .text-gray-600,
+.dark footer .text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+/* Fix code blocks */
+.dark code.text-gray-600,
+.dark pre.text-gray-600 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix blockquote text */
+.dark blockquote.text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+/* ==========================================
+    ROLE-SPECIFIC & COLORED COMPONENT FIXES
+    ========================================== */
+
+/* Fix for light colored backgrounds in dark mode (prevent white-on-light) */
+.dark .bg-blue-50,
+.dark .bg-blue-100 {
+    background-color: rgba(30, 58, 138, 0.3) !important;
+    border-color: #1d4ed8 !important;
+}
+
+.dark .bg-green-50,
+.dark .bg-green-100 {
+    background-color: rgba(6, 78, 59, 0.3) !important;
+    border-color: #059669 !important;
+}
+
+.dark .bg-red-50,
+.dark .bg-red-100 {
+    background-color: rgba(127, 29, 29, 0.3) !important;
+    border-color: #dc2626 !important;
+}
+
+.dark .bg-yellow-50,
+.dark .bg-yellow-100 {
+    background-color: rgba(120, 53, 15, 0.3) !important;
+    border-color: #d97706 !important;
+}
+
+.dark .bg-purple-50,
+.dark .bg-purple-100 {
+    background-color: rgba(88, 28, 135, 0.3) !important;
+    border-color: #7c3aed !important;
+}
+
+.dark .bg-cyan-50,
+.dark .bg-cyan-100 {
+    background-color: rgba(8, 51, 68, 0.3) !important;
+    border-color: #0891b2 !important;
+}
+
+/* Fix for colored text contrast in dark mode */
+.dark .text-blue-600,
+.dark .text-blue-700,
+.dark .text-blue-800 {
+    color: #60a5fa !important;
+}
+
+.dark .text-green-600,
+.dark .text-green-700,
+.dark .text-green-800 {
+    color: #4ade80 !important;
+}
+
+.dark .text-red-600,
+.dark .text-red-700,
+.dark .text-red-800 {
+    color: #f87171 !important;
+}
+
+.dark .text-yellow-600,
+.dark .text-yellow-700,
+.dark .text-yellow-800 {
+    color: #fbbf24 !important;
+}
+
+.dark .text-purple-600,
+.dark .text-purple-700,
+.dark .text-purple-800 {
+    color: #a78bfa !important;
+}
+
+.dark .text-cyan-600,
+.dark .text-cyan-700 {
+    color: #22d3ee !important;
+}
+
+/* Fix specific role-based components */
+.dark .patient-portal-header,
+.dark .portal-header {
+    color: #f1f5f9 !important;
+}
+
+.dark .appointment-card,
+.dark .session-card,
+.dark .bill-card {
+    background-color: #1e293b !important;
+    border-color: #334155 !important;
+}
+
+/* Ensure all "text-gray-*" in portal tabs is visible */
+.dark .tabs-nav button.text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+.dark .tabs-nav button.text-blue-600 {
+    color: #06b6d4 !important;
+    border-color: #06b6d4 !important;
+}
+
+/* Fix for Dashboard Stats and labels */
+.dark .stat-card .text-gray-600,
+.dark .stat-card .text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix for Table borders and zebra stripping */
+.dark .divide-y>*+* {
+    border-color: #334155 !important;
+}
+
+.dark .border-gray-200,
+.dark .border-gray-300 {
+    border-color: #334155 !important;
+}
+
+.dark .badge-primary {
+    background: rgba(6, 182, 212, 0.2) !important;
+    color: #22d3ee !important;
+    border-color: rgba(6, 182, 212, 0.4) !important;
+}
+
+.dark .badge-success {
+    background: rgba(16, 185, 129, 0.2) !important;
+    color: #4ade80 !important;
+    border-color: rgba(16, 185, 129, 0.4) !important;
+}
+
+.dark .badge-danger {
+    background: rgba(239, 68, 68, 0.2) !important;
+    color: #f87171 !important;
+    border-color: rgba(239, 68, 68, 0.4) !important;
+}
+
+.dark .badge-warning {
+    background: rgba(245, 158, 11, 0.2) !important;
+    color: #fbbf24 !important;
+    border-color: rgba(245, 158, 11, 0.4) !important;
+}
+
+.dark .medical-card {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.9) 0%, rgba(15, 23, 42, 0.8) 100%) !important;
+    border-color: rgba(6, 182, 212, 0.3) !important;
+}
+
+.dark .medical-card.bg-gradient-to-r {
+    background-image: linear-gradient(to right, rgba(8, 51, 68, 0.6), rgba(30, 58, 138, 0.6)) !important;
+}
+
+.dark .hover\:bg-gray-50:hover {
+    background-color: #334155 !important;
+}
+
+/* Mega-Fix for visibility - Role pages labels */
+.dark .font-medium.text-gray-700,
+.dark .font-medium.text-gray-600,
+.dark .font-semibold.text-gray-800 {
+    color: #e2e8f0 !important;
+}
+
+/* Final visibility check for all elements */
+.dark .text-gray-800,
+.dark .text-gray-900 {
+    color: #f8fafc !important;
+}
+
+.dark .bg-gray-50 {
+    background-color: #0f172a !important;
+}
+
+/* Add missing transitions */
+.dark * {
+    transition: background-color 0.2s ease, color 0.1s ease, border-color 0.2s ease;
+}
+
+/* Ensure all text elements have good contrast, but don't break buttons */
+.dark *:not(button):not(a):not(.btn-primary):not(.btn-secondary):not(.btn-success):not(.badge):not(.badge-success):not(.badge-primary):not(.badge-danger):not(.badge-warning) {
+    color: inherit;
+}
+
+.dark body {
+    color: #e2e8f0;
+}
+
+/* Fix any remaining gray text */
+.dark [class*="text-gray"] {
+    color: #cbd5e1 !important;
+}
+
+/* Fix font-medium and font-semibold with gray */
+.dark .font-medium.text-gray-700,
+.dark .font-semibold.text-gray-700,
+.dark .font-semibold.text-gray-800 {
+    color: #f1f5f9 !important;
+}
+
+/* Fix whitespace-nowrap with gray */
+.dark .whitespace-nowrap.text-gray-500,
+.dark .whitespace-nowrap.text-gray-900 {
+    color: #e2e8f0 !important;
+}
+
+/* ==========================================
+   ULTRA-AGGRESSIVE FIXES FOR ALL PAGES
+   ========================================== */
+
+/* Fix ALL h1, h2, h3 headings with gray text */
+.dark h1.text-gray-900,
+.dark h2.text-gray-900,
+.dark h3.text-gray-900,
+.dark h4.text-gray-900,
+.dark h5.text-gray-900,
+.dark h6.text-gray-900 {
+    color: #f8fafc !important;
+}
+
+.dark h1.text-gray-800,
+.dark h2.text-gray-800,
+.dark h3.text-gray-800,
+.dark h4.text-gray-800 {
+    color: #f1f5f9 !important;
+}
+
+.dark h1.text-gray-700,
+.dark h2.text-gray-700,
+.dark h3.text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix ALL card/stat labels */
+.dark .text-sm.font-medium.text-gray-500,
+.dark .text-sm.font-semibold.text-gray-500,
+.dark .text-xs.font-medium.text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix ALL uppercase labels */
+.dark .uppercase.tracking-wider.text-gray-500,
+.dark .uppercase.text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+/* Fix ALL paragraph text */
+.dark p.text-gray-900,
+.dark p.text-gray-800,
+.dark p.text-gray-700,
+.dark p.text-gray-600,
+.dark p.text-gray-500,
+.dark p.text-gray-400 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix ALL div text */
+.dark div.text-gray-900,
+.dark div.text-gray-800,
+.dark div.text-gray-700,
+.dark div.text-gray-600,
+.dark div.text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix ALL span text */
+.dark span.text-gray-900,
+.dark span.text-gray-800,
+.dark span.text-gray-700,
+.dark span.text-gray-600,
+.dark span.text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix ALL table text */
+.dark th.text-gray-900,
+.dark th.text-gray-800,
+.dark th.text-gray-700,
+.dark th.text-gray-600,
+.dark th.text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+.dark td.text-gray-900,
+.dark td.text-gray-800,
+.dark td.text-gray-700,
+.dark td.text-gray-600,
+.dark td.text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix ALL font-bold with gray */
+.dark .font-bold.text-gray-900,
+.dark .font-bold.text-gray-800,
+.dark .font-bold.text-gray-700 {
+    color: #f8fafc !important;
+}
+
+/* Fix ALL font-semibold with gray */
+.dark .font-semibold.text-gray-900,
+.dark .font-semibold.text-gray-800,
+.dark .font-semibold.text-gray-700,
+.dark .font-semibold.text-gray-600 {
+    color: #f1f5f9 !important;
+}
+
+/* Fix ALL font-medium with gray */
+.dark .font-medium.text-gray-900,
+.dark .font-medium.text-gray-800,
+.dark .font-medium.text-gray-700,
+.dark .font-medium.text-gray-600,
+.dark .font-medium.text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix ALL text sizes with gray */
+.dark .text-3xl.text-gray-900,
+.dark .text-2xl.text-gray-900,
+.dark .text-xl.text-gray-900,
+.dark .text-lg.text-gray-900 {
+    color: #f8fafc !important;
+}
+
+.dark .text-3xl.text-gray-800,
+.dark .text-2xl.text-gray-800,
+.dark .text-xl.text-gray-800,
+.dark .text-lg.text-gray-800 {
+    color: #f1f5f9 !important;
+}
+
+/* Fix button text colors */
+.dark button.text-gray-900,
+.dark button.text-gray-800,
+.dark button.text-gray-700,
+.dark button.text-gray-600 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix link text colors */
+.dark a.text-gray-900,
+.dark a.text-gray-800,
+.dark a.text-gray-700,
+.dark a.text-gray-600 {
+    color: #06b6d4 !important;
+}
+
+/* Fix ALL background combinations */
+.dark .bg-white .text-gray-900,
+.dark .bg-white .text-gray-800,
+.dark .bg-white .text-gray-700,
+.dark .bg-white .text-gray-600,
+.dark .bg-white .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+.dark .bg-gray-50 .text-gray-900,
+.dark .bg-gray-50 .text-gray-800,
+.dark .bg-gray-50 .text-gray-700,
+.dark .bg-gray-50 .text-gray-600,
+.dark .bg-gray-50 .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix card backgrounds */
+.dark .card .text-gray-900,
+.dark .card .text-gray-800,
+.dark .card .text-gray-700,
+.dark .card .text-gray-600,
+.dark .card .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix rounded/shadow containers */
+.dark .rounded-lg .text-gray-900,
+.dark .rounded-lg .text-gray-800,
+.dark .rounded-lg .text-gray-700,
+.dark .rounded-lg .text-gray-600,
+.dark .rounded-lg .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+.dark .shadow .text-gray-900,
+.dark .shadow .text-gray-800,
+.dark .shadow .text-gray-700,
+.dark .shadow .text-gray-600,
+.dark .shadow .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* NUCLEAR OPTION - Override EVERYTHING */
+.dark *[class*="text-gray-9"],
+.dark *[class*="text-gray-8"],
+.dark *[class*="text-gray-7"],
+.dark *[class*="text-gray-6"],
+.dark *[class*="text-gray-5"] {
+    color: #cbd5e1 !important;
+}
+
+/* Ensure headings are always visible */
+.dark h1,
+.dark h2,
+.dark h3,
+.dark h4,
+.dark h5,
+.dark h6 {
+    color: #f8fafc !important;
+}
+
+/* Ensure all text in cards/containers is visible */
+.dark .bg-white,
+.dark .bg-gray-50,
+.dark .bg-gray-100 {
+    background-color: #1e293b !important;
+}
+
+/* Fix table backgrounds */
+.dark .bg-gray-50 {
+    background-color: #1e293b !important;
+}
+
+.dark thead.bg-gray-50 {
+    background-color: #0f172a !important;
+}
+
+/* Fix all border colors for better visibility */
+.dark .border-gray-200,
+.dark .divide-gray-200 {
+    border-color: #475569 !important;
+}
+
+/* Fix loading/empty states */
+.dark .text-gray-600.mb-4,
+.dark .text-gray-500.mb-4,
+.dark .text-gray-400.mb-4 {
+    color: #94a3b8 !important;
+}
+
+/* Fix min-h-screen backgrounds */
+.dark .min-h-screen.bg-gray-50 {
+    background-color: #0f172a !important;
+}
+
+/* Fix all text that might be in containers */
+.dark .max-w-7xl .text-gray-900,
+.dark .max-w-7xl .text-gray-800,
+.dark .max-w-7xl .text-gray-700,
+.dark .max-w-7xl .text-gray-600,
+.dark .max-w-7xl .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix grid items */
+.dark .grid .text-gray-900,
+.dark .grid .text-gray-800,
+.dark .grid .text-gray-700,
+.dark .grid .text-gray-600,
+.dark .grid .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix flex items */
+.dark .flex .text-gray-900,
+.dark .flex .text-gray-800,
+.dark .flex .text-gray-700,
+.dark .flex .text-gray-600,
+.dark .flex .text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* ==========================================
+   BALANCED APPROACH - FIX GRAY TEXT ONLY
+   ========================================== */
+
+/* Fix gray text classes specifically - don't break other colors */
+.dark .text-gray-300 {
+    color: #f1f5f9 !important;
+}
+
+.dark .text-gray-400 {
+    color: #e2e8f0 !important;
+}
+
+.dark .text-gray-500 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+.dark .text-gray-800 {
+    color: #f1f5f9 !important;
+}
+
+.dark .text-gray-900 {
+    color: #f8fafc !important;
+}
+
+/* Fix combinations with gray text */
+.dark h1.text-gray-900,
+.dark h2.text-gray-900,
+.dark h3.text-gray-900,
+.dark h1.text-gray-800,
+.dark h2.text-gray-800,
+.dark h3.text-gray-800 {
+    color: #f8fafc !important;
+}
+
+.dark p.text-gray-600,
+.dark p.text-gray-500,
+.dark p.text-gray-400 {
+    color: #cbd5e1 !important;
+}
+
+.dark span.text-gray-500,
+.dark span.text-gray-600,
+.dark span.text-gray-700 {
+    color: #cbd5e1 !important;
+}
+
+/* Fix table headers with gray text */
+.dark th.text-gray-500,
+.dark th.text-gray-600,
+.dark th.text-gray-700 {
+    color: #94a3b8 !important;
+}
+
+/* Fix table cells with gray text */
+.dark td.text-gray-500,
+.dark td.text-gray-600,
+.dark td.text-gray-700,
+.dark td.text-gray-900 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix font weight combinations with gray */
+.dark .font-bold.text-gray-900,
+.dark .font-bold.text-gray-800 {
+    color: #f8fafc !important;
+}
+
+.dark .font-semibold.text-gray-900,
+.dark .font-semibold.text-gray-800,
+.dark .font-semibold.text-gray-700 {
+    color: #f1f5f9 !important;
+}
+
+.dark .font-medium.text-gray-700,
+.dark .font-medium.text-gray-600,
+.dark .font-medium.text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix text size combinations with gray */
+.dark .text-sm.text-gray-500,
+.dark .text-sm.text-gray-600,
+.dark .text-sm.text-gray-700,
+.dark .text-sm.text-gray-800,
+.dark .text-sm.text-gray-900 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-xs.text-gray-500,
+.dark .text-xs.text-gray-600,
+.dark .text-xs.text-gray-700 {
+    color: #94a3b8 !important;
+}
+
+/* Fix uppercase with gray */
+.dark .uppercase.text-gray-500,
+.dark .uppercase.tracking-wider.text-gray-500,
+.dark .text-xs.font-medium.uppercase.text-gray-500,
+.dark .text-sm.font-medium.uppercase.text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+/* Fix whitespace-nowrap with gray */
+.dark .whitespace-nowrap.text-gray-500,
+.dark .whitespace-nowrap.text-gray-900 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix specific px-py combinations with gray */
+.dark .px-6.py-3.text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+.dark .px-6.py-4.text-gray-900,
+.dark .px-6.py-4.text-gray-500 {
+    color: #e2e8f0 !important;
+}
+
+/* Fix backgrounds for gray classes */
+.dark .bg-gray-50 {
+    background-color: #1e293b !important;
+}
+
+.dark .bg-gray-100 {
+    background-color: #1e293b !important;
+}
+
+.dark thead.bg-gray-50 {
+    background-color: #0f172a !important;
+}
+
+/* Fix borders */
+.dark .border-gray-200,
+.dark .divide-gray-200 {
+    border-color: #475569 !important;
+}
+
+/* Fix specific page subtitle patterns */
+.dark h1+p.text-gray-600,
+.dark h2+p.text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+/* ==========================================
+   COMPREHENSIVE COLOR & ROLE PAGE FIXES
+   ========================================== */
+
+/* Fix for light colored backgrounds in dark mode (prevent white-on-light) */
+.dark .bg-blue-50,
+.dark .bg-blue-100,
+.dark .bg-blue-200 {
+    background-color: rgba(30, 58, 138, 0.4) !important;
+    border-color: #1d4ed8 !important;
+}
+
+.dark .bg-green-50,
+.dark .bg-green-100,
+.dark .bg-green-200 {
+    background-color: rgba(6, 78, 59, 0.4) !important;
+    border-color: #059669 !important;
+}
+
+.dark .bg-red-50,
+.dark .bg-red-100,
+.dark .bg-red-200 {
+    background-color: rgba(127, 29, 29, 0.4) !important;
+    border-color: #dc2626 !important;
+}
+
+.dark .bg-yellow-50,
+.dark .bg-yellow-100,
+.dark .bg-yellow-200 {
+    background-color: rgba(120, 53, 15, 0.4) !important;
+    border-color: #d97706 !important;
+}
+
+.dark .bg-purple-50,
+.dark .bg-purple-100,
+.dark .bg-purple-200 {
+    background-color: rgba(88, 28, 135, 0.4) !important;
+    border-color: #7c3aed !important;
+}
+
+.dark .bg-cyan-50,
+.dark .bg-cyan-100,
+.dark .bg-cyan-200 {
+    background-color: rgba(8, 51, 68, 0.4) !important;
+    border-color: #0891b2 !important;
+}
+
+/* Ensure text inside these backgrounds has high contrast */
+.dark .bg-blue-50 *,
+.dark .bg-blue-100 *,
+.dark .bg-blue-50,
+.dark .bg-blue-100 {
+    color: #bfdbfe !important;
+}
+
+.dark .bg-green-50 *,
+.dark .bg-green-100 *,
+.dark .bg-green-50,
+.dark .bg-green-100 {
+    color: #bbf7d0 !important;
+}
+
+.dark .bg-red-50 *,
+.dark .bg-red-100 *,
+.dark .bg-red-50,
+.dark .bg-red-100 {
+    color: #fecaca !important;
+}
+
+.dark .bg-yellow-50 *,
+.dark .bg-yellow-100 *,
+.dark .bg-yellow-50,
+.dark .bg-yellow-100 {
+    color: #fef08a !important;
+}
+
+/* Corrected colored text for dark backgrounds */
+.dark .text-blue-500,
+.dark .text-blue-600,
+.dark .text-blue-700 {
+    color: #60a5fa !important;
+}
+
+.dark .text-green-500,
+.dark .text-green-600,
+.dark .text-green-700 {
+    color: #4ade80 !important;
+}
+
+.dark .text-red-500,
+.dark .text-red-600,
+.dark .text-red-700 {
+    color: #f87171 !important;
+}
+
+.dark .text-yellow-500,
+.dark .text-yellow-600,
+.dark .text-yellow-700 {
+    color: #fbbf24 !important;
+}
+
+.dark .text-purple-500,
+.dark .text-purple-600,
+.dark .text-purple-700 {
+    color: #a78bfa !important;
+}
+
+.dark .text-cyan-500,
+.dark .text-cyan-600 {
+    color: #22d3ee !important;
+}
+
+/* Table & Divider visibility */
+.dark .divide-y>*+*,
+.dark .divide-x>*+* {
+    border-color: #334155 !important;
+}
+
+.dark hr {
+    border-color: #334155 !important;
+}
+
+/* Special Role Page fixes (Portal Headers) */
+.dark .text-3xl.font-bold,
+.dark .text-2xl.font-bold {
+    color: #f8fafc !important;
+}
+
+.dark .text-gray-800.text-3xl,
+.dark .text-gray-900.text-3xl {
+    color: #f8fafc !important;
+}
+
+/* 2FA Setup Specific Fixes */
+.dark .bg-gradient-to-br.from-blue-50.to-cyan-100 {
+    background-image: linear-gradient(to bottom right, #0f172a, #083344) !important;
+}
+
+.dark .bg-gradient-to-br.from-cyan-500.to-blue-600 {
+    background-image: linear-gradient(to bottom right, #0891b2, #1d4ed8) !important;
+}
+
+.dark .shadow-glow-cyan {
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4) !important;
+}
+
+/* Ensure step numbers in 2FA are visible */
+.dark .bg-cyan-100.rounded-full.text-cyan-600 {
+    background-color: #083344 !important;
+    color: #22d3ee !important;
+}
+
+/* Global transition for smooth theme switching */
+.dark *:not(i):not(.icon) {
+    transition: background-color 0.2s ease, color 0.1s ease, border-color 0.2s ease;
+}
+
+/* ==========================================
+   Universal Button Dark Mode - Premium Look
+   ========================================== */
+.dark .btn-primary,
+.dark .btn-secondary,
+.dark .btn-success,
+.dark .btn-danger,
+.dark .btn-warning,
+.dark button[class*="btn-"],
+.dark a[class*="btn-"] {
+    background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%) !important;
+    color: #f1f5f9 !important;
+    border: 2px solid #334155 !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 0.75rem !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Primary/Active State - Cyan Border */
+.dark .btn-primary,
+.dark .btn-primary.active,
+.dark button.btn-primary:not(:disabled) {
+    border-color: #0891b2 !important;
+    box-shadow: 0 0 10px rgba(8, 145, 178, 0.2) !important;
+}
+
+/* Secondary State - Slate Border (Default) but distinct from Primary */
+.dark .btn-secondary {
+    border-color: #475569 !important;
+    color: #cbd5e1 !important;
+}
+
+/* Success State - Green Border */
+.dark .btn-success {
+    border-color: #10b981 !important;
+}
+
+/* Danger State - Red Border */
+.dark .btn-danger {
+    border-color: #ef4444 !important;
+}
+
+/* Warning State - Yellow Border */
+.dark .btn-warning {
+    border-color: #f59e0b !important;
+}
+
+/* Hover States with Glow */
+.dark .btn-primary:hover,
+.dark .btn-secondary:hover,
+.dark .btn-success:hover,
+.dark .btn-danger:hover,
+.dark .btn-warning:hover {
+    transform: translateY(-2px) !important;
+    background: linear-gradient(135deg, #334155 0%, #1e293b 100%) !important;
+    color: #ffffff !important;
+}
+
+.dark .btn-primary:hover {
+    border-color: #06b6d4 !important;
+    box-shadow: 0 0 20px rgba(6, 182, 212, 0.4) !important;
+}
+
+.dark .btn-success:hover {
+    border-color: #34d399 !important;
+    box-shadow: 0 0 20px rgba(16, 185, 129, 0.4) !important;
+}
+
+.dark .btn-danger:hover {
+    border-color: #f87171 !important;
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.4) !important;
+}
+
+/* Fix for specific filter-style buttons that might have inline styles */
+.dark .bg-blue-600.text-white {
+    background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%) !important;
+    border: 2px solid #06b6d4 !important;
+}
+
+.dark .bg-gray-200.text-gray-900,
+.dark .bg-gray-200 {
+    background: #1e293b !important;
+    color: #94a3b8 !important;
+    border: 2px solid #334155 !important;
+}
+
+/* Role & Status Badge Dark Mode Overrides */
+.dark .bg-purple-100.text-purple-800 {
+    background-color: rgba(107, 33, 168, 0.5) !important;
+    color: #d1d5db !important;
+    border: 1px solid #7c3aed !important;
+}
+
+.dark .bg-pink-100.text-pink-800 {
+    background-color: rgba(157, 23, 77, 0.5) !important;
+    color: #fce7f3 !important;
+    border: 1px solid #db2777 !important;
+}
+
+.dark .bg-orange-100.text-orange-800 {
+    background-color: rgba(154, 52, 18, 0.5) !important;
+    color: #ffedd5 !important;
+    border: 1px solid #ea580c !important;
+}
+
+.dark .bg-gray-100.text-gray-800 {
+    background-color: rgba(31, 41, 55, 0.5) !important;
+    color: #f3f4f6 !important;
+    border: 1px solid #4b5563 !important;
+}
+
+.dark .bg-yellow-100.text-yellow-800 {
+    background-color: rgba(113, 63, 18, 0.5) !important;
+    color: #fef3c7 !important;
+    border: 1px solid #ca8a04 !important;
+}
+
+/* Ensure these are readable on dark cards */
+.dark .text-gray-800,
+.dark .text-gray-900 {
+    color: #f8fafc !important;
+}
+
+.dark .text-gray-700 {
+    color: #e2e8f0 !important;
+}
+
+.dark .text-gray-600 {
+    color: #cbd5e1 !important;
+}
+
+.dark .text-gray-500 {
+    color: #94a3b8 !important;
+}
+
+/* Progress (Blue) and Completed (Green) Status Visibility */
+.dark .bg-blue-100.text-blue-800,
+.dark [class*="bg-blue-100"][class*="text-blue-800"] {
+    background-color: rgba(30, 58, 138, 0.5) !important;
+    color: #93c5fd !important;
+    border: 1px solid #3b82f6 !important;
+}
+
+.dark .bg-green-100.text-green-800,
+.dark [class*="bg-green-100"][class*="text-green-800"] {
+    background-color: rgba(6, 78, 59, 0.5) !important;
+    color: #86efac !important;
+    border: 1px solid #10b981 !important;
+}
+
+/* Fix for any remaining black fonts in dark mode */
+[class*="dark"] *:not([class*="text-"]):not(button):not(input):not(select):not(textarea):not(a) {
+    color: inherit;
+}
+
+.dark body,
+.dark #root {
+    color: #cbd5e1;
+}
+
+/* Refresh Button Specifics */
+.dark .refresh-button,
+.dark .btn-secondary i,
+.dark .btn-secondary svg {
+    color: #f1f5f9 !important;
+}
+
+/* Ensure these buttons have high contrast in dark mode */
+.dark .btn-secondary {
+    border-width: 2px !important;
+    border-color: #0891b2 !important;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+}

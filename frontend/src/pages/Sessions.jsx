@@ -36,24 +36,24 @@ const Sessions = () => {
 
   return (
     <>
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-3xl font-bold">Dialysis Sessions</h1>
-        <div className="flex gap-2">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
+        <h1 className="text-2xl sm:text-3xl font-bold">Dialysis Sessions</h1>
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setFilter('all')}
-            className={`px-4 py-2 rounded ${filter === 'all' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={filter === 'all' ? 'btn-primary' : 'btn-secondary'}
           >
             All
           </button>
           <button
             onClick={() => setFilter('in_progress')}
-            className={`px-4 py-2 rounded ${filter === 'in_progress' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={filter === 'in_progress' ? 'btn-primary' : 'btn-secondary'}
           >
             In Progress
           </button>
           <button
             onClick={() => setFilter('completed')}
-            className={`px-4 py-2 rounded ${filter === 'completed' ? 'bg-blue-600 text-white' : 'bg-gray-200'}`}
+            className={filter === 'completed' ? 'btn-primary' : 'btn-secondary'}
           >
             Completed
           </button>
@@ -69,6 +69,7 @@ const Sessions = () => {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
+          <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
@@ -94,16 +95,15 @@ const Sessions = () => {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 rounded-full text-xs ${
-                        session.queue_details?.status === 'completed' ? 'bg-green-100 text-green-800' :
+                      <span className={`px-2 py-1 rounded-full text-xs ${session.queue_details?.status === 'completed' ? 'bg-green-100 text-green-800' :
                         session.queue_details?.status === 'in_progress' ? 'bg-blue-100 text-blue-800' :
-                        'bg-yellow-100 text-yellow-800'
-                      }`}>
+                          'bg-yellow-100 text-yellow-800'
+                        }`}>
                         {session.queue_details?.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {session.pre_bp_systolic || session.pre_bp_diastolic ? 
+                      {session.pre_bp_systolic || session.pre_bp_diastolic ?
                         `${session.pre_bp_systolic || 'N/A'}/${session.pre_bp_diastolic || 'N/A'}` : 'N/A'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -130,6 +130,7 @@ const Sessions = () => {
                 ))}
               </tbody>
             </table>
+          </div>
         </div>
       )}
 

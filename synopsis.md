@@ -53,7 +53,7 @@ The system follows a modern web architecture with separate frontend and backend 
 ## 6. Software & Hardware Requirements:
 **Frontend:** React.js, HTML5, CSS3, JavaScript  
 **Backend:** Django (Python), Django REST Framework  
-**Database:** PostgreSQL  
+**Database:** MySQL  
 **Web Server:** Nginx  
 **Containerization:** Docker, Docker Compose  
 **Version Control:** Git  
@@ -61,7 +61,7 @@ The system follows a modern web architecture with separate frontend and backend 
 **Hardware:** Standard web server with minimum 4GB RAM, 100GB storage
 
 ## 7. System Design (Brief):
-The system uses a microservices architecture with containerized deployment. The frontend React application communicates with the Django backend through RESTful APIs. PostgreSQL database ensures data integrity and security. Nginx serves as a reverse proxy for load balancing and static file serving. The system implements role-based authentication and authorization for secure access control.
+The system uses a microservices architecture with containerized deployment. The frontend React application communicates with the Django backend through RESTful APIs. MySQL database ensures data integrity and security. Nginx serves as a reverse proxy for load balancing and static file serving. The system implements role-based authentication and authorization for secure access control.
 
 ## 8. Expected Outcome:
 - Fully functional web-based dialysis management system

@@ -18,7 +18,7 @@ const MachineCard = ({ machine, onStatusChange }) => {
           {config.label}
         </span>
       </div>
-      
+
       <div className="space-y-2 text-sm text-gray-600">
         <div className="flex justify-between">
           <span>Type:</span>
@@ -32,7 +32,7 @@ const MachineCard = ({ machine, onStatusChange }) => {
           <span>Next Maintenance:</span>
           <span className="font-medium">{machine.nextMaintenance || 'Not scheduled'}</span>
         </div>
-        
+
         {machine.currentPatient && (
           <div className="mt-3 p-3 bg-gray-50 rounded-lg">
             <p className="font-medium text-gray-800">Current Patient:</p>
@@ -44,7 +44,7 @@ const MachineCard = ({ machine, onStatusChange }) => {
 
       <div className="mt-4 flex space-x-2">
         {machine.status === 'available' && (
-          <button 
+          <button
             onClick={() => {
               if (onStatusChange) {
                 onStatusChange(machine.id, 'in_use');
@@ -56,7 +56,7 @@ const MachineCard = ({ machine, onStatusChange }) => {
           </button>
         )}
         {machine.status === 'in_use' && (
-          <button 
+          <button
             onClick={() => {
               if (onStatusChange) {
                 onStatusChange(machine.id, 'available');
@@ -68,7 +68,7 @@ const MachineCard = ({ machine, onStatusChange }) => {
           </button>
         )}
         {machine.status === 'maintenance' && (
-          <button 
+          <button
             onClick={() => {
               if (onStatusChange) {
                 onStatusChange(machine.id, 'available');
@@ -79,7 +79,7 @@ const MachineCard = ({ machine, onStatusChange }) => {
             Complete Maintenance
           </button>
         )}
-        <button 
+        <button
           onClick={() => {
             if (onStatusChange) {
               onStatusChange(machine.id, 'maintenance');

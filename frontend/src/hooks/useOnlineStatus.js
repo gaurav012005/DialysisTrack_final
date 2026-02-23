@@ -9,12 +9,12 @@ export const useOnlineStatus = () => {
 
     useEffect(() => {
         const handleOnline = () => {
-            console.log('🌐 Connection restored');
+            console.log('[ONLINE] Connection restored');
             setIsOnline(true);
         };
 
         const handleOffline = () => {
-            console.log('📡 Connection lost');
+            console.log('[OFFLINE] Connection lost');
             setIsOnline(false);
         };
 

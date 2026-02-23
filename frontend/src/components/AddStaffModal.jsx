@@ -173,10 +173,10 @@ const AddStaffModal = ({ isOpen, onClose, onAdd, editingStaff = null }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white p-6 rounded-lg w-[450px] max-h-[90vh] overflow-y-auto">
+      <div className="bg-white p-4 sm:p-6 rounded-lg w-full max-w-[450px] mx-4 max-h-[90vh] overflow-y-auto">
         <h2 className="text-xl font-bold mb-4">{editingStaff ? 'Edit Staff Member' : 'Add Staff Member'}</h2>
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium mb-2">First Name *</label>
               <input
@@ -251,7 +251,7 @@ const AddStaffModal = ({ isOpen, onClose, onAdd, editingStaff = null }) => {
             </>
           )}
 
-          <div className="grid grid-cols-2 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
             <div>
               <label className="block text-sm font-medium mb-2">Role *</label>
               <select

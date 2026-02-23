@@ -124,10 +124,10 @@ const BillingPage = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-900 mb-8">💰 Billing & Payments</h1>
+        <h1 className="text-3xl font-bold text-gray-900 mb-8">Billing & Payments</h1>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 mb-8">
           <div className="bg-white p-6 rounded-lg shadow">
             <h3 className="text-sm font-medium text-gray-500">Pending Bills</h3>
             <p className="text-2xl font-bold text-yellow-600">₹{stats.total_pending || 0}</p>
@@ -232,7 +232,7 @@ const BillingPage = () => {
         {/* Payment Methods Info */}
         <div className="mt-8 bg-white p-6 rounded-lg shadow">
           <h3 className="text-lg font-medium text-gray-900 mb-4">💳 Accepted Payment Methods</h3>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <button
               onClick={() => handlePayment()}
               className="flex items-center p-3 border rounded-lg hover:bg-gray-50 hover:border-blue-500 transition-colors cursor-pointer"

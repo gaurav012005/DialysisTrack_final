@@ -19,7 +19,9 @@ DB_PORT=3306
 
 | Field | Value |
 |-------|-------|
-| Email | admin@dialysis.com |
+| Email 1 (Original) | admin@dialysis.com |
+| Email 2 (New) | newadmin@dialysis.com |
+| Email 3 (New) | newadmin2@dialysis.com |
 | Password | Admin@2026 |
 | Role | Admin |
 | Access | Full system access + Django Admin Panel |
@@ -96,14 +98,12 @@ You can manage all data through the Django admin panel at http://localhost:8000/
 
 ### Common Logins for Testing:
 ```
-🔐 Admin Login (Django Admin Panel):
-   URL: http://localhost:8000/admin
-   Email: admin@dialysis.com
-   Password: Admin@2026
-
-🔐 Admin Login (Website):
-   URL: http://localhost:3000
-   Email: admin@dialysis.com
+🔐 Admin Login (Django Admin Panel / Website):
+   URLs: http://localhost:3000 or http://localhost:8000/admin
+   Emails: 
+     - admin@dialysis.com
+     - newadmin@dialysis.com
+     - newadmin2@dialysis.com
    Password: Admin@2026
 
 🔐 Doctor Login:

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import SmallInstallButton from '../components/SmallInstallButton';
+import { Lock, Lightbulb } from 'lucide-react';
 
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -145,7 +146,7 @@ const Login = () => {
 
             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
               <p className="text-sm text-gray-600 text-center">
-                <span className="font-semibold">💡 Tip:</span> Open your authenticator app (Google Authenticator, Authy, etc.) to get your code
+                <span className="font-semibold inline-flex items-center gap-1"><Lightbulb className="w-4 h-4" /> Tip:</span> Open your authenticator app (Google Authenticator, Authy, etc.) to get your code
               </p>
             </div>
           </div>
@@ -212,7 +213,7 @@ const Login = () => {
 
           <div className="mt-6 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
             <p className="text-sm text-gray-600 text-center">
-              <span className="font-semibold">🔒 Secure Login:</span> This system uses two-factor authentication for enhanced security
+              <span className="font-semibold inline-flex items-center gap-1"><Lock className="w-4 h-4" /> Secure Login:</span> This system uses two-factor authentication for enhanced security
             </p>
           </div>
         </div>

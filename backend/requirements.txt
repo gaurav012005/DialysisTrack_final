@@ -18,3 +18,5 @@ cryptography
 qrcode==7.4.2
 django-otp==1.3.0
 requests==2.31.0
+channels>=4.0.0
+daphne>=4.0.0

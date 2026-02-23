@@ -266,6 +266,39 @@ p {
     background: rgba(142, 68, 173, 0.3);
 }
 
+/* Download All Button */
+.download-all-btn {
+    margin-top: var(--spacing-lg);
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, #27ae60 0%, #2ecc71 100%);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition-base);
+    box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    animation: fadeInUp 0.8s ease 0.6s both;
+}
+
+.download-all-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 25px rgba(39, 174, 96, 0.5);
+    background: linear-gradient(135deg, #229954 0%, #27ae60 100%);
+}
+
+.download-all-btn:active {
+    transform: translateY(-1px);
+}
+
+@media (max-width: 768px) {
+    .download-all-btn {
+        width: 100%;
+        max-width: 300px;
+    }
+}
+
 /* ========== Animations ========== */
 @keyframes fadeInUp {
     from {
@@ -414,6 +447,7 @@ p {
     background: linear-gradient(135deg, #667eea20 0%, #764ba220 100%);
     padding: var(--spacing-lg);
     border-bottom: 3px solid var(--primary-color);
+    position: relative;
 }
 
 .diagram-header h3 {
@@ -428,6 +462,46 @@ p {
     font-size: 1rem;
     margin: 0;
 }
+
+/* Download Button */
+.download-btn {
+    position: absolute;
+    top: var(--spacing-lg);
+    right: var(--spacing-lg);
+    background: var(--gradient-primary);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-base);
+    box-shadow: var(--shadow-sm);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.download-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    background: var(--primary-dark);
+}
+
+.download-btn:active {
+    transform: translateY(0);
+}
+
+@media (max-width: 768px) {
+    .download-btn {
+        position: static;
+        margin-top: var(--spacing-sm);
+        width: 100%;
+        justify-content: center;
+    }
+}
+
 
 .diagram-content {
     padding: var(--spacing-xl);

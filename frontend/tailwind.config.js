@@ -4,6 +4,7 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
+  darkMode: 'class', // Enable dark mode with class strategy
   theme: {
     extend: {
       colors: {
@@ -67,6 +68,9 @@ export default {
         'shimmer': 'shimmer 2s infinite',
         'slideDown': 'slideDown 0.3s ease-out',
         'slideUp': 'slideUp 0.3s ease-out',
+        'ripple': 'ripple 600ms linear',
+        'fadeIn': 'fadeIn 200ms ease-out',
+        'scaleIn': 'scaleIn 200ms ease-out',
       },
       keyframes: {
         float: {
@@ -95,6 +99,18 @@ export default {
         slideUp: {
           '0%': { transform: 'translateY(100%)', opacity: '0' },
           '100%': { transform: 'translateY(0)', opacity: '1' },
+        },
+        ripple: {
+          '0%': { transform: 'scale(0)', opacity: '1' },
+          '100%': { transform: 'scale(4)', opacity: '0' },
+        },
+        fadeIn: {
+          '0%': { opacity: '0' },
+          '100%': { opacity: '1' },
+        },
+        scaleIn: {
+          '0%': { transform: 'scale(0.95)', opacity: '0' },
+          '100%': { transform: 'scale(1)', opacity: '1' },
         },
       },
     },

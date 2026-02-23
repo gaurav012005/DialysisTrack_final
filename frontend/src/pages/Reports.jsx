@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { handleApiError } from '../utils/errorHandler';
+import { ClipboardList, FileText, FileSpreadsheet, FileDown, RefreshCw, Settings, BarChart3 } from 'lucide-react';
 
 const Reports = () => {
   const [loading, setLoading] = useState(false);
@@ -93,16 +95,16 @@ const Reports = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Reports & Analytics</h1>
-          <p className="text-gray-600">Generate and export system reports</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Reports & Analytics</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Generate and export system reports</p>
         </div>
       </div>
 
       {/* Statistics Overview */}
       {stats && (
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           <div className="card text-center">
             <div className="text-2xl font-bold text-blue-600">{stats.patients?.total || 0}</div>
             <div className="text-gray-600">Total Patients</div>
@@ -122,77 +124,129 @@ const Reports = () => {
         </div>
       )}
 
+      {/* Charts Section */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Weekly Patient & Session Trends */}
+        <div className="card">
+          <h3 className="text-lg font-bold mb-4">Weekly Patient & Session Trends</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <LineChart
+              data={[
+                { name: 'Week 1', Patients: 48, Sessions: 52 },
+                { name: 'Week 2', Patients: 55, Sessions: 58 },
+                { name: 'Week 3', Patients: 52, Sessions: 55 },
+                { name: 'Week 4', Patients: 60, Sessions: 62 },
+              ]}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line type="monotone" dataKey="Patients" stroke="#3b82f6" strokeWidth={2} dot={{ r: 4 }} />
+              <Line type="monotone" dataKey="Sessions" stroke="#10b981" strokeWidth={2} dot={{ r: 4 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+
+        {/* Machine Utilization */}
+        <div className="card">
+          <h3 className="text-lg font-bold mb-4">Machine Utilization (%)</h3>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart
+              data={[
+                { name: 'M1', utilization: 85 },
+                { name: 'M2', utilization: 92 },
+                { name: 'M3', utilization: 78 },
+                { name: 'M4', utilization: 88 },
+                { name: 'M5', utilization: 95 },
+              ]}
+              margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Bar dataKey="utilization" fill="#f59e0b" />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
+      </div>
+
       {/* Export Reports */}
+
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Patients Report */}
         <div className="card">
-          <h3 className="text-lg font-bold mb-4">📋 Patients Report</h3>
+          <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><ClipboardList className="w-5 h-5 text-cyan-500" /> Patients Report</h3>
           <p className="text-gray-600 mb-4">Export complete patient database with medical information</p>
           <div className="space-y-2">
             <button
               onClick={() => downloadReport('patients', 'pdf')}
-              className="w-full btn-primary"
+              className="w-full btn-primary flex items-center justify-center gap-2"
               disabled={loading}
             >
-              📄 Download PDF
+              <FileText className="w-4 h-4" /> Download PDF
             </button>
             <button
               onClick={() => downloadReport('patients', 'excel')}
-              className="w-full btn-secondary"
+              className="w-full btn-secondary flex items-center justify-center gap-2"
               disabled={loading}
             >
-              📊 Download Excel
+              <FileSpreadsheet className="w-4 h-4" /> Download Excel
             </button>
             <button
               onClick={() => downloadReport('patients', 'csv')}
-              className="w-full btn-secondary"
+              className="w-full btn-secondary flex items-center justify-center gap-2"
               disabled={loading}
             >
-              📈 Download CSV
+              <FileDown className="w-4 h-4" /> Download CSV
             </button>
           </div>
         </div>
 
         {/* Queue Report */}
         <div className="card">
-          <h3 className="text-lg font-bold mb-4">🔄 Queue Report</h3>
+          <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><RefreshCw className="w-5 h-5 text-cyan-500" /> Queue Report</h3>
           <p className="text-gray-600 mb-4">Export today's queue status and wait times</p>
           <div className="space-y-2">
             <button
               onClick={() => downloadReport('queue', 'pdf')}
-              className="w-full btn-primary"
+              className="w-full btn-primary flex items-center justify-center gap-2"
               disabled={loading}
             >
-              📄 Download PDF
+              <FileText className="w-4 h-4" /> Download PDF
             </button>
             <button
               onClick={() => downloadReport('queue', 'csv')}
-              className="w-full btn-secondary"
+              className="w-full btn-secondary flex items-center justify-center gap-2"
               disabled={loading}
             >
-              📈 Download CSV
+              <FileDown className="w-4 h-4" /> Download CSV
             </button>
           </div>
         </div>
 
         {/* Machines Report */}
         <div className="card">
-          <h3 className="text-lg font-bold mb-4">⚙️ Machines Report</h3>
+          <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><Settings className="w-5 h-5 text-cyan-500" /> Machines Report</h3>
           <p className="text-gray-600 mb-4">Export machine utilization and maintenance data</p>
           <div className="space-y-2">
             <button
               onClick={() => downloadReport('machines', 'pdf')}
-              className="w-full btn-primary"
+              className="w-full btn-primary flex items-center justify-center gap-2"
               disabled={loading}
             >
-              📄 Download PDF
+              <FileText className="w-4 h-4" /> Download PDF
             </button>
             <button
               onClick={() => downloadReport('machines', 'csv')}
-              className="w-full btn-secondary"
+              className="w-full btn-secondary flex items-center justify-center gap-2"
               disabled={loading}
             >
-              📈 Download CSV
+              <FileDown className="w-4 h-4" /> Download CSV
             </button>
           </div>
         </div>
@@ -200,7 +254,7 @@ const Reports = () => {
 
       {/* Quick Analytics */}
       <div className="card">
-        <h3 className="text-lg font-bold mb-4">📊 Quick Analytics</h3>
+        <h3 className="text-lg font-bold mb-4 flex items-center gap-2"><BarChart3 className="w-5 h-5 text-cyan-500" /> Quick Analytics</h3>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div>
             <h4 className="font-semibold mb-2">Today's Performance</h4>

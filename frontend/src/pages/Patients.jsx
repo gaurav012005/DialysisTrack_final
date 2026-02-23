@@ -178,12 +178,12 @@ const Patients = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Patient Management</h1>
-          <p className="text-gray-600">Manage patient records and information</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Patient Management</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Manage patient records and information</p>
         </div>
-        <div className="flex space-x-2">
+        <div className="flex flex-wrap gap-2">
           <button
             onClick={() => setShowForm(true)}
             className="btn-primary"

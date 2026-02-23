@@ -16,11 +16,20 @@ class HospitalRolePermission(permissions.BasePermission):
         # Define real hospital role permissions
         permissions_map = {
             'admin': {
-                'all': True  # Full system access
+                'patients': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'appointments': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'dialysis_queue': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'machines': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'reports': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'staff': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'billing': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'users': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'two_factor': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'fleet': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
             },
             'doctor': {
                 'patients': ['GET', 'POST', 'PUT', 'PATCH'],
-                'appointments': ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
+                'appointments': ['GET', 'POST', 'PUT', 'PATCH'],
                 'dialysis_queue': ['GET', 'POST', 'PUT', 'PATCH'],
                 'machines': ['GET'],
                 'reports': ['GET'],
@@ -47,12 +56,15 @@ class HospitalRolePermission(permissions.BasePermission):
                 'billing': ['GET', 'POST', 'PUT', 'PATCH'],  # Full billing operations
                 'dialysis_queue': ['GET'],  # View queue for scheduling
                 'staff': ['GET'],  # View staff availability
-                'reports': ['GET']  # View billing reports
+                'reports': ['GET'],  # View billing reports
+                'fleet': ['GET'], # Tracking ambulance
             },
             'patient': {
                 'appointments': ['GET'],  # View own appointments only
                 'billing': ['GET'],  # View own billing only
-                'reports': ['GET']  # View own treatment reports
+                'reports': ['GET'],  # View own treatment reports
+                'dialysis_queue': ['GET'], # Patients need to view queue
+                'fleet': ['GET'], # Tracking ambulance
             }
         }
         
@@ -64,31 +76,37 @@ class HospitalRolePermission(permissions.BasePermission):
         role_perms = permissions_map.get(user_role, {})
         
         # Extract app name from view - check app_name attribute first
-        app_name = None
+        app_name = getattr(view, 'app_name', None)
         
-        # First, check if view has app_name attribute (most reliable)
-        if hasattr(view, 'app_name'):
-            app_name = view.app_name
-        # Fallback to view name pattern matching
-        elif 'patient' in view_name:
-            app_name = 'patients'
-        elif 'appointment' in view_name:
-            app_name = 'appointments'
-        elif 'session' in view_name or 'queue' in view_name:
-            app_name = 'dialysis_queue'
-        elif 'machine' in view_name:
-            app_name = 'machines'
-        elif 'staff' in view_name:
-            app_name = 'staff'
-        elif 'billing' in view_name:
-            app_name = 'billing'
-        elif 'report' in view_name:
-            app_name = 'reports'
+        # Fallback to view name pattern matching if app_name is not explicitly set
+        if not app_name:
+            if 'patient' in view_name:
+                app_name = 'patients'
+            elif 'appointment' in view_name:
+                app_name = 'appointments'
+            elif 'session' in view_name or 'queue' in view_name:
+                app_name = 'dialysis_queue'
+            elif 'machine' in view_name:
+                app_name = 'machines'
+            elif 'staff' in view_name:
+                app_name = 'staff'
+            elif 'billing' in view_name:
+                app_name = 'billing'
+            elif 'report' in view_name:
+                app_name = 'reports'
+            elif 'fleet' in view_name or 'ambulance' in view_name or 'ride' in view_name:
+                app_name = 'fleet'
+            elif 'user' in view_name:
+                app_name = 'users'
+            elif 'twofactor' in view_name:
+                app_name = 'two_factor'
             
         if app_name and app_name in role_perms:
             allowed_methods = role_perms[app_name]
             return method in allowed_methods
             
+        # If we couldn't determine the app name or role has no explicit perms,
+        # fail safe by denying access
         return False
     
     def has_object_permission(self, request, view, obj):

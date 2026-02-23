@@ -4,6 +4,11 @@ import LoadingSpinner from '../components/LoadingSpinner';
 import RefreshButton from '../components/RefreshButton';
 import { handleApiError } from '../utils/errorHandler';
 import config from '../config/environment';
+import {
+    Calendar, CheckCircle2, Settings, CircleCheck, XCircle,
+    AlertTriangle, ClipboardList, Sunrise, Sunset, Moon, Clock,
+    Building2, Play, Square, FileText, Lightbulb, Phone, BarChart3
+} from 'lucide-react';
 
 const PatientAppointments = () => {
     const [appointments, setAppointments] = useState([]);
@@ -86,23 +91,23 @@ const PatientAppointments = () => {
 
     const getStatusIcon = (status) => {
         const icons = {
-            'scheduled': '📅',
-            'checked_in': '✅',
-            'in_progress': '⚙️',
-            'completed': '✔️',
-            'cancelled': '❌',
-            'no_show': '⚠️'
+            'scheduled': <Calendar className="w-4 h-4 inline" />,
+            'checked_in': <CheckCircle2 className="w-4 h-4 inline" />,
+            'in_progress': <Settings className="w-4 h-4 inline" />,
+            'completed': <CircleCheck className="w-4 h-4 inline" />,
+            'cancelled': <XCircle className="w-4 h-4 inline" />,
+            'no_show': <AlertTriangle className="w-4 h-4 inline" />
         };
-        return icons[status] || '📋';
+        return icons[status] || <ClipboardList className="w-4 h-4 inline" />;
     };
 
     const getShiftIcon = (shift) => {
         const icons = {
-            'morning': '🌅',
-            'evening': '🌆',
-            'night': '🌙'
+            'morning': <Sunrise className="w-7 h-7 text-amber-500" />,
+            'evening': <Sunset className="w-7 h-7 text-orange-500" />,
+            'night': <Moon className="w-7 h-7 text-indigo-500" />
         };
-        return icons[shift] || '⏰';
+        return icons[shift] || <Clock className="w-7 h-7 text-gray-500" />;
     };
 
     const formatDate = (dateString) => {
@@ -165,17 +170,17 @@ const PatientAppointments = () => {
             {/* Statistics Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="card text-center">
-                    <div className="text-3xl mb-2">📊</div>
+                    <div className="flex justify-center mb-2"><BarChart3 className="w-8 h-8 text-cyan-500" /></div>
                     <div className="text-2xl font-bold text-gray-900">{appointments.length}</div>
                     <div className="text-gray-600">Total Appointments</div>
                 </div>
                 <div className="card text-center">
-                    <div className="text-3xl mb-2">📅</div>
+                    <div className="flex justify-center mb-2"><Calendar className="w-8 h-8 text-blue-500" /></div>
                     <div className="text-2xl font-bold text-blue-600">{upcomingCount}</div>
                     <div className="text-gray-600">Upcoming</div>
                 </div>
                 <div className="card text-center">
-                    <div className="text-3xl mb-2">✅</div>
+                    <div className="flex justify-center mb-2"><CheckCircle2 className="w-8 h-8 text-green-500" /></div>
                     <div className="text-2xl font-bold text-green-600">{completedCount}</div>
                     <div className="text-gray-600">Completed</div>
                 </div>
@@ -186,28 +191,19 @@ const PatientAppointments = () => {
                 <div className="flex space-x-2">
                     <button
                         onClick={() => setFilter('all')}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all ${filter === 'all'
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
+                        className={filter === 'all' ? 'btn-primary' : 'btn-secondary'}
                     >
                         All Appointments
                     </button>
                     <button
                         onClick={() => setFilter('upcoming')}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all ${filter === 'upcoming'
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
+                        className={filter === 'upcoming' ? 'btn-primary' : 'btn-secondary'}
                     >
                         Upcoming ({upcomingCount})
                     </button>
                     <button
                         onClick={() => setFilter('past')}
-                        className={`px-4 py-2 rounded-lg font-medium transition-all ${filter === 'past'
-                            ? 'bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-lg'
-                            : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-                            }`}
+                        className={filter === 'past' ? 'btn-primary' : 'btn-secondary'}
                     >
                         Past
                     </button>
@@ -217,7 +213,7 @@ const PatientAppointments = () => {
             {/* Appointments List */}
             {filteredAppointments.length === 0 ? (
                 <div className="medical-card text-center py-12">
-                    <div className="text-6xl mb-4">📅</div>
+                    <div className="flex justify-center mb-4"><Calendar className="w-16 h-16 text-gray-300" /></div>
                     <h3 className="text-xl font-bold text-gray-700 mb-2">No Appointments Found</h3>
                     <p className="text-gray-600">
                         {filter === 'upcoming'
@@ -252,7 +248,7 @@ const PatientAppointments = () => {
                             {/* Appointment Details */}
                             <div className="space-y-3">
                                 <div className="flex items-center space-x-2 text-gray-700">
-                                    <span className="text-xl">⏰</span>
+                                    <Clock className="w-5 h-5 text-gray-500" />
                                     <span className="font-medium">Scheduled Time:</span>
                                     <span className="text-gray-900 font-semibold">
                                         {formatTime(appointment.scheduled_time)}
@@ -261,7 +257,7 @@ const PatientAppointments = () => {
 
                                 {appointment.machine_number && (
                                     <div className="flex items-center space-x-2 text-gray-700">
-                                        <span className="text-xl">🏥</span>
+                                        <Building2 className="w-5 h-5 text-gray-500" />
                                         <span className="font-medium">Machine:</span>
                                         <span className="text-gray-900 font-semibold">
                                             {appointment.machine_number}
@@ -271,7 +267,7 @@ const PatientAppointments = () => {
 
                                 {appointment.actual_start_time && (
                                     <div className="flex items-center space-x-2 text-gray-700">
-                                        <span className="text-xl">▶️</span>
+                                        <Play className="w-5 h-5 text-green-500" />
                                         <span className="font-medium">Started:</span>
                                         <span className="text-gray-900 font-semibold">
                                             {formatTime(appointment.actual_start_time)}
@@ -281,7 +277,7 @@ const PatientAppointments = () => {
 
                                 {appointment.actual_end_time && (
                                     <div className="flex items-center space-x-2 text-gray-700">
-                                        <span className="text-xl">⏹️</span>
+                                        <Square className="w-5 h-5 text-red-500" />
                                         <span className="font-medium">Ended:</span>
                                         <span className="text-gray-900 font-semibold">
                                             {formatTime(appointment.actual_end_time)}
@@ -292,7 +288,7 @@ const PatientAppointments = () => {
                                 {appointment.notes && (
                                     <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
                                         <div className="flex items-start space-x-2">
-                                            <span className="text-lg">📝</span>
+                                            <FileText className="w-5 h-5 text-blue-500" />
                                             <div>
                                                 <p className="text-sm font-medium text-gray-700">Notes:</p>
                                                 <p className="text-sm text-gray-600">{appointment.notes}</p>
@@ -319,7 +315,7 @@ const PatientAppointments = () => {
             {/* Help Section */}
             <div className="medical-card bg-gradient-to-r from-cyan-50 to-blue-50 border-2 border-cyan-200">
                 <div className="flex items-start space-x-4">
-                    <div className="text-4xl">💡</div>
+                    <div className="flex-shrink-0"><Lightbulb className="w-10 h-10 text-amber-500" /></div>
                     <div>
                         <h3 className="text-lg font-bold text-gray-900 mb-2">Need Help?</h3>
                         <p className="text-gray-700 mb-2">
@@ -327,7 +323,7 @@ const PatientAppointments = () => {
                             please contact the reception desk.
                         </p>
                         <div className="flex items-center space-x-2 text-cyan-700">
-                            <span className="text-xl">📞</span>
+                            <Phone className="w-5 h-5 text-cyan-700" />
                             <span className="font-medium">Contact: reception@dialysis.com</span>
                         </div>
                     </div>

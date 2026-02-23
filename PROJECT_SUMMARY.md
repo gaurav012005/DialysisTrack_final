@@ -22,7 +22,7 @@ DialysisTrack is a comprehensive dialysis queue management system with role-base
 - **9 Main Modules:** Dashboard, Patients, Queue, Machines, Sessions, Staff, Billing, Reports, Appointments
 
 **Tech Stack:**
-- **Backend:** Django REST Framework + PostgreSQL/SQLite
+- **Backend:** Django REST Framework + MySQL/SQLite
 - **Frontend:** React + Vite
 - **Authentication:** JWT (JSON Web Tokens)
 

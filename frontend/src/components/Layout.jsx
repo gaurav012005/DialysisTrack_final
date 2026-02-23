@@ -4,6 +4,7 @@ import Navbar from './Navbar';
 import Sidebar from './Sidebar';
 import OfflineBanner from './OfflineBanner';
 import InstallPrompt from './InstallPrompt';
+import ChatBot from './ChatBot';
 
 const Layout = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -19,13 +20,15 @@ const Layout = () => {
           isOpen={sidebarOpen}
           onClose={() => setSidebarOpen(false)}
         />
-        <main className="flex-1 p-4 md:p-6 w-full overflow-hidden">
+        <main className="flex-1 p-4 md:p-6 w-full overflow-x-hidden overflow-y-auto">
           <Outlet />
         </main>
       </div>
 
       {/* Install Prompt - shows at bottom right when installable */}
       <InstallPrompt />
+      {/* Chatbot - floating widget */}
+      <ChatBot />
     </div>
   );
 };

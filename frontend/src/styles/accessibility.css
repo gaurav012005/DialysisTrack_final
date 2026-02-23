@@ -1,0 +1,90 @@
+/* ==========================================
+   Accessibility Styles
+   ========================================== */
+
+/* Skip to Content Link */
+.skip-to-content {
+    position: absolute;
+    top: -40px;
+    left: 0;
+    background: var(--hospital-primary);
+    color: white;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+    z-index: 100;
+    transition: top 0.3s;
+}
+
+.skip-to-content:focus {
+    top: 0;
+}
+
+/* Screen Reader Only */
+.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+/* Focus Visible Styles */
+*:focus-visible {
+    outline: 2px solid var(--hospital-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+    outline: 2px solid var(--hospital-primary);
+    outline-offset: 2px;
+}
+
+/* Hover Effects for Table Rows */
+table tbody tr {
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+table tbody tr:hover {
+    background-color: var(--bg-tertiary);
+    transform: scale(1.01);
+}
+
+.dark table tbody tr:hover {
+    background-color: rgba(6, 182, 212, 0.1);
+}
+
+/* ==========================================
+   Micro-interactions
+   ========================================== */
+
+/* Smooth Transitions for Interactive Elements */
+button,
+a,
+.card,
+.btn-primary,
+.btn-secondary,
+.btn-success {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Hover Scale Effect */
+.hover-scale:hover {
+    transform: scale(1.05);
+}
+
+/* Loading State */
+.loading {
+    pointer-events: none;
+    opacity: 0.6;
+    cursor: wait;
+}

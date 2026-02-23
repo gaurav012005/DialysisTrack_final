@@ -29,6 +29,7 @@ urlpatterns = [
     path('api/billing/', include('billing.urls')),
     # path('api/notifications/', include('notifications.urls')),  # Already added elsewhere
     path('api/two-factor/', include('two_factor.urls')),
+    path('api/fleet/', include('fleet.urls')),
     
     # API Documentation
     path('swagger/', test_views.api_docs, name='api-docs'),

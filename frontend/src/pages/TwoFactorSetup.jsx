@@ -220,7 +220,7 @@ const TwoFactorSetup = () => {
                             </p>
                             <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
                                 <p className="text-sm text-gray-600">
-                                    <span className="font-semibold">🔒 Security Notice:</span> Two-Factor Authentication is mandatory for all staff members and cannot be disabled. Contact your administrator if you need assistance.
+                                    <span className="font-semibold">Security Notice:</span> Two-Factor Authentication is mandatory for all staff members and cannot be disabled. Contact your administrator if you need assistance.
                                 </p>
                             </div>
                         </div>
@@ -274,7 +274,7 @@ const TwoFactorSetup = () => {
 
                         <div className="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
                             <p className="text-sm text-gray-600 text-center">
-                                <span className="font-semibold">🔒 Security Notice:</span> Two-Factor Authentication is mandatory for all staff members to ensure the security of patient data and hospital systems.
+                                <span className="font-semibold">Security Notice:</span> Two-Factor Authentication is mandatory for all staff members to ensure the security of patient data and hospital systems.
                             </p>
                         </div>
                     </div>
@@ -355,7 +355,7 @@ const TwoFactorSetup = () => {
                             <div className="flex justify-between items-center mb-3">
                                 <h3 className="font-semibold text-gray-800">Backup Codes</h3>
                                 <button onClick={copyBackupCodes} className="text-sm text-cyan-600 hover:text-cyan-700 font-medium">
-                                    📋 Copy All
+                                    Copy All
                                 </button>
                             </div>
                             <div className="grid grid-cols-2 gap-2">

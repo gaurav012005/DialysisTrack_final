@@ -24,6 +24,53 @@
   --medical-gray: #f1f5f9;
   --medical-dark: #0f172a;
   --medical-text: #334155;
+
+  /* Background Colors */
+  --bg-primary: #ffffff;
+  --bg-secondary: #f0f9ff;
+  --bg-tertiary: #e0f2fe;
+
+  /* Text Colors */
+  --text-primary: #0f172a;
+  --text-secondary: #334155;
+  --text-tertiary: #64748b;
+
+  /* Border Colors */
+  --border-primary: #e2e8f0;
+  --border-secondary: rgba(8, 145, 178, 0.2);
+}
+
+/* Dark Mode Variables */
+.dark {
+  /* Medical Color Palette (adjusted for dark mode) */
+  --hospital-primary: #06b6d4;
+  --hospital-primary-dark: #0891b2;
+  --hospital-primary-light: #22d3ee;
+  --hospital-secondary: #10b981;
+  --hospital-accent: #818cf8;
+  --hospital-danger: #f87171;
+  --hospital-warning: #fbbf24;
+
+  /* Neutral Medical Colors */
+  --medical-white: #0f172a;
+  --medical-light: #1e293b;
+  --medical-gray: #334155;
+  --medical-dark: #f8fafc;
+  --medical-text: #e2e8f0;
+
+  /* Background Colors */
+  --bg-primary: #0f172a;
+  --bg-secondary: #1e293b;
+  --bg-tertiary: #334155;
+
+  /* Text Colors */
+  --text-primary: #f8fafc;
+  --text-secondary: #e2e8f0;
+  --text-tertiary: #cbd5e1;
+
+  /* Border Colors */
+  --border-primary: #334155;
+  --border-secondary: rgba(6, 182, 212, 0.3);
 }
 
 /* Base Styles */
@@ -35,10 +82,22 @@
 
 body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+  background: var(--bg-secondary);
+  color: var(--text-primary);
   background-attachment: fixed;
   position: relative;
   overflow-x: hidden;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Light Mode Background */
+body:not(.dark) {
+  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #f0f9ff 100%);
+}
+
+/* Dark Mode Background */
+.dark body {
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
 }
 
 /* Animated Medical Background Pattern */
@@ -54,6 +113,13 @@ body::before {
     radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.03) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dark body::before {
+  background-image:
+    radial-gradient(circle at 20% 50%, rgba(6, 182, 212, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(16, 185, 129, 0.08) 0%, transparent 50%);
 }
 
 /* Medical Cross Pattern */
@@ -68,20 +134,31 @@ body::after {
   opacity: 0.5;
   pointer-events: none;
   z-index: 0;
+  transition: opacity 0.3s ease;
+}
+
+.dark body::after {
+  background-image: url('data:image/svg+xml,<svg width="60" height="60" xmlns="http://www.w3.org/2000/svg"><path d="M30 20 L30 40 M20 30 L40 30" stroke="rgba(6,182,212,0.15)" stroke-width="2" fill="none"/></svg>');
+  opacity: 0.3;
 }
 
 /* Custom Component Classes */
 .card {
-  background: rgba(255, 255, 255, 0.9);
+  background: var(--bg-primary);
   border-radius: 0.75rem;
   padding: 1.5rem;
   box-shadow: 0 4px 6px rgba(8, 145, 178, 0.1), 0 8px 16px rgba(8, 145, 178, 0.08);
-  border: 1px solid rgba(229, 231, 235, 1);
+  border: 1px solid var(--border-primary);
   position: relative;
   transform-style: preserve-3d;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .card {
+  background: rgba(30, 41, 59, 0.9);
+  box-shadow: 0 4px 6px rgba(6, 182, 212, 0.15), 0 8px 16px rgba(6, 182, 212, 0.1);
 }
 
 .card::before {
@@ -177,10 +254,22 @@ body::after {
   cursor: pointer;
 }
 
+.dark .btn-secondary {
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  color: #f1f5f9;
+  border: 2px solid rgba(6, 182, 212, 0.3);
+}
+
 .btn-secondary:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 6px rgba(8, 145, 178, 0.1), 0 8px 16px rgba(8, 145, 178, 0.08);
   border-color: #0891b2;
+}
+
+.dark .btn-secondary:hover {
+  background: linear-gradient(135deg, #334155 0%, #1e293b 100%);
+  border-color: #06b6d4;
+  box-shadow: 0 0 15px rgba(6, 182, 212, 0.3);
 }
 
 .btn-success {
@@ -205,10 +294,16 @@ body::after {
   padding: 0.75rem 1rem;
   border-radius: 0.75rem;
   transition: all 0.3s ease;
-  background: rgba(255, 255, 255, 0.9);
-  border: 2px solid rgba(8, 145, 178, 0.2);
+  background: var(--bg-primary);
+  border: 2px solid var(--border-secondary);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
-  color: #334155;
+  color: var(--text-primary);
+}
+
+.dark .input-field {
+  background: rgba(30, 41, 59, 0.9);
+  border-color: rgba(6, 182, 212, 0.3);
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
 .input-field:focus {
@@ -219,7 +314,11 @@ body::after {
 }
 
 .input-field::placeholder {
-  color: #94a3b8;
+  color: var(--text-tertiary);
+}
+
+.dark .input-field::placeholder {
+  color: #64748b;
 }
 
 .badge {
@@ -372,13 +471,26 @@ body::after {
 
   .card,
   .medical-card {
-    padding: 1rem;
+    padding: 0.75rem;
   }
 
   .btn-primary,
   .btn-secondary,
-  . btn-success {
+  .btn-success {
     padding: 0.5rem 1rem;
     font-size: 0.875rem;
+  }
+
+  /* Tighter table cells on mobile */
+  table th,
+  table td {
+    padding-left: 0.75rem !important;
+    padding-right: 0.75rem !important;
+  }
+
+  /* Smaller scrollbar on mobile */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
   }
 }

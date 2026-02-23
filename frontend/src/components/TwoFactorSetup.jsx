@@ -176,7 +176,7 @@ const TwoFactorSetup = ({ onComplete, onCancel }) => {
 
                             <div className="mb-4">
                                 <h3 className="font-semibold mb-2 text-gray-800">
-                                    ⚠️ Save These Backup Codes
+                                    Save These Backup Codes
                                 </h3>
                                 <p className="text-sm text-gray-600 mb-3">
                                     Store these codes securely. Each code can only be used once if you lose access to your authenticator app.
@@ -196,7 +196,7 @@ const TwoFactorSetup = ({ onComplete, onCancel }) => {
                                     onClick={copyBackupCodes}
                                     className="w-full bg-gray-200 text-gray-700 px-4 py-2 rounded hover:bg-gray-300 mb-2"
                                 >
-                                    📋 Copy All Codes
+                                    Copy All Codes
                                 </button>
 
                                 <p className="text-xs text-red-600">

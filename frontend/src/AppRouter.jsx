@@ -17,6 +17,9 @@ import PatientDashboard from './pages/PatientDashboard';
 import PatientAppointments from './pages/PatientAppointments';
 import TwoFactorSetup from './pages/TwoFactorSetup';
 import NotFound from './pages/NotFound';
+import AmbulanceManagement from './pages/AmbulanceManagement';
+import DriverDashboard from './pages/DriverDashboard';
+import TrackAmbulance from './pages/TrackAmbulance';
 
 // Protected Route with Role Check and 2FA Setup Enforcement
 const ProtectedRoute = ({ children, requiredModule }) => {
@@ -36,7 +39,7 @@ const ProtectedRoute = ({ children, requiredModule }) => {
       const staffRoles = ['admin', 'doctor', 'nurse', 'receptionist', 'technician'];
       const isStaff = staffRoles.includes(user.role);
 
-      if (!isStaff) {
+      if (!isStaff || user.role === 'driver') {
         // Non-staff users don't need 2FA
         setHas2FA(true);
         setChecking2FA(false);
@@ -240,6 +243,39 @@ const AppRouter = () => {
             element={
               <ProtectedRoute requiredModule="appointments">
                 <PatientAppointments />
+              </ProtectedRoute>
+            }
+          />
+          {/* Fleet / Ambulance Routes */}
+          <Route
+            path="ambulances"
+            element={
+              <ProtectedRoute requiredModule="fleet">
+                <AmbulanceManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="driver-dashboard"
+            element={
+              <ProtectedRoute requiredModule="fleet">
+                <DriverDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="track-ambulance/:id"
+            element={
+              <ProtectedRoute>
+                <TrackAmbulance />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="track-ambulance"
+            element={
+              <ProtectedRoute>
+                <TrackAmbulance />
               </ProtectedRoute>
             }
           />

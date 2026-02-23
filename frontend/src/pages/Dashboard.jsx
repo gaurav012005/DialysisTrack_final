@@ -5,13 +5,14 @@ import RefreshButton from '../components/RefreshButton';
 import { handleApiError, showSuccess } from '../utils/errorHandler';
 import { useAuth } from '../context/AuthContext';
 import config from '../config/environment';
+import { Users, RefreshCw, Settings, Building2, BarChart3 } from 'lucide-react';
 
 const Dashboard = () => {
   const [stats, setStats] = useState([
-    { label: 'Total Patients', value: '0', color: 'blue', icon: '👥' },
-    { label: 'In Queue', value: '0', color: 'yellow', icon: '🔄' },
-    { label: 'Active Sessions', value: '0', color: 'green', icon: '⚙️' },
-    { label: 'Available Machines', value: '0', color: 'gray', icon: '🏥' }
+    { label: 'Total Patients', value: '0', color: 'blue', icon: Users },
+    { label: 'In Queue', value: '0', color: 'yellow', icon: RefreshCw },
+    { label: 'Active Sessions', value: '0', color: 'green', icon: Settings },
+    { label: 'Available Machines', value: '0', color: 'gray', icon: Building2 }
   ]);
   const [recentActivities, setRecentActivities] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -74,10 +75,10 @@ const Dashboard = () => {
           const data = await response.json();
 
           setStats([
-            { label: 'Total Patients', value: data.patients?.total || '0', color: 'blue', icon: '👥' },
-            { label: 'In Queue', value: data.queue?.total_waiting || '0', color: 'yellow', icon: '🔄' },
-            { label: 'Active Sessions', value: data.queue?.total_in_progress || '0', color: 'green', icon: '⚙️' },
-            { label: 'Available Machines', value: data.machines?.available_machines || '0', color: 'gray', icon: '🏥' }
+            { label: 'Total Patients', value: data.patients?.total || '0', color: 'blue', icon: Users },
+            { label: 'In Queue', value: data.queue?.total_waiting || '0', color: 'yellow', icon: RefreshCw },
+            { label: 'Active Sessions', value: data.queue?.total_in_progress || '0', color: 'green', icon: Settings },
+            { label: 'Available Machines', value: data.machines?.available_machines || '0', color: 'gray', icon: Building2 }
           ]);
 
           // Fetch recent activities
@@ -150,10 +151,10 @@ const Dashboard = () => {
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="text-gray-600">Welcome to Dialysis Queue Management System</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Welcome to Dialysis Queue Management System</p>
         </div>
         <RefreshButton
           onClick={() => window.location.reload()}
@@ -163,13 +164,18 @@ const Dashboard = () => {
 
       {/* Stats Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {dashboardData.stats.map((stat, index) => (
-          <div key={index} className="card text-center">
-            <div className="text-3xl mb-2">{stat.icon}</div>
-            <div className="text-2xl font-bold text-gray-900">{stat.value}</div>
-            <div className="text-gray-600">{stat.label}</div>
-          </div>
-        ))}
+        {dashboardData.stats.map((stat, index) => {
+          const IconComponent = stat.icon;
+          return (
+            <div key={index} className="card text-center">
+              <div className="flex justify-center mb-2">
+                <IconComponent className="w-8 h-8 text-cyan-500 dark:text-cyan-400" />
+              </div>
+              <div className="text-2xl font-bold text-gray-900 dark:text-white">{stat.value}</div>
+              <div className="text-gray-600 dark:text-gray-400">{stat.label}</div>
+            </div>
+          );
+        })}
       </div>
 
       {/* Recent Activities & Quick Actions */}
@@ -201,21 +207,21 @@ const Dashboard = () => {
         <div className="card">
           <h2 className="text-xl font-bold mb-4">Quick Actions</h2>
           <div className="grid grid-cols-2 gap-4">
-            <Link to="/patients" className="p-4 bg-blue-50 hover:bg-blue-100 rounded-lg border border-blue-200 transition-colors duration-200 block text-center">
-              <div className="text-2xl mb-2">👥</div>
-              <div className="font-medium">Add Patient</div>
+            <Link to="/patients" className="p-4 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/30 rounded-lg border border-blue-200 dark:border-blue-800 transition-colors duration-200 block text-center">
+              <div className="flex justify-center mb-2"><Users className="w-6 h-6 text-blue-500" /></div>
+              <div className="font-medium dark:text-gray-200">Add Patient</div>
             </Link>
-            <Link to="/queue" className="p-4 bg-green-50 hover:bg-green-100 rounded-lg border border-green-200 transition-colors duration-200 block text-center">
-              <div className="text-2xl mb-2">🔄</div>
-              <div className="font-medium">Manage Queue</div>
+            <Link to="/queue" className="p-4 bg-green-50 hover:bg-green-100 dark:bg-green-900/20 dark:hover:bg-green-900/30 rounded-lg border border-green-200 dark:border-green-800 transition-colors duration-200 block text-center">
+              <div className="flex justify-center mb-2"><RefreshCw className="w-6 h-6 text-green-500" /></div>
+              <div className="font-medium dark:text-gray-200">Manage Queue</div>
             </Link>
-            <Link to="/machines" className="p-4 bg-yellow-50 hover:bg-yellow-100 rounded-lg border border-yellow-200 transition-colors duration-200 block text-center">
-              <div className="text-2xl mb-2">⚙️</div>
-              <div className="font-medium">View Machines</div>
+            <Link to="/machines" className="p-4 bg-yellow-50 hover:bg-yellow-100 dark:bg-yellow-900/20 dark:hover:bg-yellow-900/30 rounded-lg border border-yellow-200 dark:border-yellow-800 transition-colors duration-200 block text-center">
+              <div className="flex justify-center mb-2"><Settings className="w-6 h-6 text-yellow-500" /></div>
+              <div className="font-medium dark:text-gray-200">View Machines</div>
             </Link>
-            <Link to="/reports" className="p-4 bg-purple-50 hover:bg-purple-100 rounded-lg border border-purple-200 transition-colors duration-200 block text-center">
-              <div className="text-2xl mb-2">📊</div>
-              <div className="font-medium">Generate Report</div>
+            <Link to="/reports" className="p-4 bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:hover:bg-purple-900/30 rounded-lg border border-purple-200 dark:border-purple-800 transition-colors duration-200 block text-center">
+              <div className="flex justify-center mb-2"><BarChart3 className="w-6 h-6 text-purple-500" /></div>
+              <div className="font-medium dark:text-gray-200">Generate Report</div>
             </Link>
           </div>
         </div>

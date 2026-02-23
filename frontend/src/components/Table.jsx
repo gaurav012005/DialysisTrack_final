@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { ArrowUpDown, ArrowUp, ArrowDown, BarChart3 } from 'lucide-react';
 
 const Table = ({
   columns = [],
@@ -83,8 +84,8 @@ const Table = ({
 
   // Render sort indicator
   const renderSortIndicator = (columnKey) => {
-    if (sortConfig.key !== columnKey) return '↕️';
-    return sortConfig.direction === 'asc' ? '↑' : '↓';
+    if (sortConfig.key !== columnKey) return <ArrowUpDown className="w-3 h-3 inline" />;
+    return sortConfig.direction === 'asc' ? <ArrowUp className="w-3 h-3 inline" /> : <ArrowDown className="w-3 h-3 inline" />;
   };
 
   if (loading) {
@@ -118,14 +119,13 @@ const Table = ({
                   />
                 </th>
               )}
-              
+
               {columns.map((column) => (
                 <th
                   key={column.key}
                   scope="col"
-                  className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${
-                    column.className || ''
-                  } ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
+                  className={`px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider ${column.className || ''
+                    } ${sortable ? 'cursor-pointer hover:bg-gray-100' : ''}`}
                   onClick={sortable ? () => handleSort(column.key) : undefined}
                 >
                   <div className="flex items-center space-x-1">
@@ -143,12 +143,12 @@ const Table = ({
           <tbody className="bg-white divide-y divide-gray-200">
             {paginatedData.length === 0 ? (
               <tr>
-                <td 
-                  colSpan={columns.length + (selectable ? 1 : 0)} 
+                <td
+                  colSpan={columns.length + (selectable ? 1 : 0)}
                   className="px-6 py-12 text-center text-gray-500"
                 >
                   <div className="flex flex-col items-center justify-center">
-                    <span className="text-4xl mb-2">📊</span>
+                    <BarChart3 className="w-10 h-10 text-gray-300 mb-2" />
                     <p className="text-lg font-medium">{emptyMessage}</p>
                   </div>
                 </td>
@@ -175,7 +175,7 @@ const Table = ({
                       />
                     </td>
                   )}
-                  
+
                   {columns.map((column) => (
                     <td
                       key={column.key}
@@ -193,8 +193,8 @@ const Table = ({
 
       {/* Pagination */}
       {pagination && totalPages > 1 && (
-        <div className="bg-white px-6 py-3 border-t border-gray-200">
-          <div className="flex items-center justify-between">
+        <div className="bg-white px-4 sm:px-6 py-3 border-t border-gray-200">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
             <div className="text-sm text-gray-700">
               Showing <span className="font-medium">{(currentPage - 1) * pageSize + 1}</span> to{' '}
               <span className="font-medium">
@@ -202,7 +202,7 @@ const Table = ({
               </span>{' '}
               of <span className="font-medium">{sortedData.length}</span> results
             </div>
-            
+
             <div className="flex space-x-2">
               <button
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
@@ -211,9 +211,9 @@ const Table = ({
               >
                 Previous
               </button>
-              
-              {/* Page Numbers */}
-              <div className="flex space-x-1">
+
+              {/* Page Numbers - hidden on very small screens */}
+              <div className="hidden sm:flex space-x-1">
                 {Array.from({ length: Math.min(5, totalPages) }, (_, i) => {
                   let pageNum;
                   if (totalPages <= 5) {
@@ -230,17 +230,19 @@ const Table = ({
                     <button
                       key={pageNum}
                       onClick={() => setCurrentPage(pageNum)}
-                      className={`px-3 py-1 rounded text-sm ${
-                        currentPage === pageNum
-                          ? 'bg-primary-600 text-white'
-                          : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
-                      }`}
+                      className={`px-3 py-1 rounded text-sm ${currentPage === pageNum
+                        ? 'bg-primary-600 text-white'
+                        : 'border border-gray-300 text-gray-700 hover:bg-gray-50'
+                        }`}
                     >
                       {pageNum}
                     </button>
                   );
                 })}
               </div>
+
+              {/* Page indicator on mobile */}
+              <span className="sm:hidden text-sm text-gray-600 px-2 py-1">{currentPage}/{totalPages}</span>
 
               <button
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}

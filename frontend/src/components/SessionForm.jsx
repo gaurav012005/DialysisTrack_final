@@ -110,7 +110,7 @@ const SessionForm = ({ queueId, patientId, onSuccess, onClose }) => {
           {/* Pre-Dialysis Vitals */}
           <div className="border rounded-lg p-4">
             <h3 className="font-semibold text-lg mb-4">Resource Assignment</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Assign Machine</label>
                 <select
@@ -149,7 +149,7 @@ const SessionForm = ({ queueId, patientId, onSuccess, onClose }) => {
           {/* Pre-Dialysis Vitals */}
           <div className="border rounded-lg p-4">
             <h3 className="font-semibold text-lg mb-4">Pre-Dialysis Vitals</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">BP Systolic (mmHg)</label>
                 <input
@@ -212,7 +212,7 @@ const SessionForm = ({ queueId, patientId, onSuccess, onClose }) => {
           {/* Dialysis Parameters */}
           <div className="border rounded-lg p-4">
             <h3 className="font-semibold text-lg mb-4">Dialysis Parameters</h3>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Blood Flow Rate (ml/min)</label>
                 <input

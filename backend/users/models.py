@@ -9,6 +9,7 @@ class User(AbstractUser):
         ('technician', 'Technician'),
         ('receptionist', 'Receptionist'),
         ('patient', 'Patient'),
+        ('driver', 'Driver'),
     )
     
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='receptionist')

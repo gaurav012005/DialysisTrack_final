@@ -1336,7 +1336,7 @@ graph TB
         end
         
         subgraph Database_Server
-            PostgreSQL[(PostgreSQL Database<br/>Port 5432)]
+            MySQL[(MySQL Database<br/>Port 3306)]
         end
         
         subgraph File_Storage
@@ -1360,7 +1360,7 @@ graph TB
     Nginx --> StaticFiles
     
     Gunicorn --> Django
-    Django --> PostgreSQL
+    Django --> MySQL
     Django --> MediaFiles
     
     ViteDev -.->|Development| DjangoDevServer
@@ -1369,7 +1369,7 @@ graph TB
     style Nginx fill:#2ecc71,stroke:#333,stroke-width:2px,color:#fff
     style ReactApp fill:#3498db,stroke:#333,stroke-width:2px,color:#fff
     style Django fill:#27ae60,stroke:#333,stroke-width:2px,color:#fff
-    style PostgreSQL fill:#e74c3c,stroke:#333,stroke-width:2px,color:#fff
+    style MySQL fill:#00758f,stroke:#333,stroke-width:2px,color:#fff
     style SQLite fill:#95a5a6,stroke:#333,stroke-width:2px,color:#fff
 ```
 
