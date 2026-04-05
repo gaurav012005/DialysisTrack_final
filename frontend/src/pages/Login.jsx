@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import SmallInstallButton from '../components/SmallInstallButton';
 import { Lock, Lightbulb } from 'lucide-react';
 
@@ -211,7 +211,20 @@ const Login = () => {
             </button>
           </form>
 
-          <div className="mt-6 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
+          <div className="mt-4 text-center">
+            <Link to="/forgot-password" className="text-sm text-blue-600 hover:underline">
+              Forgot your password?
+            </Link>
+          </div>
+
+          <div className="mt-4 pt-4 border-t border-gray-200 text-center">
+            <p className="text-sm text-gray-500">
+              New Patient?{' '}
+              <Link to="/register" className="text-blue-600 hover:underline font-medium">Register here</Link>
+            </p>
+          </div>
+
+          <div className="mt-4 p-4 bg-cyan-50 rounded-lg border border-cyan-200">
             <p className="text-sm text-gray-600 text-center">
               <span className="font-semibold inline-flex items-center gap-1"><Lock className="w-4 h-4" /> Secure Login:</span> This system uses two-factor authentication for enhanced security
             </p>

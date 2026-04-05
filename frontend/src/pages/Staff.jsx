@@ -10,6 +10,8 @@ const Staff = () => {
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingStaff, setEditingStaff] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [roleFilter, setRoleFilter] = useState('');
 
   useEffect(() => {
     fetchStaff();
@@ -79,23 +81,60 @@ const Staff = () => {
         </div>
       </div>
 
+      {/* Search & Filter */}
+      <div className="card">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1 relative">
+            <input
+              type="text"
+              placeholder="🔍 Search staff by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input-field"
+            />
+          </div>
+          <select
+            value={roleFilter}
+            onChange={(e) => setRoleFilter(e.target.value)}
+            className="input-field w-auto"
+          >
+            <option value="">All Roles</option>
+            <option value="admin">Admin</option>
+            <option value="doctor">Doctor</option>
+            <option value="nurse">Nurse</option>
+            <option value="technician">Technician</option>
+            <option value="receptionist">Receptionist</option>
+            <option value="driver">Driver</option>
+            <option value="patient">Patient</option>
+          </select>
+        </div>
+      </div>
+
       {/* Staff Grid */}
-      {staffMembers.length === 0 ? (
-        <EmptyState
-          title="No Staff Members Found"
-          message="No staff members are currently registered in the system."
-          actionButton={
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="btn-primary"
-            >
-              Add First Staff Member
-            </button>
-          }
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {staffMembers.map(staff => (
+      {(() => {
+        const filtered = staffMembers.filter(s => {
+          const matchesSearch = !searchTerm || s.name.toLowerCase().includes(searchTerm.toLowerCase());
+          const matchesRole = !roleFilter || s.role === roleFilter;
+          return matchesSearch && matchesRole;
+        });
+
+        if (filtered.length === 0) {
+          return (
+            <EmptyState
+              title="No Staff Members Found"
+              message={searchTerm || roleFilter ? 'No staff match your search criteria.' : 'No staff members are currently registered.'}
+              actionButton={
+                <button onClick={() => setShowAddModal(true)} className="btn-primary">
+                  Add First Staff Member
+                </button>
+              }
+            />
+          );
+        }
+
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filtered.map(staff => (
             <div key={staff.id} className="card text-center">
               <div className="w-16 h-16 bg-primary-500 rounded-full flex items-center justify-center text-white font-bold text-xl mx-auto mb-4">
                 {staff.name.split(' ').map(n => n[0]).join('')}
@@ -139,7 +178,8 @@ const Staff = () => {
             </div>
           ))}
         </div>
-      )}
+        );
+      })()}
 
       {/* Shift Schedule */}
       <div className="card">

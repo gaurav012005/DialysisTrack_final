@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { usePermissions } from './RoleGuard';
 import {
   LayoutDashboard, Users, RefreshCw, ClipboardList, Settings,
-  UserCog, DollarSign, TrendingUp, Calendar, Truck
+  UserCog, DollarSign, TrendingUp, Calendar, Truck, Shield
 } from 'lucide-react';
 
 const Sidebar = ({ isOpen, onClose }) => {
@@ -27,6 +27,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { path: '/staff', label: 'Staff Management', icon: UserCog, module: 'staff' },
     { path: '/billing', label: 'Billing', icon: DollarSign, module: 'billing' },
     { path: '/reports', label: 'Reports', icon: TrendingUp, module: 'reports' },
+    { path: '/audit-logs', label: 'Audit Log', icon: Shield, module: 'reports' },
     { path: '/ambulances', label: 'Fleet / Ambulances', icon: Truck, module: 'fleet' },
   ];
 

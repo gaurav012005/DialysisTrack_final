@@ -100,6 +100,53 @@ def dashboard_stats(request):
     
     return Response(stats)
 
+
+@api_view(['GET'])
+@permission_classes([permissions.IsAuthenticated])
+def chart_data(request):
+    """Return real chart data for the Reports page — weekly trends & machine utilization."""
+    from patients.models import Patient
+    from dialysis_queue.models import Queue
+    from machines.models import DialysisMachine
+
+    today = datetime.now().date()
+
+    # Weekly patient registrations & session completions (last 4 weeks)
+    weekly_trends = []
+    for week_num in range(4, 0, -1):
+        week_start = today - timedelta(weeks=week_num)
+        week_end = week_start + timedelta(days=6)
+        patients_count = Patient.objects.filter(
+            created_at__date__gte=week_start,
+            created_at__date__lte=week_end
+        ).count()
+        sessions_count = Queue.objects.filter(
+            check_in_time__date__gte=week_start,
+            check_in_time__date__lte=week_end,
+            status='completed'
+        ).count()
+        weekly_trends.append({
+            'name': f'Week {5 - week_num}',
+            'Patients': patients_count,
+            'Sessions': sessions_count,
+        })
+
+    # Machine utilization (real data)
+    machine_utilization = []
+    machines = DialysisMachine.objects.filter(is_active=True)
+    for machine in machines:
+        # Utilization = sessions / capacity estimate (cap at 100%)
+        util_rate = min(machine.total_sessions, 100)
+        machine_utilization.append({
+            'name': machine.machine_id,
+            'utilization': util_rate,
+        })
+
+    return Response({
+        'weekly_trends': weekly_trends,
+        'machine_utilization': machine_utilization,
+    })
+
 @api_view(['GET'])
 @permission_classes([permissions.IsAuthenticated])
 def patient_reports(request):

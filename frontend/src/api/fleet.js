@@ -15,6 +15,8 @@ export const getRide = (id) => api.get(`/fleet/rides/${id}/`);
 export const updateRideStatus = (id, status) => api.patch(`/fleet/rides/${id}/status/`, { status });
 export const getMyRides = () => api.get('/fleet/rides/my/');
 export const getPatientActiveRide = () => api.get('/fleet/rides/patient-active/');
+export const getRideLocation = (id) => api.get(`/fleet/rides/${id}/location/`);
+export const updateRideLocation = (id, data) => api.post(`/fleet/rides/${id}/location/update/`, data);
 
 // ──── Drivers ────
 export const getDrivers = () => api.get('/fleet/drivers/');

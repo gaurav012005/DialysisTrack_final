@@ -1,15 +1,66 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { usePermissions } from './RoleGuard';
 import ThemeToggle from './ThemeToggle';
 import {
   Crown, Stethoscope, Heart, Wrench, ClipboardList,
-  Building2, User, AlertTriangle, BarChart3, PlusCircle, Truck
+  Building2, User, AlertTriangle, BarChart3, PlusCircle, Truck, Bell
 } from 'lucide-react';
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
   const { userRole } = usePermissions();
+  const [notifications, setNotifications] = useState([]);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const notifRef = useRef(null);
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 30000); // Poll every 30s
+    return () => clearInterval(interval);
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setShowNotifs(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const fetchNotifications = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      if (!token) return;
+      const res = await fetch('http://localhost:8000/api/notifications/', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        setNotifications(data.notifications || []);
+      }
+    } catch (err) {
+      // silent fail
+    }
+  };
+
+  const markAllRead = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      await fetch('http://localhost:8000/api/notifications/mark-all-read/', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      });
+      fetchNotifications();
+    } catch (err) {
+      // silent fail
+    }
+  };
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const getRoleColor = (role) => {
     const colors = {
@@ -93,6 +144,47 @@ const Navbar = ({ onMenuClick }) => {
                 <span className="hidden sm:inline ml-1">New Patient</span>
               </button>
             )}
+
+            {/* Notification Bell */}
+            <div className="relative" ref={notifRef}>
+              <button
+                onClick={() => setShowNotifs(!showNotifs)}
+                className="relative p-2 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 transition-colors"
+              >
+                <Bell className="w-5 h-5" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {showNotifs && (
+                <div className="absolute right-0 mt-2 w-80 bg-white dark:bg-slate-800 rounded-lg shadow-xl border border-gray-200 dark:border-slate-700 z-50 overflow-hidden">
+                  <div className="px-4 py-3 border-b border-gray-200 dark:border-slate-700 flex justify-between items-center">
+                    <h3 className="font-semibold text-gray-900 dark:text-white">Notifications</h3>
+                    {unreadCount > 0 && (
+                      <button onClick={markAllRead} className="text-xs text-blue-600 hover:underline">Mark all read</button>
+                    )}
+                  </div>
+                  <div className="max-h-72 overflow-y-auto">
+                    {notifications.length === 0 ? (
+                      <div className="p-6 text-center text-gray-400 text-sm">No notifications</div>
+                    ) : (
+                      notifications.slice(0, 10).map(n => (
+                        <div key={n.id} className={`px-4 py-3 border-b border-gray-100 dark:border-slate-700 text-sm ${
+                          n.is_read ? 'opacity-60' : 'bg-blue-50 dark:bg-blue-900/20'
+                        }`}>
+                          <div className="font-medium text-gray-800 dark:text-gray-200">{n.title}</div>
+                          <div className="text-gray-500 dark:text-gray-400 text-xs mt-1 line-clamp-2">{n.message}</div>
+                          <div className="text-gray-400 text-xs mt-1">{new Date(n.created_at).toLocaleString()}</div>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                </div>
+              )}
+            </div>
 
             {/* Theme Toggle */}
             <ThemeToggle />

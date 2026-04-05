@@ -1,10 +1,19 @@
+import logging
+
 from rest_framework import status, permissions, viewsets
-from rest_framework.decorators import api_view, permission_classes
+from rest_framework.decorators import api_view, permission_classes, throttle_classes
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from .models import User
 from .serializers import UserSerializer, UserRegisterSerializer, LoginSerializer
+
+logger = logging.getLogger(__name__)
+
+
+class LoginRateThrottle(AnonRateThrottle):
+    rate = '5/min'
 
 @api_view(['GET'])
 @permission_classes([permissions.AllowAny])
@@ -26,6 +35,7 @@ def auth_endpoints(request):
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])
+@throttle_classes([LoginRateThrottle])
 def login_view(request):
     email = request.data.get('email')
     password = request.data.get('password')
@@ -104,7 +114,8 @@ def login_view(request):
         else:
             return Response({'detail': 'Invalid credentials'}, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
-        return Response({'detail': f'Login error: {str(e)}'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        logger.exception('Login error for email=%s', request.data.get('email', 'unknown'))
+        return Response({'detail': 'An unexpected server error occurred.'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 @api_view(['POST'])
 @permission_classes([permissions.AllowAny])

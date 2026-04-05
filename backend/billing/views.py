@@ -1,6 +1,6 @@
 from rest_framework import viewsets, status
-from rest_framework.decorators import action, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.decorators import action
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.db.models import Sum, Q
 from django.db import transaction
@@ -74,7 +74,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
             return PaymentCreateSerializer
         return PaymentSerializer
     
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=['post'])
     def quick_payment(self, request):
         """Quick payment for walk-in patients - creates bill and processes payment"""
         try:
@@ -88,6 +88,9 @@ class PaymentViewSet(viewsets.ModelViewSet):
             
             if not patient_id:
                 return Response({'error': 'Patient ID required'}, status=status.HTTP_400_BAD_REQUEST)
+            
+            if amount <= 0:
+                return Response({'error': 'Amount must be greater than zero'}, status=status.HTTP_400_BAD_REQUEST)
             
             patient = Patient.objects.get(id=patient_id)
             
@@ -123,7 +126,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=['post'])
     def process_upi_payment(self, request):
         """Process UPI payment"""
         try:
@@ -131,12 +134,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
             amount = float(request.data.get('amount', 0))
             upi_id = request.data.get('upi_id')
             
+            if amount <= 0:
+                return Response({'error': 'Amount must be greater than zero'}, status=status.HTTP_400_BAD_REQUEST)
+            
             bill = Bill.objects.get(id=bill_id)
             
-            # Handle anonymous user
-            user = request.user if request.user.is_authenticated else None
-            
-            result = PaymentService.process_upi_payment(bill, amount, upi_id, user)
+            result = PaymentService.process_upi_payment(bill, amount, upi_id, request.user)
             
             if result['success']:
                 return Response(result, status=status.HTTP_201_CREATED)
@@ -148,7 +151,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=['post'])
     def generate_qr_code(self, request):
         """Generate UPI QR code for payment"""
         try:
@@ -187,6 +190,10 @@ class PaymentViewSet(viewsets.ModelViewSet):
             }
             
             bill = Bill.objects.get(id=bill_id)
+            
+            if amount <= 0:
+                return Response({'error': 'Amount must be greater than zero'}, status=status.HTTP_400_BAD_REQUEST)
+            
             result = PaymentService.process_card_payment(bill, amount, card_data, request.user)
             
             if result['success']:
@@ -208,6 +215,10 @@ class PaymentViewSet(viewsets.ModelViewSet):
             bank_code = request.data.get('bank_code')
             
             bill = Bill.objects.get(id=bill_id)
+            
+            if amount <= 0:
+                return Response({'error': 'Amount must be greater than zero'}, status=status.HTTP_400_BAD_REQUEST)
+            
             result = PaymentService.process_netbanking_payment(bill, amount, bank_code, request.user)
             
             if result['success']:
@@ -220,7 +231,7 @@ class PaymentViewSet(viewsets.ModelViewSet):
         except Exception as e:
             return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
     
-    @action(detail=False, methods=['post'], permission_classes=[AllowAny])
+    @action(detail=False, methods=['post'])
     def process_cash_payment(self, request):
         """Process cash payment"""
         try:
@@ -228,12 +239,12 @@ class PaymentViewSet(viewsets.ModelViewSet):
             amount = float(request.data.get('amount', 0))
             notes = request.data.get('notes', '')
             
+            if amount <= 0:
+                return Response({'error': 'Amount must be greater than zero'}, status=status.HTTP_400_BAD_REQUEST)
+            
             bill = Bill.objects.get(id=bill_id)
             
-            # Handle anonymous user
-            user = request.user if request.user.is_authenticated else None
-            
-            result = PaymentService.process_cash_payment(bill, amount, user, notes)
+            result = PaymentService.process_cash_payment(bill, amount, request.user, notes)
             
             return Response(result, status=status.HTTP_201_CREATED)
                 

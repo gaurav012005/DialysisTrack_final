@@ -3,7 +3,8 @@ import { getAmbulances, createAmbulance, updateAmbulance, deleteAmbulance, getDr
 import { handleApiError } from '../utils/errorHandler';
 import LoadingSpinner from '../components/LoadingSpinner';
 import RefreshButton from '../components/RefreshButton';
-import { Truck, Users, Plus, Edit2, Trash2, Send, AlertTriangle, CheckCircle2, Wrench, XCircle } from 'lucide-react';
+import { Truck, Users, Plus, Edit2, Trash2, Send, AlertTriangle, CheckCircle2, Wrench, XCircle, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 const AmbulanceManagement = () => {
     const [ambulances, setAmbulances] = useState([]);
@@ -25,9 +26,14 @@ const AmbulanceManagement = () => {
                 getDrivers(),
                 getRides()
             ]);
-            setAmbulances(ambRes.data?.results || ambRes.data || []);
-            setDrivers(drvRes.data?.results || drvRes.data || []);
-            setRides(rideRes.data?.results || rideRes.data || []);
+            const ambData = ambRes.data?.results || ambRes.data;
+            setAmbulances(Array.isArray(ambData) ? ambData : []);
+            
+            const drvData = drvRes.data?.results || drvRes.data;
+            setDrivers(Array.isArray(drvData) ? drvData : []);
+            
+            const rideData = rideRes.data?.results || rideRes.data;
+            setRides(Array.isArray(rideData) ? rideData : []);
         } catch (error) {
             handleApiError(error);
         } finally {
@@ -296,7 +302,17 @@ const AmbulanceManagement = () => {
                                         <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{ride.ambulance_number}</td>
                                         <td className="px-6 py-4 text-sm text-gray-600 dark:text-gray-300">{ride.patient_name}</td>
                                         <td className="px-6 py-4">{getStatusBadge(ride.status)}</td>
-                                        <td className="px-6 py-4 text-sm text-gray-500">{new Date(ride.created_at).toLocaleString()}</td>
+                                        <td className="px-6 py-4 text-sm text-gray-500">
+                                            <div className="flex items-center justify-between">
+                                                <span>{new Date(ride.created_at).toLocaleString()}</span>
+                                                <Link
+                                                    to={`/track-ambulance/${ride.id}`}
+                                                    className="text-cyan-600 hover:text-cyan-800 dark:text-cyan-400 font-medium ml-4 text-sm flex items-center gap-1"
+                                                >
+                                                    <MapPin className="w-4 h-4" /> Track
+                                                </Link>
+                                            </div>
+                                        </td>
                                     </tr>
                                 ))}
                                 {rides.length === 0 && (

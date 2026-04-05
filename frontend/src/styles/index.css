@@ -291,13 +291,21 @@ body::after {
 
 .input-field {
   width: 100%;
-  padding: 0.75rem 1rem;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
   border-radius: 0.75rem;
   transition: all 0.3s ease;
   background: var(--bg-primary);
   border: 2px solid var(--border-secondary);
   box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.05);
   color: var(--text-primary);
+}
+
+/* Inputs inside a .relative container have an icon — add left padding */
+.relative > .input-field {
+  padding-left: 2.5rem;
 }
 
 .dark .input-field {
@@ -493,4 +501,25 @@ body::after {
     width: 4px;
     height: 4px;
   }
+}
+
+/* ==========================================
+   Toast Notification Overrides
+   ========================================== */
+div[role="status"] {
+  max-width: 380px !important;
+  word-break: break-word !important;
+}
+
+/* Toast container - always on top */
+div[style*="z-index"] > div[style*="left:"] {
+  z-index: 99999 !important;
+}
+
+/* Make sure toasts are readable on dark mode */
+.dark div[role="status"] {
+  background: #1e293b !important;
+  color: #e2e8f0 !important;
+  border: 1px solid #334155 !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
 }

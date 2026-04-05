@@ -4,12 +4,14 @@ import AddPatientToQueueModal from '../components/AddPatientToQueueModal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import EmptyState from '../components/EmptyState';
 import RefreshButton from '../components/RefreshButton';
-import { AlertTriangle } from 'lucide-react';
+import { AlertTriangle, Search } from 'lucide-react';
 
 const Queue = () => {
   const [queue, setQueue] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     fetchQueue();
@@ -159,20 +161,56 @@ const Queue = () => {
     }
   };
 
-  const emergencyCases = queue.filter(item =>
+  // Apply search & filter
+  const searchFiltered = queue.filter(item => {
+    const patientName = `${item.patient?.first_name || ''} ${item.patient?.last_name || ''}`.toLowerCase();
+    const matchesSearch = !searchTerm || patientName.includes(searchTerm.toLowerCase());
+    const matchesStatus = statusFilter === 'all' || item.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const emergencyCases = searchFiltered.filter(item =>
     item.priority === 'emergency' || item.patient?.is_emergency
   ).sort((a, b) => new Date(a.check_in_time) - new Date(b.check_in_time));
 
-  const regularCases = queue.filter(item =>
+  const regularCases = searchFiltered.filter(item =>
     item.priority !== 'emergency' && !item.patient?.is_emergency
   ).sort((a, b) => new Date(a.check_in_time) - new Date(b.check_in_time));
 
   return (
     <div className="space-y-6">
       {/* Page Header */}
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Queue Management</h1>
-        <p className="text-gray-600 text-sm sm:text-base">Real-time dialysis queue and patient status</p>
+      <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Queue Management</h1>
+          <p className="text-gray-600 text-sm sm:text-base">Real-time dialysis queue and patient status</p>
+        </div>
+      </div>
+
+      {/* Search & Filters */}
+      <div className="card">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1 relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              type="text"
+              placeholder="Search by patient name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input-field pl-10"
+            />
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="input-field w-auto"
+          >
+            <option value="all">All Status</option>
+            <option value="waiting">Waiting</option>
+            <option value="in_progress">In Progress</option>
+            <option value="completed">Completed</option>
+          </select>
+        </div>
       </div>
 
       {/* Queue Stats */}

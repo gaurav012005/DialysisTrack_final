@@ -99,7 +99,7 @@ npm run dev
 
 | Role | Name | Email | Password | Access Level |
 |------|------|-------|----------|--------------|
-| **👑 Admin** | System Administrator | admin@dialysis.com | admin123 | Full system access + Django Admin |
+| **👑 Admin** | System Administrator | admin@dialysis.com | Admin@2o26 | Full system access + Django Admin |or admin1@gmail.com admin2005@
 | **👨‍⚕️ Doctor 1** | Dr. John Smith | dr.smith@dialysis.com | staff123 | Patient records, queue, reports |
 | **👨‍⚕️ Doctor 2** | Dr. Sarah Johnson | dr.johnson@dialysis.com | staff123 | Patient records, queue, reports |
 | **👩‍⚕️ Nurse 1** | Emily Wilson | nurse.wilson@dialysis.com | staff123 | Queue management, patient updates |
@@ -365,14 +365,24 @@ Your Dialysis Queue Management System is ready with:
 
 ✅ **MySQL Database** - Connected with sample data  
 ✅ **User Authentication** - JWT-based login  
-✅ **Role-Based Access** - 6 roles (Admin, Doctor, Nurse, Technician, Receptionist, Patient)  
+✅ **Role-Based Access** - 7 roles (Admin, Doctor, Nurse, Technician, Receptionist, Patient, Driver)  
 ✅ **Full CRUD Operations** - Add/Edit/Delete patients, queue, machines  
 ✅ **Real-Time Updates** - Live status changes  
 ✅ **Professional UI** - Loading states, notifications, error handling  
-✅ **Sample Data Ready** - 6 patients, 6 machines, appointments, queue, billing
+✅ **Sample Data Ready** - Patients, machines, appointments, queue, billing  
+✅ **Two-Factor Authentication** - Mandatory 2FA for all staff  
+✅ **🚑 Fleet Management** - Ambulance tracking with live GPS  
+
+### 🆕 **Version 2.0 Features:**
+✅ **📧 Notifications** - Bell icon in navbar with unread badges  
+✅ **🔑 Forgot Password** - Token-based recovery from login page  
+✅ **📝 Patient Registration** - Self-signup at `/register`  
+✅ **📈 Real Chart Data** - Reports pull live data from database  
+✅ **🛡️ Audit Log** - Track all user actions at `/audit-logs`  
+✅ **🔍 Search & Filter** - On all listing pages (Queue, Staff, Machines, Sessions, Billing)  
 
 **🌐 Access:** http://localhost:5173  
-**🔑 Login:** admin@dialysis.com / admin123
+**🔑 Login:** admin@dialysis.com / Admin@2026
 
 **📊 Database Contents:**
 - 1 Admin user + 7 Staff members + 6 Patients
@@ -380,5 +390,6 @@ Your Dialysis Queue Management System is ready with:
 - Sample Appointments scheduled
 - Active Queue entries
 - Sample Billing records
+- Notifications, Audit Logs, Password Reset tokens (new!)
 
 **Start managing your dialysis center efficiently!** 🏥

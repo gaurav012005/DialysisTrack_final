@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { getMyRides, updateRideStatus } from '../api/fleet';
+import { getMyRides, updateRideStatus, updateRideLocation } from '../api/fleet';
 import { handleApiError } from '../utils/errorHandler';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { Navigation, MapPin, CheckCircle2, Phone, Radio, AlertTriangle, Truck } from 'lucide-react';
@@ -10,6 +10,7 @@ const DriverDashboard = () => {
     const [rides, setRides] = useState([]);
     const [loading, setLoading] = useState(true);
     const [broadcasting, setBroadcasting] = useState(false);
+    const [broadcastMode, setBroadcastMode] = useState(null); // 'websocket' | 'http'
     const [currentLocation, setCurrentLocation] = useState(null);
     const [simulated, setSimulated] = useState(false);
     const wsRef = useRef(null);
@@ -45,61 +46,105 @@ const DriverDashboard = () => {
         }
     };
 
-    const startBroadcasting = useCallback((rideId) => {
-        // Connect WebSocket
-        const wsUrl = `ws://localhost:8000/ws/location/${rideId}/`;
-        const ws = new WebSocket(wsUrl);
-        wsRef.current = ws;
-
-        ws.onopen = () => {
-            console.log('[GPS] WebSocket connected');
-            setBroadcasting(true);
-
-            if (simulated) {
-                // Simulate GPS for testing
-                let lat = 19.0760;
-                let lng = 72.8777;
-                const interval = setInterval(() => {
-                    lat += (Math.random() - 0.5) * 0.001;
-                    lng += (Math.random() - 0.5) * 0.001;
-                    setCurrentLocation({ lat, lng });
-                    if (ws.readyState === WebSocket.OPEN) {
-                        ws.send(JSON.stringify({ lat, lng }));
-                    }
-                }, 2000);
-                watchIdRef.current = interval;
+    const startLocationWatch = useCallback((rideId, sendFn) => {
+        if (simulated) {
+            // Simulate GPS for testing
+            let lat = 19.0760;
+            let lng = 72.8777;
+            const interval = setInterval(() => {
+                lat += (Math.random() - 0.5) * 0.001;
+                lng += (Math.random() - 0.5) * 0.001;
+                setCurrentLocation({ lat, lng });
+                sendFn({ lat, lng });
+            }, 2000);
+            watchIdRef.current = interval;
+        } else {
+            // Real GPS
+            if ('geolocation' in navigator) {
+                watchIdRef.current = navigator.geolocation.watchPosition(
+                    (pos) => {
+                        const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                        setCurrentLocation(loc);
+                        sendFn(loc);
+                    },
+                    (err) => {
+                        console.error('[GPS] Error:', err.message);
+                        alert('GPS access denied. Enable location services or use simulated mode.');
+                    },
+                    { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
+                );
             } else {
-                // Real GPS
-                if ('geolocation' in navigator) {
-                    watchIdRef.current = navigator.geolocation.watchPosition(
-                        (pos) => {
-                            const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
-                            setCurrentLocation(loc);
-                            if (ws.readyState === WebSocket.OPEN) {
-                                ws.send(JSON.stringify(loc));
-                            }
-                        },
-                        (err) => {
-                            console.error('[GPS] Error:', err.message);
-                            alert('GPS access denied. Enable location services or use simulated mode.');
-                        },
-                        { enableHighAccuracy: true, maximumAge: 5000, timeout: 10000 }
-                    );
-                } else {
-                    alert('Geolocation is not supported by your browser.');
-                }
+                alert('Geolocation is not supported by your browser.');
+            }
+        }
+    }, [simulated]);
+
+    const startHttpBroadcasting = useCallback((rideId) => {
+        console.log('[GPS] Starting HTTP broadcasting for ride', rideId);
+        setBroadcasting(true);
+        setBroadcastMode('http');
+
+        const sendViaHttp = async (loc) => {
+            try {
+                await updateRideLocation(rideId, loc);
+            } catch (err) {
+                console.error('[GPS] HTTP send error:', err);
             }
         };
 
-        ws.onclose = () => {
-            console.log('[GPS] WebSocket disconnected');
-            setBroadcasting(false);
-        };
+        startLocationWatch(rideId, sendViaHttp);
+    }, [startLocationWatch]);
 
-        ws.onerror = (err) => {
-            console.error('[GPS] WebSocket error:', err);
-        };
-    }, [simulated]);
+    const startBroadcasting = useCallback((rideId) => {
+        // Try WebSocket first
+        const wsUrl = `ws://localhost:8000/ws/location/${rideId}/`;
+
+        try {
+            const ws = new WebSocket(wsUrl);
+            wsRef.current = ws;
+
+            const connectionTimeout = setTimeout(() => {
+                if (ws.readyState !== WebSocket.OPEN) {
+                    console.log('[GPS] WebSocket timeout, falling back to HTTP');
+                    ws.close();
+                    startHttpBroadcasting(rideId);
+                }
+            }, 5000);
+
+            ws.onopen = () => {
+                clearTimeout(connectionTimeout);
+                console.log('[GPS] WebSocket connected');
+                setBroadcasting(true);
+                setBroadcastMode('websocket');
+
+                const sendViaWs = (loc) => {
+                    if (ws.readyState === WebSocket.OPEN) {
+                        ws.send(JSON.stringify(loc));
+                    }
+                };
+
+                startLocationWatch(rideId, sendViaWs);
+            };
+
+            ws.onclose = () => {
+                clearTimeout(connectionTimeout);
+                console.log('[GPS] WebSocket disconnected');
+                // Don't stop broadcasting if we can fallback to HTTP
+                if (broadcasting && broadcastMode === 'websocket') {
+                    console.log('[GPS] Switching to HTTP fallback...');
+                    startHttpBroadcasting(rideId);
+                }
+            };
+
+            ws.onerror = (err) => {
+                clearTimeout(connectionTimeout);
+                console.error('[GPS] WebSocket error:', err);
+            };
+        } catch (err) {
+            console.error('[GPS] WebSocket creation failed, using HTTP');
+            startHttpBroadcasting(rideId);
+        }
+    }, [simulated, startLocationWatch, startHttpBroadcasting, broadcasting, broadcastMode]);
 
     const stopBroadcasting = useCallback(() => {
         if (wsRef.current) {
@@ -115,6 +160,7 @@ const DriverDashboard = () => {
             watchIdRef.current = null;
         }
         setBroadcasting(false);
+        setBroadcastMode(null);
         setCurrentLocation(null);
     }, [simulated]);
 
@@ -222,7 +268,9 @@ const DriverDashboard = () => {
                             <div className="space-y-3">
                                 <div className="flex items-center gap-2 text-green-600 dark:text-green-400">
                                     <Radio className="w-5 h-5 animate-pulse" />
-                                    <span className="font-medium">Broadcasting live location...</span>
+                                    <span className="font-medium">
+                                        Broadcasting live location{broadcastMode === 'http' ? ' (HTTP)' : ' (WebSocket)'}...
+                                    </span>
                                 </div>
                                 {currentLocation && (
                                     <div className="text-sm text-gray-500 dark:text-gray-400 font-mono bg-gray-50 dark:bg-slate-800 p-2 rounded">

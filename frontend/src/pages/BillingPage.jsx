@@ -7,6 +7,8 @@ const BillingPage = () => {
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [stats, setStats] = useState({});
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     fetchBills();
@@ -149,7 +151,27 @@ const BillingPage = () => {
         {/* Bills Table */}
         <div className="bg-white shadow rounded-lg">
           <div className="px-6 py-4 border-b border-gray-200">
-            <h2 className="text-lg font-medium text-gray-900">Bills & Payments</h2>
+            <h2 className="text-lg font-medium text-gray-900 mb-3">Bills & Payments</h2>
+            <div className="flex flex-col sm:flex-row gap-3">
+              <input
+                type="text"
+                placeholder="🔍 Search by bill no. or patient..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="input-field flex-1"
+              />
+              <select
+                value={statusFilter}
+                onChange={(e) => setStatusFilter(e.target.value)}
+                className="input-field w-auto"
+              >
+                <option value="">All Status</option>
+                <option value="pending">Pending</option>
+                <option value="paid">Paid</option>
+                <option value="overdue">Overdue</option>
+                <option value="partial">Partial</option>
+              </select>
+            </div>
           </div>
 
           {bills.length === 0 ? (
@@ -186,7 +208,15 @@ const BillingPage = () => {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {bills.map((bill) => (
+                {bills
+                  .filter(bill => {
+                    const matchesSearch = !searchTerm || 
+                      (bill.bill_number || '').toLowerCase().includes(searchTerm.toLowerCase()) ||
+                      (bill.patient_name || '').toLowerCase().includes(searchTerm.toLowerCase());
+                    const matchesStatus = !statusFilter || bill.status === statusFilter;
+                    return matchesSearch && matchesStatus;
+                  })
+                  .map((bill) => (
                     <tr key={bill.id}>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {bill.bill_number}

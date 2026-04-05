@@ -7,9 +7,11 @@ import { ClipboardList, FileText, FileSpreadsheet, FileDown, RefreshCw, Settings
 const Reports = () => {
   const [loading, setLoading] = useState(false);
   const [stats, setStats] = useState(null);
+  const [chartData, setChartData] = useState({ weekly_trends: [], machine_utilization: [] });
 
   useEffect(() => {
     fetchDashboardStats();
+    fetchChartData();
   }, []);
 
   const fetchDashboardStats = async () => {
@@ -28,6 +30,25 @@ const Reports = () => {
       }
     } catch (error) {
       handleApiError(error);
+    }
+  };
+
+  const fetchChartData = async () => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch('http://localhost:8000/api/reports/chart-data/', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setChartData(data);
+      }
+    } catch (error) {
+      console.error('Chart data fetch error:', error);
     }
   };
 
@@ -124,18 +145,18 @@ const Reports = () => {
         </div>
       )}
 
-      {/* Charts Section */}
+      {/* Charts Section — Using REAL data */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Weekly Patient & Session Trends */}
         <div className="card">
           <h3 className="text-lg font-bold mb-4">Weekly Patient & Session Trends</h3>
           <ResponsiveContainer width="100%" height={300}>
             <LineChart
-              data={[
-                { name: 'Week 1', Patients: 48, Sessions: 52 },
-                { name: 'Week 2', Patients: 55, Sessions: 58 },
-                { name: 'Week 3', Patients: 52, Sessions: 55 },
-                { name: 'Week 4', Patients: 60, Sessions: 62 },
+              data={chartData.weekly_trends.length > 0 ? chartData.weekly_trends : [
+                { name: 'Week 1', Patients: 0, Sessions: 0 },
+                { name: 'Week 2', Patients: 0, Sessions: 0 },
+                { name: 'Week 3', Patients: 0, Sessions: 0 },
+                { name: 'Week 4', Patients: 0, Sessions: 0 },
               ]}
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >
@@ -152,15 +173,11 @@ const Reports = () => {
 
         {/* Machine Utilization */}
         <div className="card">
-          <h3 className="text-lg font-bold mb-4">Machine Utilization (%)</h3>
+          <h3 className="text-lg font-bold mb-4">Machine Utilization (Sessions)</h3>
           <ResponsiveContainer width="100%" height={300}>
             <BarChart
-              data={[
-                { name: 'M1', utilization: 85 },
-                { name: 'M2', utilization: 92 },
-                { name: 'M3', utilization: 78 },
-                { name: 'M4', utilization: 88 },
-                { name: 'M5', utilization: 95 },
+              data={chartData.machine_utilization.length > 0 ? chartData.machine_utilization : [
+                { name: 'No Data', utilization: 0 },
               ]}
               margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
             >

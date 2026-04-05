@@ -27,7 +27,7 @@ urlpatterns = [
     path('api/staff/', include('staff.urls')),
     path('api/reports/', include( 'reports.urls')),
     path('api/billing/', include('billing.urls')),
-    # path('api/notifications/', include('notifications.urls')),  # Already added elsewhere
+    path('api/notifications/', include('notifications.urls')),
     path('api/two-factor/', include('two_factor.urls')),
     path('api/fleet/', include('fleet.urls')),
     

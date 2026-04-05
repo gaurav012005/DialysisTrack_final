@@ -15,6 +15,8 @@ urlpatterns = [
     path('rides/patient-active/', views.patient_active_ride, name='patient-active-ride'),
     path('rides/<int:ride_id>/', views.ride_detail, name='ride-detail'),
     path('rides/<int:ride_id>/status/', views.update_ride_status, name='update-ride-status'),
+    path('rides/<int:ride_id>/location/', views.ride_location, name='ride-location'),
+    path('rides/<int:ride_id>/location/update/', views.update_ride_location, name='update-ride-location'),
 
     # Drivers
     path('drivers/', views.driver_list, name='driver-list'),

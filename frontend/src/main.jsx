@@ -19,10 +19,47 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Toaster
             position="top-right"
             reverseOrder={false}
-            gutter={8}
+            gutter={12}
+            containerStyle={{
+              top: 60,
+              right: 16,
+              zIndex: 99999,
+            }}
             toastOptions={{
-              className: '',
               duration: 3000,
+              style: {
+                maxWidth: '380px',
+                fontSize: '14px',
+                fontWeight: 500,
+                padding: '12px 16px',
+                borderRadius: '10px',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.25)',
+                background: '#1e293b',
+                color: '#e2e8f0',
+              },
+              success: {
+                style: {
+                  background: '#065f46',
+                  color: '#d1fae5',
+                  border: '1px solid #10b981',
+                },
+                iconTheme: {
+                  primary: '#10b981',
+                  secondary: '#d1fae5',
+                },
+              },
+              error: {
+                duration: 4000,
+                style: {
+                  background: '#7f1d1d',
+                  color: '#fecaca',
+                  border: '1px solid #ef4444',
+                },
+                iconTheme: {
+                  primary: '#ef4444',
+                  secondary: '#fecaca',
+                },
+              },
             }}
           />
         </AuthProvider>

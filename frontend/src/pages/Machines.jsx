@@ -10,6 +10,8 @@ const Machines = () => {
   const [machines, setMachines] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('');
 
   useEffect(() => {
     fetchMachines();
@@ -179,31 +181,63 @@ const Machines = () => {
         </div>
       </div>
 
-      {/* Machines Grid */}
-      {machines.length === 0 ? (
-        <EmptyState
-          title="No Machines Found"
-          message="No dialysis machines are currently registered in the system."
-          actionButton={
-            <button
-              onClick={() => setShowAddModal(true)}
-              className="btn-primary"
-            >
-              Add First Machine
-            </button>
-          }
-        />
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-          {machines.map(machine => (
-            <MachineCard
-              key={machine.id}
-              machine={machine}
-              onStatusChange={updateMachineStatus}
+      {/* Search & Filter */}
+      <div className="card">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1">
+            <input
+              type="text"
+              placeholder="🔍 Search machines by name..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="input-field"
             />
-          ))}
+          </div>
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="input-field w-auto"
+          >
+            <option value="">All Status</option>
+            <option value="available">Available</option>
+            <option value="in-use">In Use</option>
+            <option value="maintenance">Maintenance</option>
+          </select>
         </div>
-      )}
+      </div>
+
+      {/* Machines Grid */}
+      {(() => {
+        const filtered = machines.filter(m => {
+          const matchesSearch = !searchTerm || m.name.toLowerCase().includes(searchTerm.toLowerCase());
+          const matchesStatus = !statusFilter || m.status === statusFilter;
+          return matchesSearch && matchesStatus;
+        });
+
+        if (filtered.length === 0) {
+          return (
+            <EmptyState
+              title="No Machines Found"
+              message={searchTerm || statusFilter ? 'No machines match your filters.' : 'No dialysis machines registered.'}
+              actionButton={
+                <button onClick={() => setShowAddModal(true)} className="btn-primary">Add First Machine</button>
+              }
+            />
+          );
+        }
+
+        return (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            {filtered.map(machine => (
+              <MachineCard
+                key={machine.id}
+                machine={machine}
+                onStatusChange={updateMachineStatus}
+              />
+            ))}
+          </div>
+        );
+      })()}
 
       {/* Add Machine Modal */}
       <AddMachineModal

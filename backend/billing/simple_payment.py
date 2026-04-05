@@ -1,27 +1,50 @@
+import logging
+
 from rest_framework.decorators import api_view, permission_classes
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
 from datetime import datetime
-from decimal import Decimal
+from decimal import Decimal, InvalidOperation
 import uuid
 
 from .models import Bill, Payment
 from patients.models import Patient
 
+logger = logging.getLogger(__name__)
+
 
 @api_view(['POST'])
-@permission_classes([AllowAny])
+@permission_classes([IsAuthenticated])
 def simple_cash_payment(request):
-    """Simple cash payment - no authentication required"""
+    """Simple cash payment - authentication required"""
     try:
         # Get data
-        patient_id = request.data.get('patient_id', 1)
-        amount = Decimal(str(request.data.get('amount', 0)))
+        patient_id = request.data.get('patient_id')
         notes = request.data.get('notes', 'Walk-in cash payment')
-        
-        # Get or create patient
+
+        if not patient_id:
+            return Response({
+                'success': False,
+                'error': 'Patient ID is required.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            amount = Decimal(str(request.data.get('amount', 0)))
+        except (InvalidOperation, ValueError):
+            return Response({
+                'success': False,
+                'error': 'Invalid amount format.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        if amount <= 0:
+            return Response({
+                'success': False,
+                'error': 'Amount must be greater than zero.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Get patient
         try:
             patient = Patient.objects.get(id=patient_id)
         except Patient.DoesNotExist:
@@ -50,7 +73,10 @@ def simple_cash_payment(request):
             )
             
             # Create payment
-            transaction_id = f"CSH{datetime.now().strftime('%Y%m%d%H%M%S')}{str(uuid.uuid4())[:4].upper()}"
+            import random
+            import string
+            rand_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
+            transaction_id = f"CSH{datetime.now().strftime('%Y%m%d%H%M%S')}{rand_suffix}"
             payment = Payment.objects.create(
                 bill=bill,
                 amount=amount,
@@ -58,10 +84,10 @@ def simple_cash_payment(request):
                 status='completed',
                 transaction_id=transaction_id,
                 notes=notes,
-                processed_by=None,
+                processed_by=request.user,
                 gateway_response={
                     'status': 'SUCCESS',
-                    'received_by': 'Reception',
+                    'received_by': request.user.get_full_name() or request.user.username,
                     'timestamp': datetime.now().isoformat()
                 }
             )
@@ -76,7 +102,8 @@ def simple_cash_payment(request):
         }, status=status.HTTP_201_CREATED)
         
     except Exception as e:
+        logger.exception('Simple cash payment error')
         return Response({
             'success': False,
-            'error': str(e)
+            'error': 'An unexpected error occurred while processing payment.'
         }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

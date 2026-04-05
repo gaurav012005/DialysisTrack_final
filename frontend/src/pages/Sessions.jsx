@@ -12,6 +12,7 @@ const Sessions = () => {
   const [selectedSession, setSelectedSession] = useState(null);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     loadSessions();
@@ -30,8 +31,11 @@ const Sessions = () => {
   };
 
   const filteredSessions = sessions.filter(session => {
-    if (filter === 'all') return true;
-    return session.queue_details?.status === filter;
+    const matchesFilter = filter === 'all' || session.queue_details?.status === filter;
+    const patientName = `${session.patient_details?.first_name || ''} ${session.patient_details?.last_name || ''}`.toLowerCase();
+    const patientId = (session.patient_details?.patient_id || '').toLowerCase();
+    const matchesSearch = !searchTerm || patientName.includes(searchTerm.toLowerCase()) || patientId.includes(searchTerm.toLowerCase());
+    return matchesFilter && matchesSearch;
   });
 
   return (
@@ -39,25 +43,21 @@ const Sessions = () => {
       <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mb-6">
         <h1 className="text-2xl sm:text-3xl font-bold">Dialysis Sessions</h1>
         <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => setFilter('all')}
-            className={filter === 'all' ? 'btn-primary' : 'btn-secondary'}
-          >
-            All
-          </button>
-          <button
-            onClick={() => setFilter('in_progress')}
-            className={filter === 'in_progress' ? 'btn-primary' : 'btn-secondary'}
-          >
-            In Progress
-          </button>
-          <button
-            onClick={() => setFilter('completed')}
-            className={filter === 'completed' ? 'btn-primary' : 'btn-secondary'}
-          >
-            Completed
-          </button>
+          <button onClick={() => setFilter('all')} className={filter === 'all' ? 'btn-primary' : 'btn-secondary'}>All</button>
+          <button onClick={() => setFilter('in_progress')} className={filter === 'in_progress' ? 'btn-primary' : 'btn-secondary'}>In Progress</button>
+          <button onClick={() => setFilter('completed')} className={filter === 'completed' ? 'btn-primary' : 'btn-secondary'}>Completed</button>
         </div>
+      </div>
+
+      {/* Search */}
+      <div className="mb-6">
+        <input
+          type="text"
+          placeholder="🔍 Search by patient name or ID..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="input-field"
+        />
       </div>
 
       {loading ? (

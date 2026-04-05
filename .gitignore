@@ -57,3 +57,14 @@ Thumbs.db
 # Build outputs
 /frontend/dist/
 /backend/staticfiles/
+# Generated blackbook files
+Documentation/blackbook/DialysisTrack_Blackbook.html
+Documentation/blackbook/DialysisTrack_Blackbook.pdf
+Documentation/blackbook/node_modules/
+Documentation/blackbook/package.json
+Documentation/blackbook/package-lock.json
+Documentation/blackbook/generate_pdf.py
+Documentation/blackbook/html_to_pdf.js
+*.pdf
+.pyre_configuration
+pyrightconfig.json

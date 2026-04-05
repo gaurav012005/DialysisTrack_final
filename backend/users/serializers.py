@@ -3,7 +3,7 @@ from django.contrib.auth import authenticate
 from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, required=False, min_length=6)
+    password = serializers.CharField(write_only=True, required=False, min_length=8)
     
     class Meta:
         model = User
@@ -13,6 +13,14 @@ class UserSerializer(serializers.ModelSerializer):
     
     def update(self, instance, validated_data):
         password = validated_data.pop('password', None)
+        
+        # Only admin can change role, is_active, department
+        request = self.context.get('request')
+        if request and hasattr(request, 'user') and request.user.role != 'admin':
+            validated_data.pop('role', None)
+            validated_data.pop('is_active', None)
+            validated_data.pop('department', None)
+        
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         if password:
@@ -21,15 +29,17 @@ class UserSerializer(serializers.ModelSerializer):
         return instance
 
 class UserRegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=6)
+    password = serializers.CharField(write_only=True, min_length=8)
     
     class Meta:
         model = User
         fields = ('username', 'email', 'password', 'first_name', 'last_name', 
-                 'role', 'department', 'phone_number')
+                 'phone_number')
     
     def create(self, validated_data):
         password = validated_data.pop('password')
+        # Force default role to 'patient' — role must be assigned by admin
+        validated_data['role'] = 'patient'
         user = User.objects.create_user(**validated_data)
         user.set_password(password)
         user.save()

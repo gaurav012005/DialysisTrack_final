@@ -1606,11 +1606,43 @@ Generate Report:
 ✅ **Reports** - Comprehensive analytics
 ✅ **Django Admin** - Powerful backend tool
 ✅ **Responsive Design** - Works everywhere
+✅ **🚑 Fleet / Ambulance Tracking** - Live GPS, dispatch, driver dashboard
+
+### 🆕 Version 2.0 Features
+
+✅ **📧 Notifications** - Bell icon in navbar, unread badges, mark-all-read, email alerts
+✅ **🔑 Forgot Password / Reset** - Token-based password recovery from login page
+✅ **📝 Patient Self-Registration** - Public `/register` page, creates patient accounts
+✅ **📈 Real Chart Data** - Reports charts pull live weekly trends & machine utilization from DB
+✅ **🛡️ Audit Log** - Admin page at `/audit-logs` tracks all user actions with search & filters
+✅ **🔍 Search & Filter on All Pages** - Added to Queue, Machines, Staff, Sessions, Billing
+
+### New Pages Added (v2.0)
+
+| Page | URL | Access |
+|------|-----|--------|
+| **Forgot Password** | `/forgot-password` | Public |
+| **Reset Password** | `/reset-password` | Public |
+| **Patient Registration** | `/register` | Public |
+| **Audit Logs** | `/audit-logs` | Admin / Staff with Reports access |
+
+### New API Endpoints (v2.0)
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/api/notifications/` | GET | List user notifications |
+| `/api/notifications/mark-all-read/` | POST | Mark all notifications as read |
+| `/api/notifications/audit-logs/` | GET | View audit logs (admin only) |
+| `/api/notifications/forgot-password/` | POST | Request password reset token |
+| `/api/notifications/reset-password/` | POST | Reset password with token |
+| `/api/reports/chart-data/` | GET | Weekly trends & machine utilization |
+| `/api/auth/register/` | POST | Patient self-registration |
 
 **Every feature is working and ready to use!** 🚀
 
 ---
 
-**Last Updated:** January 26, 2026
-**Version:** 1.0
+**Last Updated:** March 21, 2026
+**Version:** 2.0
 **Status:** ✅ All Features Working
+

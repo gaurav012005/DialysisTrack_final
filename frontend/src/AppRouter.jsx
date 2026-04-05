@@ -5,6 +5,9 @@ import { usePermissions } from './components/RoleGuard';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
 import Login from './pages/Login';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
+import PatientRegister from './pages/PatientRegister';
 import Dashboard from './pages/Dashboard';
 import Patients from './pages/Patients';
 import Queue from './pages/Queue';
@@ -20,6 +23,7 @@ import NotFound from './pages/NotFound';
 import AmbulanceManagement from './pages/AmbulanceManagement';
 import DriverDashboard from './pages/DriverDashboard';
 import TrackAmbulance from './pages/TrackAmbulance';
+import AuditLogs from './pages/AuditLogs';
 
 // Protected Route with Role Check and 2FA Setup Enforcement
 const ProtectedRoute = ({ children, requiredModule }) => {
@@ -152,6 +156,9 @@ const AppRouter = () => {
       <Routes>
         {/* Public Routes */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+        <Route path="/forgot-password" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password" element={<PublicRoute><ResetPassword /></PublicRoute>} />
+        <Route path="/register" element={<PublicRoute><PatientRegister /></PublicRoute>} />
 
         {/* Protected Routes */}
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>
@@ -276,6 +283,15 @@ const AppRouter = () => {
             element={
               <ProtectedRoute>
                 <TrackAmbulance />
+              </ProtectedRoute>
+            }
+          />
+          {/* Audit Logs (Admin Only) */}
+          <Route
+            path="audit-logs"
+            element={
+              <ProtectedRoute requiredModule="reports">
+                <AuditLogs />
               </ProtectedRoute>
             }
           />

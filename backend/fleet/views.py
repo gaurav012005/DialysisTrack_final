@@ -1,3 +1,5 @@
+import logging
+
 from rest_framework import generics, status
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
@@ -7,6 +9,8 @@ from django.shortcuts import get_object_or_404
 from .models import Ambulance, AmbulanceRide
 from .serializers import AmbulanceSerializer, AmbulanceRideSerializer
 from users.models import User
+
+logger = logging.getLogger(__name__)
 
 
 # ──── Ambulance CRUD ────
@@ -157,6 +161,39 @@ def patient_active_ride(request):
         return Response({'detail': 'No active ride'}, status=status.HTTP_404_NOT_FOUND)
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def ride_location(request, ride_id):
+    """Get live driver location for a ride (HTTP polling fallback)"""
+    ride = get_object_or_404(AmbulanceRide, id=ride_id)
+    return Response({
+        'lat': float(ride.driver_lat) if ride.driver_lat else None,
+        'lng': float(ride.driver_lng) if ride.driver_lng else None,
+        'status': ride.status,
+        'updated_at': ride.updated_at.isoformat() if ride.updated_at else None,
+    })
+
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def update_ride_location(request, ride_id):
+    """Update driver location via REST API (fallback when WebSocket unavailable)"""
+    ride = get_object_or_404(AmbulanceRide, id=ride_id)
+    lat = request.data.get('lat')
+    lng = request.data.get('lng')
+
+    if lat is None or lng is None:
+        return Response({'detail': 'lat and lng are required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    try:
+        ride.driver_lat = float(lat)
+        ride.driver_lng = float(lng)
+        ride.save(update_fields=['driver_lat', 'driver_lng', 'updated_at'])
+        return Response({'detail': 'Location updated'})
+    except (ValueError, TypeError):
+        return Response({'detail': 'Invalid coordinates'}, status=status.HTTP_400_BAD_REQUEST)
+
+
 # ──── Driver CRUD ────
 
 @api_view(['GET'])
@@ -179,13 +216,27 @@ def driver_list(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_driver(request):
-    """Create a new driver user"""
+    """Create a new driver user (Admin/Receptionist only)"""
+    if request.user.role not in ['admin', 'receptionist']:
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
     data = request.data
+    password = data.get('password')
+    email = data.get('email', '')
+
+    if not password or len(password) < 8:
+        return Response(
+            {'detail': 'Password is required and must be at least 8 characters'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+    if not email:
+        return Response({'detail': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
+
     try:
         user = User.objects.create_user(
-            username=data.get('email', ''),
-            email=data.get('email', ''),
-            password=data.get('password', 'Driver@123'),
+            username=email,
+            email=email,
+            password=password,
             first_name=data.get('first_name', ''),
             last_name=data.get('last_name', ''),
             role='driver',
@@ -200,13 +251,17 @@ def create_driver(request):
             'phone_number': user.phone_number,
         }, status=status.HTTP_201_CREATED)
     except Exception as e:
-        return Response({'detail': str(e)}, status=status.HTTP_400_BAD_REQUEST)
+        logger.exception('Error creating driver')
+        return Response({'detail': 'Failed to create driver account.'}, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(['PUT'])
 @permission_classes([IsAuthenticated])
 def update_driver(request, driver_id):
-    """Update a driver user"""
+    """Update a driver user (Admin/Receptionist only)"""
+    if request.user.role not in ['admin', 'receptionist']:
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
     driver = get_object_or_404(User, id=driver_id, role='driver')
     data = request.data
     driver.first_name = data.get('first_name', driver.first_name)
@@ -227,7 +282,10 @@ def update_driver(request, driver_id):
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_driver(request, driver_id):
-    """Deactivate a driver"""
+    """Deactivate a driver (Admin only)"""
+    if request.user.role != 'admin':
+        return Response({'detail': 'Permission denied'}, status=status.HTTP_403_FORBIDDEN)
+
     driver = get_object_or_404(User, id=driver_id, role='driver')
     driver.is_active = False
     driver.save()

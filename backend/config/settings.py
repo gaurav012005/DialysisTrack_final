@@ -10,13 +10,15 @@ from decouple import config
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-your-secret-key-here')
+# In production, SECRET_KEY MUST be set via environment variable / .env file.
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
-
+#ALLOWED_HOSTS = ['*']  # tunnel mode
+ALLOWED_HOSTS = ['*']
+#cloudflare testing 
 # Application definition
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -183,9 +185,20 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
-CSRF_COOKIE_SECURE = False
-CSRF_COOKIE_HTTPONLY = False
-SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = not DEBUG
+CSRF_COOKIE_HTTPONLY = True
+SESSION_COOKIE_SECURE = not DEBUG
+SESSION_COOKIE_HTTPONLY = True
+
+# Security headers (production)
+if not DEBUG:
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = True
+    SECURE_SSL_REDIRECT = True
+    X_FRAME_OPTIONS = 'DENY'
 
 # Additional CORS headers
 CORS_ALLOW_HEADERS = [
@@ -222,6 +235,18 @@ if DEBUG:
         r"^http://localhost:\d+$",
         r"^http://127\.0\.0\.1:\d+$",
     ]
+
+# Email Configuration
+# Using console backend for development (prints emails to terminal)
+# For production, switch to SMTP:
+#   EMAIL_BACKEND = 'django.core.mail.backends.smtp.SmtpEmailBackend'
+#   EMAIL_HOST = 'smtp.gmail.com'
+#   EMAIL_PORT = 587
+#   EMAIL_USE_TLS = True
+#   EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+#   EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+DEFAULT_FROM_EMAIL = 'noreply@dialysistrack.com'
 
 # Custom user model
 AUTH_USER_MODEL = 'users.User'
