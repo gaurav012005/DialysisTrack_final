@@ -10,11 +10,13 @@ const AmbulanceManagement = () => {
     const [ambulances, setAmbulances] = useState([]);
     const [drivers, setDrivers] = useState([]);
     const [rides, setRides] = useState([]);
+    const [patients, setPatients] = useState([]);
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState('ambulances');
     const [showModal, setShowModal] = useState(null); // 'ambulance' | 'driver' | 'dispatch' | null
     const [editItem, setEditItem] = useState(null);
     const [formData, setFormData] = useState({});
+    const [message, setMessage] = useState(null); // { type: 'success'|'error', text: '' }
 
     useEffect(() => { loadData(); }, []);
 
@@ -26,6 +28,17 @@ const AmbulanceManagement = () => {
                 getDrivers(),
                 getRides()
             ]);
+            
+            // Also fetch patients for the dispatch dropdown
+            const token = localStorage.getItem('authToken');
+            const patRes = await fetch('http://localhost:8000/api/patients/', {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+            if (patRes.ok) {
+                const patData = await patRes.json();
+                setPatients(patData.results || patData || []);
+            }
+
             const ambData = ambRes.data?.results || ambRes.data;
             setAmbulances(Array.isArray(ambData) ? ambData : []);
             
@@ -72,14 +85,19 @@ const AmbulanceManagement = () => {
             if (editItem) {
                 await updateDriver(editItem.id, formData);
             } else {
-                await createDriver(formData);
+                // Require password on new driver; fall back to default if blank
+                const payload = { ...formData };
+                if (!payload.password) payload.password = 'Driver@123';
+                await createDriver(payload);
             }
             setShowModal(null);
             setEditItem(null);
             setFormData({});
+            setMessage({ type: 'success', text: editItem ? 'Driver updated successfully.' : 'Driver created successfully.' });
             loadData();
         } catch (error) {
-            handleApiError(error);
+            const detail = error?.response?.data?.detail || error?.message || 'Failed to save driver.';
+            setMessage({ type: 'error', text: detail });
         }
     };
 
@@ -87,6 +105,7 @@ const AmbulanceManagement = () => {
         if (!confirm('Deactivate this driver?')) return;
         try {
             await deleteDriver(id);
+            setMessage({ type: 'success', text: 'Driver deactivated successfully.' });
             loadData();
         } catch (error) {
             handleApiError(error);
@@ -94,13 +113,23 @@ const AmbulanceManagement = () => {
     };
 
     const handleDispatch = async () => {
+        if (!formData.ambulance) {
+            setMessage({ type: 'error', text: 'Please select an ambulance.' });
+            return;
+        }
+        if (!formData.patient) {
+            setMessage({ type: 'error', text: 'Please select a patient.' });
+            return;
+        }
         try {
             await dispatchAmbulance(formData);
             setShowModal(null);
             setFormData({});
+            setMessage({ type: 'success', text: '🚑 Ambulance dispatched successfully!' });
             loadData();
         } catch (error) {
-            handleApiError(error);
+            const detail = error?.response?.data?.detail || error?.message || 'Dispatch failed.';
+            setMessage({ type: 'error', text: detail });
         }
     };
 
@@ -122,6 +151,17 @@ const AmbulanceManagement = () => {
 
     return (
         <div className="space-y-6">
+            {/* Inline message banner */}
+            {message && (
+                <div className={`flex items-center justify-between px-4 py-3 rounded-lg text-sm font-medium ${
+                    message.type === 'success'
+                        ? 'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300 border border-green-200 dark:border-green-800'
+                        : 'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300 border border-red-200 dark:border-red-800'
+                }`}>
+                    <span>{message.text}</span>
+                    <button onClick={() => setMessage(null)} className="ml-4 opacity-60 hover:opacity-100 text-lg leading-none">&times;</button>
+                </div>
+            )}
             {/* Header */}
             <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                 <div>
@@ -391,13 +431,16 @@ const AmbulanceManagement = () => {
                                         <option key={a.id} value={a.id}>{a.vehicle_number} — {a.driver_name || 'No driver'}</option>
                                     ))}
                                 </select>
-                                <input
-                                    type="text"
-                                    placeholder="Patient ID"
+                                <select
                                     value={formData.patient || ''}
                                     onChange={(e) => setFormData({ ...formData, patient: e.target.value })}
                                     className="input-field"
-                                />
+                                >
+                                    <option value="">Select Patient</option>
+                                    {patients.map(p => (
+                                        <option key={p.id} value={p.id}>{p.first_name} {p.last_name} ({p.patient_id})</option>
+                                    ))}
+                                </select>
                                 <textarea
                                     placeholder="Pickup Address"
                                     value={formData.pickup_address || ''}

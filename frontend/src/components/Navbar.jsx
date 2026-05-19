@@ -6,17 +6,19 @@ import {
   Crown, Stethoscope, Heart, Wrench, ClipboardList,
   Building2, User, AlertTriangle, BarChart3, PlusCircle, Truck, Bell
 } from 'lucide-react';
+import { getNotifications, markAllNotificationsRead, markNotificationRead, createTestNotification } from '../api/notifications';
 
 const Navbar = ({ onMenuClick }) => {
   const { user, logout } = useAuth();
   const { userRole } = usePermissions();
   const [notifications, setNotifications] = useState([]);
   const [showNotifs, setShowNotifs] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
   const notifRef = useRef(null);
 
   useEffect(() => {
     fetchNotifications();
-    const interval = setInterval(fetchNotifications, 30000); // Poll every 30s
+    const interval = setInterval(fetchNotifications, 15000); // Poll every 15s
     return () => clearInterval(interval);
   }, []);
 
@@ -33,34 +35,44 @@ const Navbar = ({ onMenuClick }) => {
 
   const fetchNotifications = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      if (!token) return;
-      const res = await fetch('http://localhost:8000/api/notifications/', {
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setNotifications(data.notifications || []);
-      }
+      const res = await getNotifications();
+      const data = res.data;
+      // Handle both {notifications: [...]} and direct array
+      const list = Array.isArray(data)
+        ? data
+        : Array.isArray(data?.notifications)
+          ? data.notifications
+          : Array.isArray(data?.results)
+            ? data.results
+            : [];
+      setNotifications(list);
+      setUnreadCount(
+        data?.unread_count ?? list.filter(n => !n.is_read).length
+      );
     } catch (err) {
-      // silent fail
+      console.error('[Navbar] Notification fetch failed:', err?.response?.data || err.message);
     }
   };
 
   const markAllRead = async () => {
     try {
-      const token = localStorage.getItem('authToken');
-      await fetch('http://localhost:8000/api/notifications/mark-all-read/', {
-        method: 'POST',
-        headers: { 'Authorization': `Bearer ${token}` }
-      });
+      await markAllNotificationsRead();
       fetchNotifications();
     } catch (err) {
       // silent fail
     }
   };
 
-  const unreadCount = notifications.filter(n => !n.is_read).length;
+  const handleNotificationClick = async (n) => {
+    if (!n.is_read) {
+      try {
+        await markNotificationRead(n.id);
+        fetchNotifications();
+      } catch (err) {}
+    }
+  };
+
+
 
   const getRoleColor = (role) => {
     const colors = {
@@ -169,12 +181,27 @@ const Navbar = ({ onMenuClick }) => {
                   </div>
                   <div className="max-h-72 overflow-y-auto">
                     {notifications.length === 0 ? (
-                      <div className="p-6 text-center text-gray-400 text-sm">No notifications</div>
+                      <div className="p-6 text-center">
+                        <Bell className="w-8 h-8 text-gray-300 dark:text-slate-600 mx-auto mb-2" />
+                        <p className="text-gray-400 dark:text-gray-500 text-sm mb-3">No notifications yet</p>
+                        <button
+                          onClick={async () => {
+                            try { await createTestNotification(); await fetchNotifications(); } catch (e) {}
+                          }}
+                          className="text-xs text-cyan-600 dark:text-cyan-400 hover:underline border border-cyan-300 dark:border-cyan-700 px-3 py-1 rounded-full"
+                        >
+                          Send test notification
+                        </button>
+                      </div>
                     ) : (
                       notifications.slice(0, 10).map(n => (
-                        <div key={n.id} className={`px-4 py-3 border-b border-gray-100 dark:border-slate-700 text-sm ${
-                          n.is_read ? 'opacity-60' : 'bg-blue-50 dark:bg-blue-900/20'
-                        }`}>
+                        <div 
+                          key={n.id} 
+                          onClick={() => handleNotificationClick(n)}
+                          className={`px-4 py-3 border-b border-gray-100 dark:border-slate-700 text-sm cursor-pointer hover:bg-gray-50 dark:hover:bg-slate-700 transition-colors ${
+                            n.is_read ? 'opacity-60' : 'bg-blue-50 dark:bg-blue-900/20'
+                          }`}
+                        >
                           <div className="font-medium text-gray-800 dark:text-gray-200">{n.title}</div>
                           <div className="text-gray-500 dark:text-gray-400 text-xs mt-1 line-clamp-2">{n.message}</div>
                           <div className="text-gray-400 text-xs mt-1">{new Date(n.created_at).toLocaleString()}</div>

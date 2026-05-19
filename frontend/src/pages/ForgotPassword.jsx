@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
+import { forgotPassword } from '../api/notifications';
 
 const ForgotPassword = () => {
   const [email, setEmail] = useState('');
@@ -14,16 +15,11 @@ const ForgotPassword = () => {
     setLoading(true);
     setError('');
     try {
-      const res = await fetch('http://localhost:8000/api/notifications/forgot-password/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email })
-      });
-      const data = await res.json();
+      const res = await forgotPassword(email);
       setSent(true);
-      if (data.token) setToken(data.token); // Dev mode — shows token
-    } catch {
-      setError('Network error. Please try again.');
+      if (res.data.token) setToken(res.data.token); // Dev mode — shows token
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Network error. Please try again.');
     }
     setLoading(false);
   };

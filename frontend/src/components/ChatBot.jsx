@@ -1,278 +1,252 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { MessageCircle, X, Send, Bot, User, ChevronDown } from 'lucide-react';
+import axios from 'axios';
 
-// FAQ knowledge base for dialysis-related questions
-const FAQ_DATA = [
-    {
-        keywords: ['appointment', 'schedule', 'book'],
-        question: 'How do I schedule an appointment?',
-        answer: 'To schedule a dialysis appointment, contact the reception desk or ask your doctor during your next visit. Staff members can schedule appointments through the system dashboard.'
-    },
-    {
-        keywords: ['dialysis', 'what', 'procedure'],
-        question: 'What is dialysis?',
-        answer: 'Dialysis is a treatment that filters waste and excess fluids from your blood when your kidneys can no longer do so. Our center offers hemodialysis sessions with state-of-the-art machines.'
-    },
-    {
-        keywords: ['prepare', 'before', 'session'],
-        question: 'How should I prepare for a session?',
-        answer: 'Before your dialysis session: eat a light meal, wear comfortable clothing with easy arm access, bring any medications, and arrive 10 minutes early for check-in.'
-    },
-    {
-        keywords: ['how long', 'duration', 'session length', 'hours'],
-        question: 'How long does a dialysis session take?',
-        answer: 'A typical hemodialysis session takes 3-4 hours. Your doctor will determine the exact duration based on your medical needs.'
-    },
-    {
-        keywords: ['queue', 'wait', 'turn', 'line'],
-        question: 'How does the queue system work?',
-        answer: 'Our queue management system assigns you a position based on check-in time and priority. Emergency cases are prioritized. You can view your position in the Patient Portal.'
-    },
-    {
-        keywords: ['bill', 'payment', 'cost', 'charge', 'insurance'],
-        question: 'How do I view my bills?',
-        answer: 'Go to the Billing section in your Patient Portal to view current and past bills. You can make payments online via UPI or at the reception desk.'
-    },
-    {
-        keywords: ['ambulance', 'transport', 'pickup', 'ride'],
-        question: 'Can I request an ambulance?',
-        answer: 'Yes! Contact the reception desk to request ambulance transport. Our fleet management system will dispatch the nearest available ambulance and you can track it in real-time via the Patient Portal.'
-    },
-    {
-        keywords: ['report', 'results', 'lab'],
-        question: 'Where can I find my reports?',
-        answer: 'Your medical reports and lab results are available in the Reports section of your Patient Portal. You can view and download them anytime.'
-    },
-    {
-        keywords: ['emergency', 'urgent', 'help'],
-        question: 'What do I do in an emergency?',
-        answer: 'In an emergency, immediately alert the nearest staff member or call the hospital emergency line. Emergency cases are given top priority in our queue system.'
-    },
-    {
-        keywords: ['password', 'login', 'account', '2fa', 'two factor'],
-        question: 'How do I manage my account?',
-        answer: 'You can reset your password from the login page. For staff accounts, Two-Factor Authentication (2FA) is mandatory for security. Contact the admin if you need account assistance.'
-    },
-    {
-        keywords: ['contact', 'phone', 'email', 'reach'],
-        question: 'How can I contact the hospital?',
-        answer: 'You can reach us at reception@dialysis.com or call during business hours. For urgent matters, visit the reception desk directly.'
-    },
-    {
-        keywords: ['machine', 'equipment'],
-        question: 'What machines do you use?',
-        answer: 'We use modern hemodialysis machines that are regularly maintained and sanitized. Machine status and availability can be viewed by authorized staff through the system.'
-    }
-];
-
-const findAnswer = (input) => {
-    const lower = input.toLowerCase();
-
-    // Check for greetings
-    if (/^(hi|hello|hey|good morning|good evening)/i.test(lower)) {
-        return "Hello! I'm your DialysisTrack assistant. How can I help you today? You can ask me about appointments, billing, ambulance services, or anything related to your care.";
-    }
-
-    if (/^(thanks|thank you|ty)/i.test(lower)) {
-        return "You're welcome! Feel free to ask if you have any more questions.";
-    }
-
-    if (/^(bye|goodbye)/i.test(lower)) {
-        return "Goodbye! Take care and don't hesitate to reach out if you need anything.";
-    }
-
-    // Find best matching FAQ
-    let bestMatch = null;
-    let bestScore = 0;
-
-    for (const faq of FAQ_DATA) {
-        let score = 0;
-        for (const keyword of faq.keywords) {
-            if (lower.includes(keyword)) {
-                score += keyword.length; // Longer keyword matches score higher
-            }
-        }
-        if (score > bestScore) {
-            bestScore = score;
-            bestMatch = faq;
-        }
-    }
-
-    if (bestMatch && bestScore > 0) {
-        return bestMatch.answer;
-    }
-
-    return "I'm not sure about that. Here are some topics I can help with:\n• Appointments & scheduling\n• Dialysis procedures\n• Billing & payments\n• Ambulance services\n• Queue management\n• Medical reports\n\nPlease try rephrasing your question or contact the front desk for more help.";
+const WELCOME_MSG = {
+  role: 'assistant',
+  content: "👋 Hi! I'm **DialysisBot**, your AI assistant for dialysis and kidney care.\n\nI can help you with:\n• Dialysis procedures & types\n• Kidney disease information\n• Diet & fluid restrictions\n• Lab values (Kt/V, creatinine, etc.)\n• Medications for dialysis patients\n• DialysisTrack system questions\n\nHow can I help you today?",
 };
 
-const ChatBot = () => {
-    const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        {
-            id: 1,
-            type: 'bot',
-            text: "Hi! I'm your DialysisTrack assistant. How can I help you today?",
-            time: new Date()
-        }
-    ]);
-    const [inputValue, setInputValue] = useState('');
-    const messagesEndRef = useRef(null);
-
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
-
-    const handleSend = () => {
-        const text = inputValue.trim();
-        if (!text) return;
-
-        // Add user message
-        const userMsg = { id: Date.now(), type: 'user', text, time: new Date() };
-        setMessages(prev => [...prev, userMsg]);
-        setInputValue('');
-
-        // Simulate typing delay
-        setTimeout(() => {
-            const answer = findAnswer(text);
-            const botMsg = { id: Date.now() + 1, type: 'bot', text: answer, time: new Date() };
-            setMessages(prev => [...prev, botMsg]);
-        }, 600);
-    };
-
-    const handleKeyDown = (e) => {
-        if (e.key === 'Enter' && !e.shiftKey) {
-            e.preventDefault();
-            handleSend();
-        }
-    };
-
-    const quickQuestions = [
-        'How do I schedule an appointment?',
-        'How does the queue work?',
-        'Can I request an ambulance?',
-        'Where can I find my reports?'
-    ];
-
+const formatMessage = (text) => {
+  return text.split('\n').map((line, i, arr) => {
+    const formatted = line.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
     return (
-        <>
-            {/* FAB Button */}
-            {!isOpen && (
-                <button
-                    onClick={() => setIsOpen(true)}
-                    className="fixed bottom-6 right-6 z-50 w-14 h-14 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-full shadow-lg flex items-center justify-center text-white hover:from-cyan-600 hover:to-blue-700 transition-all duration-300 hover:scale-110 group"
-                    title="Chat with us"
-                >
-                    <MessageCircle className="w-6 h-6 group-hover:scale-110 transition-transform" />
-                    {/* Pulse ring */}
-                    <span className="absolute -inset-1 rounded-full bg-cyan-400 opacity-30 animate-ping" />
-                </button>
-            )}
-
-            {/* Chat Panel */}
-            {isOpen && (
-                <div className="fixed bottom-6 right-6 z-50 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-3rem)] bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-gray-200 dark:border-slate-700 flex flex-col overflow-hidden animate-in">
-                    {/* Header */}
-                    <div className="bg-gradient-to-r from-cyan-500 to-blue-600 px-4 py-3 flex items-center justify-between flex-shrink-0">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center">
-                                <Bot className="w-5 h-5 text-white" />
-                            </div>
-                            <div>
-                                <h3 className="text-white font-semibold text-sm">DialysisTrack Assistant</h3>
-                                <p className="text-cyan-100 text-xs">Online — Ask me anything</p>
-                            </div>
-                        </div>
-                        <button
-                            onClick={() => setIsOpen(false)}
-                            className="text-white/80 hover:text-white transition-colors p-1"
-                        >
-                            <X className="w-5 h-5" />
-                        </button>
-                    </div>
-
-                    {/* Messages */}
-                    <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-gray-50 dark:bg-slate-950">
-                        {messages.map((msg) => (
-                            <div key={msg.id} className={`flex ${msg.type === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                <div className={`flex items-end gap-1.5 max-w-[85%] ${msg.type === 'user' ? 'flex-row-reverse' : ''}`}>
-                                    <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${msg.type === 'user'
-                                        ? 'bg-cyan-500 text-white'
-                                        : 'bg-gray-200 dark:bg-slate-700 text-gray-600 dark:text-gray-300'
-                                        }`}>
-                                        {msg.type === 'user' ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5" />}
-                                    </div>
-                                    <div className={`px-3 py-2 rounded-2xl text-sm leading-relaxed whitespace-pre-line ${msg.type === 'user'
-                                        ? 'bg-cyan-500 text-white rounded-br-sm'
-                                        : 'bg-white dark:bg-slate-800 text-gray-800 dark:text-gray-200 border border-gray-100 dark:border-slate-700 rounded-bl-sm shadow-sm'
-                                        }`}>
-                                        {msg.text}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
-                        <div ref={messagesEndRef} />
-
-                        {/* Quick questions (show only at the start) */}
-                        {messages.length <= 1 && (
-                            <div className="space-y-2 mt-2">
-                                <p className="text-xs text-gray-500 dark:text-gray-400 font-medium">Quick questions:</p>
-                                {quickQuestions.map((q, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => {
-                                            setInputValue(q);
-                                            setTimeout(() => {
-                                                const userMsg = { id: Date.now(), type: 'user', text: q, time: new Date() };
-                                                setMessages(prev => [...prev, userMsg]);
-                                                setTimeout(() => {
-                                                    const answer = findAnswer(q);
-                                                    const botMsg = { id: Date.now() + 1, type: 'bot', text: answer, time: new Date() };
-                                                    setMessages(prev => [...prev, botMsg]);
-                                                }, 600);
-                                            }, 100);
-                                            setInputValue('');
-                                        }}
-                                        className="w-full text-left px-3 py-2 rounded-lg text-xs bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 text-gray-700 dark:text-gray-300 hover:bg-cyan-50 dark:hover:bg-slate-700 hover:border-cyan-300 dark:hover:border-cyan-700 transition-colors"
-                                    >
-                                        {q}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
-                    </div>
-
-                    {/* Input */}
-                    <div className="p-3 border-t border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900 flex-shrink-0">
-                        <div className="flex items-center gap-2">
-                            <input
-                                type="text"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
-                                onKeyDown={handleKeyDown}
-                                placeholder="Type a message..."
-                                className="flex-1 px-3 py-2 text-sm rounded-full bg-gray-100 dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:outline-none focus:ring-2 focus:ring-cyan-400 focus:border-transparent text-gray-800 dark:text-gray-200 placeholder-gray-400"
-                            />
-                            <button
-                                onClick={handleSend}
-                                disabled={!inputValue.trim()}
-                                className="w-9 h-9 bg-cyan-500 hover:bg-cyan-600 disabled:bg-gray-300 dark:disabled:bg-slate-700 rounded-full flex items-center justify-center text-white transition-colors"
-                            >
-                                <Send className="w-4 h-4" />
-                            </button>
-                        </div>
-                    </div>
-
-                    <style>{`
-            @keyframes animate-in {
-              from { opacity: 0; transform: translateY(20px) scale(0.95); }
-              to { opacity: 1; transform: translateY(0) scale(1); }
-            }
-            .animate-in { animation: animate-in 0.3s ease-out; }
-          `}</style>
-                </div>
-            )}
-        </>
+      <span key={i}>
+        <span dangerouslySetInnerHTML={{ __html: formatted }} />
+        {i < arr.length - 1 && <br />}
+      </span>
     );
+  });
+};
+
+const SUGGESTED = [
+  'What is hemodialysis?',
+  'What foods should I avoid?',
+  'What does Kt/V mean?',
+  'How often is dialysis needed?',
+];
+
+const ChatBot = () => {
+  const [open, setOpen] = useState(false);
+  const [messages, setMessages] = useState([WELCOME_MSG]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showSuggested, setShowSuggested] = useState(true);
+  const [limitWarning, setLimitWarning] = useState(null);
+  const bottomRef = useRef(null);
+  const inputRef = useRef(null);
+
+  // All hooks MUST be called before any conditional return
+  useEffect(() => {
+    if (open) {
+      bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+      setTimeout(() => inputRef.current?.focus(), 200);
+    }
+  }, [messages, open]);
+
+  // Auth check AFTER all hooks
+  const token = localStorage.getItem('authToken') || localStorage.getItem('access_token');
+  if (!token) return null;
+
+  const send = async (text) => {
+    const msg = (text || input).trim();
+    if (!msg || loading) return;
+    setShowSuggested(false);
+    const userMsg = { role: 'user', content: msg };
+    const newHistory = [...messages, userMsg];
+    setMessages(newHistory);
+    setInput('');
+    setLoading(true);
+    try {
+      const token = localStorage.getItem('authToken') || localStorage.getItem('access_token');
+      const res = await axios.post(
+        'http://localhost:8000/api/chat/',
+        { message: msg, history: messages.slice(-10) },
+        { headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' } }
+      );
+      if (res.data.warning) setLimitWarning(res.data.warning);
+      setMessages([...newHistory, { role: 'assistant', content: res.data.reply || 'Sorry, no response.' }]);
+    } catch (err) {
+      const errMsg = err.response?.data?.error || 'Connection error. Please try again.';
+      setMessages([...newHistory, { role: 'assistant', content: `Sorry: ${errMsg}` }]);
+    }
+    setLoading(false);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+  };
+
+  return (
+    <>
+      {/* Pulse ring */}
+      {!open && (
+        <span style={{
+          position: 'fixed', bottom: 28, right: 28, zIndex: 99989,
+          width: 60, height: 60, borderRadius: '50%',
+          border: '2px solid #0891b2',
+          animation: 'chatPulse 2s infinite', pointerEvents: 'none',
+        }} />
+      )}
+
+      {/* Floating button */}
+      <button
+        onClick={() => setOpen(o => !o)}
+        title="DialysisBot AI Assistant"
+        style={{
+          position: 'fixed', bottom: 28, right: 28, zIndex: 99990,
+          width: 60, height: 60, borderRadius: '50%',
+          background: open ? 'linear-gradient(135deg,#ef4444,#dc2626)' : 'linear-gradient(135deg,#0891b2,#0e7490)',
+          color: 'white', fontSize: 26, border: 'none', cursor: 'pointer',
+          boxShadow: open ? '0 4px 24px rgba(239,68,68,0.5)' : '0 4px 24px rgba(8,145,178,0.6)',
+          transition: 'all 0.3s ease', display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}
+      >
+        {open ? '✕' : '🤖'}
+      </button>
+
+      {/* Chat window */}
+      {open && (
+        <div style={{
+          position: 'fixed', bottom: 100, right: 28, zIndex: 99991,
+          width: 360, height: 520, background: 'white', borderRadius: 20,
+          boxShadow: '0 20px 60px rgba(0,0,0,0.25)',
+          display: 'flex', flexDirection: 'column', overflow: 'hidden',
+          animation: 'slideUp 0.25s ease',
+        }}>
+          {/* Header */}
+          <div style={{
+            background: 'linear-gradient(135deg,#0891b2,#0e7490)',
+            padding: '14px 16px', display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <div style={{
+                width: 38, height: 38, borderRadius: '50%',
+                background: 'rgba(255,255,255,0.2)', display: 'flex',
+                alignItems: 'center', justifyContent: 'center', fontSize: 20,
+              }}>🤖</div>
+              <div>
+                <div style={{ color: 'white', fontWeight: 700, fontSize: 15 }}>DialysisBot</div>
+                <div style={{ color: 'rgba(255,255,255,0.75)', fontSize: 11 }}>
+                  <span style={{ display: 'inline-block', width: 7, height: 7, borderRadius: '50%', background: '#4ade80', marginRight: 4 }} />
+                  Dialysis AI Assistant
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={() => { setMessages([WELCOME_MSG]); setShowSuggested(true); }}
+              style={{ background: 'rgba(255,255,255,0.15)', border: 'none', color: 'white', borderRadius: 8, padding: '4px 10px', cursor: 'pointer', fontSize: 11 }}
+            >Clear</button>
+          </div>
+
+          {/* Limit Warning Banner */}
+          {limitWarning && (
+            <div style={{
+              background: '#fef3c7', borderBottom: '1px solid #fcd34d',
+              padding: '7px 14px', fontSize: 11.5, color: '#92400e',
+              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 8,
+            }}>
+              <span>{limitWarning}</span>
+              <button onClick={() => setLimitWarning(null)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 14, color: '#92400e', flexShrink: 0 }}>✕</button>
+            </div>
+          )}
+
+          {/* Messages */}
+          <div style={{ flex: 1, overflowY: 'auto', padding: '12px 14px', display: 'flex', flexDirection: 'column', gap: 10, background: '#f8fafc' }}>
+            {messages.map((m, i) => (
+              <div key={i} style={{ display: 'flex', justifyContent: m.role === 'user' ? 'flex-end' : 'flex-start' }}>
+                {m.role === 'assistant' && (
+                  <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg,#0891b2,#0e7490)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14, marginRight: 6, flexShrink: 0, marginTop: 2 }}>🤖</div>
+                )}
+                <div style={{
+                  maxWidth: '78%', padding: '9px 13px',
+                  borderRadius: m.role === 'user' ? '16px 16px 4px 16px' : '16px 16px 16px 4px',
+                  background: m.role === 'user' ? 'linear-gradient(135deg,#0891b2,#0e7490)' : 'white',
+                  color: m.role === 'user' ? 'white' : '#1e293b',
+                  fontSize: 13.5, lineHeight: 1.55, boxShadow: '0 1px 4px rgba(0,0,0,0.08)',
+                }}>
+                  {formatMessage(m.content)}
+                </div>
+              </div>
+            ))}
+
+            {/* Typing indicator */}
+            {loading && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                <div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg,#0891b2,#0e7490)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 14 }}>🤖</div>
+                <div style={{ background: 'white', borderRadius: '16px 16px 16px 4px', padding: '10px 14px', boxShadow: '0 1px 4px rgba(0,0,0,0.08)', display: 'flex', gap: 4, alignItems: 'center' }}>
+                  {[0, 1, 2].map(j => (
+                    <span key={j} style={{ width: 7, height: 7, borderRadius: '50%', background: '#0891b2', display: 'inline-block', animation: `dotBounce 1.2s ${j * 0.2}s infinite ease-in-out` }} />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Suggested questions */}
+            {showSuggested && messages.length === 1 && (
+              <div style={{ marginTop: 4 }}>
+                <div style={{ fontSize: 11, color: '#94a3b8', marginBottom: 6 }}>Suggested questions:</div>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                  {SUGGESTED.map((q, i) => (
+                    <button key={i} onClick={() => send(q)} style={{
+                      padding: '5px 10px', borderRadius: 20,
+                      border: '1px solid #e0f2fe', background: '#f0f9ff',
+                      color: '#0891b2', fontSize: 12, cursor: 'pointer',
+                    }}>{q}</button>
+                  ))}
+                </div>
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          {/* Input */}
+          <div style={{ padding: '10px 12px', borderTop: '1px solid #e2e8f0', background: 'white', display: 'flex', gap: 8, alignItems: 'flex-end' }}>
+            <textarea
+              ref={inputRef}
+              value={input}
+              onChange={e => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="Ask about dialysis or kidney care..."
+              rows={1}
+              disabled={loading}
+              style={{ flex: 1, padding: '9px 12px', borderRadius: 12, border: '1.5px solid #e2e8f0', fontSize: 13.5, resize: 'none', outline: 'none', fontFamily: 'inherit', lineHeight: 1.5, maxHeight: 80 }}
+            />
+            <button
+              onClick={() => send()}
+              disabled={!input.trim() || loading}
+              style={{
+                width: 38, height: 38, borderRadius: 12, flexShrink: 0,
+                background: input.trim() && !loading ? 'linear-gradient(135deg,#0891b2,#0e7490)' : '#e2e8f0',
+                color: input.trim() && !loading ? 'white' : '#94a3b8',
+                border: 'none', cursor: input.trim() && !loading ? 'pointer' : 'default',
+                fontSize: 18, display: 'flex', alignItems: 'center', justifyContent: 'center',
+              }}
+            >➤</button>
+          </div>
+
+          <div style={{ textAlign: 'center', fontSize: 10, color: '#cbd5e1', padding: '4px 0 6px', background: 'white' }}>
+            Powered by Groq · Llama 3 · Dialysis-only AI
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes slideUp {
+          from { opacity: 0; transform: translateY(20px) scale(0.95); }
+          to   { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        @keyframes chatPulse {
+          0%   { transform: scale(1);   opacity: 0.6; }
+          70%  { transform: scale(1.5); opacity: 0; }
+          100% { transform: scale(1.5); opacity: 0; }
+        }
+        @keyframes dotBounce {
+          0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+          40%            { transform: scale(1);   opacity: 1; }
+        }
+      `}</style>
+    </>
+  );
 };
 
 export default ChatBot;

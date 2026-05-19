@@ -69,6 +69,20 @@ def dispatch_ambulance(request):
     # Mark ambulance as on_trip
     ambulance.status = 'on_trip'
     ambulance.save()
+    
+    try:
+        from patients.models import Patient
+        patient_obj = Patient.objects.get(id=patient_id)
+        if hasattr(patient_obj, 'user') and patient_obj.user:
+            from notifications.views import create_notification
+            create_notification(
+                user=patient_obj.user,
+                notification_type='ambulance_dispatched',
+                title='Ambulance Dispatched',
+                message=f'An ambulance ({ambulance.vehicle_number}) has been dispatched to your location.'
+            )
+    except Exception:
+        pass
 
     serializer = AmbulanceRideSerializer(ride)
     return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -116,6 +130,17 @@ def update_ride_status(request, ride_id):
 
     ride.status = new_status
     ride.save()
+
+    if new_status in ['en_route', 'arrived']:
+        if hasattr(ride.patient, 'user') and ride.patient.user:
+            from notifications.views import create_notification
+            status_text = "is on its way" if new_status == 'en_route' else "has arrived at your location"
+            create_notification(
+                user=ride.patient.user,
+                notification_type='ambulance_dispatched',
+                title='Ambulance Status Update',
+                message=f'Your assigned ambulance {status_text}.'
+            )
 
     # If completed or cancelled, free the ambulance
     if new_status in ('completed', 'cancelled'):
@@ -232,6 +257,13 @@ def create_driver(request):
     if not email:
         return Response({'detail': 'Email is required'}, status=status.HTTP_400_BAD_REQUEST)
 
+    # Pre-check for existing email/username to give a clear error
+    if User.objects.filter(email=email).exists() or User.objects.filter(username=email).exists():
+        return Response(
+            {'detail': f'A user with email "{email}" already exists. Use a different email.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
+
     try:
         user = User.objects.create_user(
             username=email,
@@ -252,7 +284,16 @@ def create_driver(request):
         }, status=status.HTTP_201_CREATED)
     except Exception as e:
         logger.exception('Error creating driver')
-        return Response({'detail': 'Failed to create driver account.'}, status=status.HTTP_400_BAD_REQUEST)
+        error_msg = str(e)
+        if 'unique' in error_msg.lower() or 'duplicate' in error_msg.lower():
+            return Response(
+                {'detail': 'A user with this email already exists. Use a different email.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        return Response(
+            {'detail': error_msg or 'Failed to create driver account.'},
+            status=status.HTTP_400_BAD_REQUEST
+        )
 
 
 @api_view(['PUT'])

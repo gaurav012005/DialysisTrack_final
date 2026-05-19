@@ -18,17 +18,29 @@ logger = logging.getLogger(__name__)
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def simple_cash_payment(request):
-    """Simple cash payment - authentication required"""
+    """Simple payment (cash or UPI) - authentication required"""
     try:
         # Get data
         patient_id = request.data.get('patient_id')
-        notes = request.data.get('notes', 'Walk-in cash payment')
+        payment_method = request.data.get('payment_method', 'cash')
+        upi_id = request.data.get('upi_id', '')
+        notes = request.data.get('notes', f'Walk-in {payment_method} payment')
 
         if not patient_id:
             return Response({
                 'success': False,
                 'error': 'Patient ID is required.'
             }, status=status.HTTP_400_BAD_REQUEST)
+
+        # Validate payment method
+        if payment_method not in ('cash', 'upi', 'razorpay', 'Online'):
+            return Response({
+                'success': False,
+                'error': 'Invalid payment method. Use cash, upi, or razorpay.'
+            }, status=status.HTTP_400_BAD_REQUEST)
+        # Normalise legacy "Online" to "razorpay"
+        if payment_method == 'Online':
+            payment_method = 'razorpay'
 
         try:
             amount = Decimal(str(request.data.get('amount', 0)))
@@ -56,7 +68,8 @@ def simple_cash_payment(request):
         # Create bill and payment in one transaction
         with transaction.atomic():
             # Create bill
-            bill_number = f"CASH{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            prefix = 'UPI' if payment_method == 'upi' else 'CASH'
+            bill_number = f"{prefix}{datetime.now().strftime('%Y%m%d%H%M%S')}"
             bill = Bill.objects.create(
                 patient=patient,
                 bill_number=bill_number,
@@ -76,17 +89,21 @@ def simple_cash_payment(request):
             import random
             import string
             rand_suffix = ''.join(random.choices(string.ascii_uppercase + string.digits, k=4))
-            transaction_id = f"CSH{datetime.now().strftime('%Y%m%d%H%M%S')}{rand_suffix}"
+            txn_prefix = 'UPI' if payment_method == 'upi' else 'CSH'
+            transaction_id = f"{txn_prefix}{datetime.now().strftime('%Y%m%d%H%M%S')}{rand_suffix}"
             payment = Payment.objects.create(
                 bill=bill,
                 amount=amount,
-                payment_method='cash',
+                payment_method=payment_method,
                 status='completed',
                 transaction_id=transaction_id,
+                upi_id=upi_id if payment_method == 'upi' else None,
                 notes=notes,
                 processed_by=request.user,
                 gateway_response={
                     'status': 'SUCCESS',
+                    'method': payment_method,
+                    'upi_id': upi_id if payment_method == 'upi' else None,
                     'received_by': request.user.get_full_name() or request.user.username,
                     'timestamp': datetime.now().isoformat()
                 }
@@ -94,11 +111,12 @@ def simple_cash_payment(request):
         
         return Response({
             'success': True,
-            'message': 'Cash payment recorded successfully',
+            'message': f'{payment_method.upper()} payment recorded successfully',
             'transaction_id': transaction_id,
             'bill_number': bill_number,
             'patient_name': f"{patient.first_name} {patient.last_name}",
-            'amount': float(amount)
+            'amount': float(amount),
+            'payment_method': payment_method
         }, status=status.HTTP_201_CREATED)
         
     except Exception as e:

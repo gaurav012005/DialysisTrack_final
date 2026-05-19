@@ -57,17 +57,17 @@ class DatabaseSetup:
             admin = User.objects.create_superuser(
                 email='admin@dialysis.com',
                 username='admin',
-                password='admin123',
-                first_name='System',
-                last_name='Administrator',
+                password='Admin@2o26',
+                first_name='Rajesh',
+                last_name='Sharma',
                 role='admin',
-                phone_number='555-0000',
+                phone_number='9876543200',
                 is_staff=True,
                 is_superuser=True
             )
             self.created_items['users'].append(admin)
             print(f"✓ Created admin: {admin.email}")
-            print(f"  Password: admin123")
+            print(f"  Password: Admin@2o26")
         except Exception as e:
             print(f"✗ Error creating admin: {e}")
     
@@ -77,26 +77,26 @@ class DatabaseSetup:
         
         staff_data = [
             # Doctors
-            {'email': 'dr.smith@dialysis.com', 'username': 'drsmith', 'first_name': 'John', 
-             'last_name': 'Smith', 'role': 'doctor', 'phone': '555-1001', 'specialization': 'Nephrology'},
-            {'email': 'dr.johnson@dialysis.com', 'username': 'drjohnson', 'first_name': 'Sarah', 
-             'last_name': 'Johnson', 'role': 'doctor', 'phone': '555-1002', 'specialization': 'Nephrology'},
-            
+            {'email': 'dr.mehta@dialysis.com', 'username': 'drmehta', 'first_name': 'Arjun',
+             'last_name': 'Mehta', 'role': 'doctor', 'phone': '9876543201', 'specialization': 'Nephrology'},
+            {'email': 'dr.patel@dialysis.com', 'username': 'drpatel', 'first_name': 'Priya',
+             'last_name': 'Patel', 'role': 'doctor', 'phone': '9876543202', 'specialization': 'Nephrology'},
+
             # Nurses
-            {'email': 'nurse.wilson@dialysis.com', 'username': 'nwilson', 'first_name': 'Emily', 
-             'last_name': 'Wilson', 'role': 'nurse', 'phone': '555-2001', 'specialization': 'Dialysis Care'},
-            {'email': 'nurse.brown@dialysis.com', 'username': 'nbrown', 'first_name': 'Michael', 
-             'last_name': 'Brown', 'role': 'nurse', 'phone': '555-2002', 'specialization': 'Dialysis Care'},
-            
+            {'email': 'nurse.rao@dialysis.com', 'username': 'nrao', 'first_name': 'Sunita',
+             'last_name': 'Rao', 'role': 'nurse', 'phone': '9876543203', 'specialization': 'Dialysis Care'},
+            {'email': 'nurse.nair@dialysis.com', 'username': 'nnair', 'first_name': 'Vikram',
+             'last_name': 'Nair', 'role': 'nurse', 'phone': '9876543204', 'specialization': 'Dialysis Care'},
+
             # Technicians
-            {'email': 'tech.davis@dialysis.com', 'username': 'tdavis', 'first_name': 'Robert', 
-             'last_name': 'Davis', 'role': 'technician', 'phone': '555-3001', 'specialization': 'Dialysis Equipment'},
-            {'email': 'tech.garcia@dialysis.com', 'username': 'tgarcia', 'first_name': 'Maria', 
-             'last_name': 'Garcia', 'role': 'technician', 'phone': '555-3002', 'specialization': 'Maintenance'},
-            
+            {'email': 'tech.kumar@dialysis.com', 'username': 'tkumar', 'first_name': 'Ravi',
+             'last_name': 'Kumar', 'role': 'technician', 'phone': '9876543205', 'specialization': 'Dialysis Equipment'},
+            {'email': 'tech.singh@dialysis.com', 'username': 'tsingh', 'first_name': 'Anita',
+             'last_name': 'Singh', 'role': 'technician', 'phone': '9876543206', 'specialization': 'Maintenance'},
+
             # Receptionists
-            {'email': 'reception@dialysis.com', 'username': 'reception', 'first_name': 'Lisa', 
-             'last_name': 'Anderson', 'role': 'receptionist', 'phone': '555-4001', 'specialization': 'Front Desk'},
+            {'email': 'reception.joshi@dialysis.com', 'username': 'kjoshi', 'first_name': 'Kavita',
+             'last_name': 'Joshi', 'role': 'receptionist', 'phone': '9876543207', 'specialization': 'Front Desk'},
         ]
         
         for data in staff_data:
@@ -372,10 +372,13 @@ class DatabaseSetup:
         print(f"Staff Accounts (Doctors, Nurses, Technicians, Receptionists):")
         print(f"  🔒 Default Password: staff123")
         print(f"  📧 Emails:")
-        print(f"     - dr.smith@dialysis.com (Doctor)")
-        print(f"     - nurse.wilson@dialysis.com (Nurse)")
-        print(f"     - tech.davis@dialysis.com (Technician)")
-        print(f"     - reception@dialysis.com (Receptionist)\n")
+        print(f"     - dr.mehta@dialysis.com    (Doctor – Dr. Arjun Mehta)")
+        print(f"     - dr.patel@dialysis.com    (Doctor – Dr. Priya Patel)")
+        print(f"     - nurse.rao@dialysis.com   (Nurse  – Sunita Rao)")
+        print(f"     - nurse.nair@dialysis.com  (Nurse  – Vikram Nair)")
+        print(f"     - tech.kumar@dialysis.com  (Tech   – Ravi Kumar)")
+        print(f"     - tech.singh@dialysis.com  (Tech   – Anita Singh)")
+        print(f"     - reception.joshi@dialysis.com (Receptionist – Kavita Joshi)\n")
         
         print(f"Patient Accounts:")
         print(f"  🔒 Default Password: patient123")

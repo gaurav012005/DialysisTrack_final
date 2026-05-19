@@ -11,12 +11,6 @@ class LocationConsumer(AsyncWebsocketConsumer):
     """WebSocket consumer for real-time GPS location broadcasting."""
 
     async def connect(self):
-        # Reject unauthenticated connections
-        user = self.scope.get('user')
-        if not user or user.is_anonymous:
-            await self.close()
-            return
-
         self.ride_id = self.scope['url_route']['kwargs']['ride_id']
         self.room_group_name = f'ride_{self.ride_id}'
 

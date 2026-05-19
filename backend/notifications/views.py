@@ -67,13 +67,31 @@ def create_notification(user, notification_type, title, message, send_email=Fals
 @permission_classes([permissions.IsAuthenticated])
 def my_notifications(request):
     """Get current user's notifications."""
-    notifications = Notification.objects.filter(user=request.user)[:50]
+    notifications = Notification.objects.filter(
+        user=request.user
+    ).order_by('-created_at')[:50]
     serializer = NotificationSerializer(notifications, many=True)
-    unread_count = Notification.objects.filter(user=request.user, is_read=False).count()
+    unread_count = Notification.objects.filter(
+        user=request.user, is_read=False
+    ).count()
     return Response({
         'notifications': serializer.data,
-        'unread_count': unread_count
+        'unread_count': unread_count,
+        'total': notifications.count(),
     })
+
+
+@api_view(['POST'])
+@permission_classes([permissions.IsAuthenticated])
+def test_notification(request):
+    """Create a test notification for the current user (debug helper)."""
+    notif = create_notification(
+        user=request.user,
+        notification_type='general',
+        title='Test Notification',
+        message='This is a test notification to verify the system is working correctly.',
+    )
+    return Response({'detail': 'Test notification created', 'id': notif.id})
 
 
 @api_view(['POST'])

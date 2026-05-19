@@ -58,10 +58,21 @@ class UserAdmin(BaseUserAdmin):
     activate_users.short_description = '✅ Activate selected users'
     
     def deactivate_users(self, request, queryset):
-        """Deactivate selected users"""
-        updated = queryset.update(is_active=False)
-        self.message_user(request, f'{updated} user(s) deactivated successfully.')
-    deactivate_users.short_description = '❌ Deactivate selected users'
+        """Deactivate selected users — superusers/admins are always protected."""
+        # Never allow deactivating superuser/admin accounts
+        protected = queryset.filter(is_superuser=True)
+        if protected.exists():
+            names = ', '.join(protected.values_list('email', flat=True))
+            self.message_user(
+                request,
+                f'PROTECTED: The following superuser account(s) cannot be deactivated: {names}',
+                level='ERROR'
+            )
+        safe_qs = queryset.filter(is_superuser=False)
+        updated = safe_qs.update(is_active=False)
+        if updated:
+            self.message_user(request, f'{updated} user(s) deactivated successfully.')
+    deactivate_users.short_description = 'Deactivate selected users'
     
     def make_staff(self, request, queryset):
         """Make selected users staff"""
@@ -70,7 +81,24 @@ class UserAdmin(BaseUserAdmin):
     make_staff.short_description = '👔 Grant staff access'
     
     def remove_staff(self, request, queryset):
-        """Remove staff access"""
-        updated = queryset.update(is_staff=False)
-        self.message_user(request, f'{updated} user(s) staff access removed.')
-    remove_staff.short_description = '🚫 Remove staff access'
+        """Remove staff access — superusers/admins are always protected."""
+        protected = queryset.filter(is_superuser=True)
+        if protected.exists():
+            names = ', '.join(protected.values_list('email', flat=True))
+            self.message_user(
+                request,
+                f'PROTECTED: The following superuser account(s) cannot have staff access removed: {names}',
+                level='ERROR'
+            )
+        safe_qs = queryset.filter(is_superuser=False)
+        updated = safe_qs.update(is_staff=False)
+        if updated:
+            self.message_user(request, f'{updated} user(s) staff access removed.')
+    remove_staff.short_description = 'Remove staff access'
+
+    def save_model(self, request, obj, form, change):
+        """Prevent saving is_active=False or is_staff=False on superuser accounts."""
+        if obj.is_superuser:
+            obj.is_active = True   # Superuser is ALWAYS active
+            obj.is_staff = True    # Superuser ALWAYS has staff access
+        super().save_model(request, obj, form, change)

@@ -66,7 +66,7 @@ cd frontend
 npm install
 
 # Start frontend server (KEEP THIS RUNNING)
-npm run dev
+ npm run dev
 ```
 **✅ Frontend will run at:** http://localhost:5173
 
@@ -80,7 +80,7 @@ npm run dev
 |-------|-------|
 | **Username** | admin@dialysis.com |
 | **Email** | admin@dialysis.com |
-| **Password** | admin123 |
+| **Password** | Admin@2o26 |
 
 **What can you do in Django Admin?**
 - ✅ Add, Edit, Delete Patients
@@ -99,14 +99,14 @@ npm run dev
 
 | Role | Name | Email | Password | Access Level |
 |------|------|-------|----------|--------------|
-| **👑 Admin** | System Administrator | admin@dialysis.com | Admin@2o26 | Full system access + Django Admin |or admin1@gmail.com admin2005@
-| **👨‍⚕️ Doctor 1** | Dr. John Smith | dr.smith@dialysis.com | staff123 | Patient records, queue, reports |
-| **👨‍⚕️ Doctor 2** | Dr. Sarah Johnson | dr.johnson@dialysis.com | staff123 | Patient records, queue, reports |
-| **👩‍⚕️ Nurse 1** | Emily Wilson | nurse.wilson@dialysis.com | staff123 | Queue management, patient updates |
-| **👩‍⚕️ Nurse 2** | Michael Brown | nurse.brown@dialysis.com | staff123 | Queue management, patient updates |
-| **🔧 Technician 1** | Robert Davis | tech.davis@dialysis.com | staff123 | Machine management, queue monitoring |
-| **� Technician 2** | Maria Garcia | tech.garcia@dialysis.com | staff123 | Machine maintenance, equipment |
-| **�📋 Receptionist** | Lisa Anderson | reception@dialysis.com | staff123 | Registration, appointments, billing |
+| **👑 Admin** | Rajesh Sharma | admin@dialysis.com | Admin@2o26 | Full system access + Django Admin |
+| **👨‍⚕️ Doctor 1** | Dr. Arjun Mehta | dr.mehta@dialysis.com | staff123 | Patient records, queue, reports |
+| **👨‍⚕️ Doctor 2** | Dr. Priya Patel | dr.patel@dialysis.com | staff123 | Patient records, queue, reports |
+| **👩‍⚕️ Nurse 1** | Sunita Rao | nurse.rao@dialysis.com | staff123 | Queue management, patient updates |
+| **👩‍⚕️ Nurse 2** | Vikram Nair | nurse.nair@dialysis.com | staff123 | Queue management, patient updates |
+| **🔧 Technician 1** | Ravi Kumar | tech.kumar@dialysis.com | staff123 | Machine management, queue monitoring |
+| **🔧 Technician 2** | Anita Singh | tech.singh@dialysis.com | staff123 | Machine maintenance, equipment |
+| **📋 Receptionist** | Kavita Joshi | reception.joshi@dialysis.com | staff123 | Registration, appointments, billing |
 
 ### 👥 **PATIENT ACCESS**
 
@@ -197,8 +197,8 @@ npm run dev
 3. Should see dashboard with data
 
 ### **Alternative Test Logins:**
-- **Doctor:** dr.smith@dialysis.com / staff123
-- **Nurse:** nurse.wilson@dialysis.com / staff123
+- **Doctor:** dr.mehta@dialysis.com / staff123
+- **Nurse:** nurse.rao@dialysis.com / staff123
 - **Patient:** james.miller@email.com / patient123
 
 ---
@@ -382,7 +382,7 @@ Your Dialysis Queue Management System is ready with:
 ✅ **🔍 Search & Filter** - On all listing pages (Queue, Staff, Machines, Sessions, Billing)  
 
 **🌐 Access:** http://localhost:5173  
-**🔑 Login:** admin@dialysis.com / Admin@2026
+**🔑 Login:** admin@dialysis.com / Admin@2o26
 
 **📊 Database Contents:**
 - 1 Admin user + 7 Staff members + 6 Patients

@@ -9,6 +9,9 @@ class Notification(models.Model):
         ('bill_generated', 'Bill Generated'),
         ('session_completed', 'Session Completed'),
         ('password_reset', 'Password Reset'),
+        ('machine_booking', 'Machine Booking'),
+        ('payment_received', 'Payment Received'),
+        ('appointment_booked', 'Appointment Booked'),
         ('general', 'General'),
     )
 

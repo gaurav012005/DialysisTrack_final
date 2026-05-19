@@ -10,10 +10,10 @@ class BillAdmin(admin.ModelAdmin):
 
 @admin.register(Payment)
 class PaymentAdmin(admin.ModelAdmin):
-    list_display = ['payment_id', 'bill', 'amount', 'payment_method', 'status', 'payment_date']
+    list_display = ['payment_id', 'bill', 'amount', 'payment_method', 'status', 'razorpay_payment_id', 'payment_date']
     list_filter = ['payment_method', 'status', 'payment_date']
-    search_fields = ['payment_id', 'transaction_id', 'bill__bill_number']
-    readonly_fields = ['payment_id']
+    search_fields = ['payment_id', 'transaction_id', 'bill__bill_number', 'razorpay_payment_id', 'razorpay_order_id']
+    readonly_fields = ['payment_id', 'razorpay_order_id', 'razorpay_payment_id', 'razorpay_signature']
 
 @admin.register(InsuranceProvider)
 class InsuranceProviderAdmin(admin.ModelAdmin):

@@ -26,11 +26,31 @@ class QueueCreateSerializer(serializers.ModelSerializer):
         read_only_fields = ('queue_number', 'status', 'check_in_time', 'created_at', 'updated_at')
     
     def create(self, validated_data):
-        # Generate simple queue number
-        import random
-        queue_number = f"Q{random.randint(1, 9999):04d}"
-        validated_data['queue_number'] = queue_number
-        return super().create(validated_data)
+        # === FIX: Use global last queue + transaction to avoid timezone/collision issues ===
+        # Filtering by today's date caused timezone (IST vs UTC) mismatches that
+        # allowed duplicate Q0001 entries.  We now look at ALL queue rows globally
+        # so the number always increments from the true maximum.
+        from django.db import transaction
+        with transaction.atomic():
+            last_queue = (
+                Queue.objects
+                .select_for_update()        # prevents race conditions
+                .filter(queue_number__startswith='Q')  # only scheduled entries
+                .order_by('-id')
+                .first()
+            )
+
+            next_num = 1
+            if last_queue and last_queue.queue_number:
+                try:
+                    num_part = last_queue.queue_number.lstrip('QE')
+                    next_num = int(num_part) + 1
+                except (ValueError, IndexError):
+                    next_num = Queue.objects.count() + 1
+
+            queue_number = f"Q{next_num:04d}"
+            validated_data['queue_number'] = queue_number
+            return super().create(validated_data)
 
 class QueueUpdateSerializer(serializers.ModelSerializer):
     class Meta:

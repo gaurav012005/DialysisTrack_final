@@ -31,13 +31,35 @@ const SessionForm = ({ queueId, patientId, onSuccess, onClose }) => {
     try {
       const token = localStorage.getItem('authToken') || localStorage.getItem('access_token');
 
-      // Fetch machines
-      const machinesRes = await fetch('http://localhost:8000/api/machines/', {
+      // Fetch current queue to find machines already assigned to other waiting patients
+      let assignedMachines = [];
+      const queueRes = await fetch('http://localhost:8000/api/queue/current_queue/', {
         headers: { 'Authorization': `Bearer ${token}` }
       });
+      if (queueRes.ok) {
+        const queueData = await queueRes.json();
+        // Exclude the current queue entry's own machine from this list (if it has one)
+        assignedMachines = queueData
+          .filter(q => q.assigned_machine && q.id !== queueId)
+          .map(q => q.assigned_machine);
+      }
+
+      // Fetch machines using the dedicated available_machines endpoint
+      const machinesRes = await fetch(`http://localhost:8000/api/machines/available_machines/?_t=${new Date().getTime()}`, {
+        headers: { 
+          'Authorization': `Bearer ${token}`
+        }
+      });
       if (machinesRes.ok) {
-        const machinesData = await machinesRes.json();
-        setMachines((machinesData.results || machinesData).filter(m => m.status === 'available'));
+        const data = await machinesRes.json();
+        const machinesList = data.results || data || [];
+        // Filter out machines that are already assigned to someone else in the queue
+        const available = machinesList.filter(m => 
+          !assignedMachines.includes(m.machine_id)
+        );
+        
+        // If the current queue entry ALREADY has an assigned machine, make sure it's in the list
+        setMachines(available);
       }
 
       // Fetch staff (doctors and nurses)
@@ -120,9 +142,12 @@ const SessionForm = ({ queueId, patientId, onSuccess, onClose }) => {
                   className="w-full border rounded px-3 py-2"
                 >
                   <option value="">-- Select Machine --</option>
+                  {machines.length === 0 && (
+                    <option value="" disabled>All machines are currently in use or assigned</option>
+                  )}
                   {machines.map(m => (
                     <option key={m.id} value={m.machine_id}>
-                      {m.machine_id} - {m.machine_type}
+                      {m.name && m.name !== m.machine_id ? `${m.name} (${m.machine_id})` : m.machine_id} - {m.machine_type}
                     </option>
                   ))}
                 </select>

@@ -117,6 +117,23 @@ class QueueSettings(models.Model):
     auto_assign_machines = models.BooleanField(default=True)
     notify_long_waits = models.BooleanField(default=True)
     
+    # === DIALYSIS HEAD: Shift Capacity Management ===
+    total_machines = models.IntegerField(default=6, help_text='Total dialysis machines in center')
+    max_patients_per_shift = models.IntegerField(default=6, help_text='Max patients per shift (usually = total machines)')
+    session_duration_hours = models.IntegerField(default=4, help_text='Standard session duration in hours')
+    
+    # Shift Definitions
+    morning_shift_start = models.TimeField(default='06:00', help_text='Morning shift start time')
+    morning_shift_end = models.TimeField(default='12:00', help_text='Morning shift end time')
+    afternoon_shift_start = models.TimeField(default='12:00', help_text='Afternoon shift start time')
+    afternoon_shift_end = models.TimeField(default='18:00', help_text='Afternoon shift end time')
+    evening_shift_start = models.TimeField(default='18:00', help_text='Evening shift start time')
+    evening_shift_end = models.TimeField(default='22:00', help_text='Evening shift end time')
+    
+    # Session Safety
+    max_session_duration_minutes = models.IntegerField(default=300, help_text='Alert if session exceeds this (in minutes)')
+    min_session_duration_minutes = models.IntegerField(default=60, help_text='Alert if session is shorter than this')
+    
     def __str__(self):
         return "Queue Settings"
     

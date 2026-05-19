@@ -19,6 +19,13 @@ class User(AbstractUser):
     date_of_birth = models.DateField(null=True, blank=True)
     hire_date = models.DateField(null=True, blank=True)
     is_active = models.BooleanField(default=True)
-    
+
+    def save(self, *args, **kwargs):
+        # Superusers (admin accounts) can NEVER be deactivated
+        if self.is_superuser:
+            self.is_active = True
+            self.is_staff = True
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.username} - {self.role}"

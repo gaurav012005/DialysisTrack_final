@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { Lock, CheckCircle2, ArrowLeft } from 'lucide-react';
+import { resetPassword } from '../api/notifications';
 
 const ResetPassword = () => {
   const [searchParams] = useSearchParams();
@@ -26,19 +27,10 @@ const ResetPassword = () => {
 
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/api/notifications/reset-password/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, new_password: newPassword })
-      });
-      const data = await res.json();
-      if (res.ok) {
-        setSuccess(true);
-      } else {
-        setError(data.detail || 'Reset failed. Token may be expired.');
-      }
-    } catch {
-      setError('Network error. Please try again.');
+      await resetPassword(token, newPassword);
+      setSuccess(true);
+    } catch (err) {
+      setError(err.response?.data?.detail || 'Reset failed. Token may be expired or Network error.');
     }
     setLoading(false);
   };

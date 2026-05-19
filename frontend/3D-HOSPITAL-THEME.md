@@ -7,17 +7,10 @@ Your DialysisTrack frontend now features a **modern 3D hospital-themed UI** with
 ### 🎨 Design Highlights
 
 #### Color Palette
-- **Primary Medical Cyan**: `#0891b2` - Professional medical technology color
-- **Healthcare Green**: `#10b981` - Health and wellness
-- **Medical Indigo**: `#6366f1` - Advanced technology
-- **Clean Backgrounds**: Light blue gradients for hospital feel
-
-#### 3D Effects
 - **Glassmorphism Cards**: Frosted glass effect with backdrop blur
 - **3D Transforms**: Cards lift on hover with subtle rotation
 - **Layered Shadows**: Multiple shadow layers for depth
 - **Glow Effects**: Cyan and green glowing shadows for important elements
-
 #### Animations
 - **Float Animation**: Gentle floating effect for cards
 - **Heartbeat**: Emergency status indicators pulse like a heartbeat

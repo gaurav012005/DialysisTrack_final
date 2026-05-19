@@ -97,11 +97,9 @@ const TwoFactorSetup = () => {
 
             const data = await response.json();
             if (response.ok) {
-                // Generate QR code using external API
-                const otpauth = `otpauth://totp/DialysisTrack:${data.user}?secret=${data.secret}&issuer=DialysisTrack`;
-                const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=${encodeURIComponent(otpauth)}`;
-
-                setQrCode(qrUrl);
+                // Use the base64 QR code directly from the backend
+                // This prevents issues with adblockers blocking external QR code APIs
+                setQrCode(data.qr_code);
                 setSecret(data.secret);
                 setStep('verify');
             } else {

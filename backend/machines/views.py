@@ -3,6 +3,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Q, Count, Avg
+from django.utils import timezone
 from datetime import date, timedelta
 from .models import DialysisMachine, MaintenanceLog, CleaningLog
 from .serializers import (
@@ -76,13 +77,19 @@ class DialysisMachineViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'])
     def assign_patient(self, request, pk=None):
-        """Assign patient to machine"""
+        """Assign patient to machine.
+        
+        DIALYSIS HEAD RULES ENFORCED:
+        - Machine must be 'available' status
+        - Patient must be active
+        - Uses timezone-aware datetime for session tracking
+        """
         machine = self.get_object()
         patient_id = request.data.get('patient_id')
         
         if machine.status != 'available':
             return Response(
-                {'error': 'Machine is not available'}, 
+                {'error': f'Machine is not available. Current status: {machine.get_status_display()}'}, 
                 status=status.HTTP_400_BAD_REQUEST
             )
         
@@ -90,10 +97,17 @@ class DialysisMachineViewSet(viewsets.ModelViewSet):
             from patients.models import Patient
             patient = Patient.objects.get(id=patient_id)
             
+            # === DIALYSIS HEAD FIX: Check patient is active ===
+            if not patient.is_active:
+                return Response(
+                    {'error': 'Cannot assign machine to inactive/discharged patient.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
+            
             machine.status = 'in_use'
             machine.current_patient = patient
-            machine.current_session_start = date.today()
-            machine.total_sessions += 1
+            # === DIALYSIS HEAD FIX: Use timezone.now() instead of date.today() ===
+            machine.current_session_start = timezone.now()
             machine.save()
             
             serializer = self.get_serializer(machine)
@@ -107,20 +121,67 @@ class DialysisMachineViewSet(viewsets.ModelViewSet):
     
     @action(detail=True, methods=['post'])
     def release_patient(self, request, pk=None):
-        """Release patient from machine"""
+        """Release patient from machine and set to available.
+
+        Fixes:
+        - Decimal + float TypeError (use Decimal for arithmetic)
+        - Graceful handling when machine is not in_use (clears patient anyway)
+        """
+        from decimal import Decimal
+
         machine = self.get_object()
-        
+
         if machine.status == 'in_use':
-            # Calculate operating hours
+            # Calculate session duration safely
             if machine.current_session_start:
-                from datetime import datetime
-                session_duration = datetime.now() - machine.current_session_start
-                machine.total_operating_hours += session_duration.total_seconds() / 3600
-            
-            machine.status = 'cleaning'  # Needs cleaning after use
+                try:
+                    session_duration = timezone.now() - machine.current_session_start
+                    hours = Decimal(str(round(session_duration.total_seconds() / 3600, 2)))
+                    machine.total_operating_hours = (machine.total_operating_hours or Decimal('0')) + hours
+                except Exception:
+                    pass  # Don't let stats calc crash the whole release
+
+            # Auto-flag maintenance if machine is overdue, else mark available
+            machine.status = 'maintenance' if machine.needs_maintenance else 'available'
+            machine.current_patient = None
+            machine.current_session_start = None
+            machine.total_sessions += 1
+            machine.save()
+
+            serializer = self.get_serializer(machine)
+            return Response(serializer.data)
+
+        else:
+            # Machine is not in_use — still clear any stale patient reference
             machine.current_patient = None
             machine.current_session_start = None
             machine.save()
+            return Response(
+                {
+                    'message': f'Machine was not in use (status: {machine.get_status_display()}). Patient reference cleared.',
+                    'status': machine.status
+                },
+                status=status.HTTP_200_OK
+            )
+
+    
+    @action(detail=True, methods=['post'])
+    def complete_cleaning(self, request, pk=None):
+        """Mark machine as cleaned and available.
+        
+        DIALYSIS HEAD RULE: Machine can only go from 'cleaning' to 'available'
+        after cleaning is confirmed.
+        """
+        machine = self.get_object()
+        
+        if machine.status != 'cleaning':
+            return Response(
+                {'error': f'Machine is not in cleaning status (current: {machine.get_status_display()}).'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+        
+        machine.status = 'available'
+        machine.save()
         
         serializer = self.get_serializer(machine)
         return Response(serializer.data)

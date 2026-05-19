@@ -6,7 +6,19 @@
 
 ## 📑 Table of Contents
 
-1. [System Overview](#system-overview)
+1. [System Overview](#system-overview)Trajectory ID: 9f7e3bc3-a539-47b6-b3d9-c4780915e5c2
+Error: HTTP 401 Unauthorized
+Sherlog: 
+TraceID: 0x
+Headers: {"Alt-Svc":["h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000"],"Content-Length":["297"],"Content-Type":["text/event-stream"],"Date":["Tue, 21 Apr 2026 15:49:14 GMT"],"Server":["ESF"],"Server-Timing":["gfet4t7; dur=1711"],"Vary":["Origin","X-Origin","Referer"],"Www-Authenticate":["Bearer realm=\"https://accounts.google.com/\", error=\"invalid_token\""],"X-Content-Type-Options":["nosniff"],"X-Frame-Options":["SAMEORIGIN"],"X-Xss-Protection":["0"]}
+
+{
+  "error": {
+    "code": 401,
+    "message": "Request had invalid authentication credentials. Expected OAuth 2 access token, login cookie or other valid authentication credential. See https://developers.google.com/identity/sign-in/web/devconsole-project.",
+    "status": "UNAUTHENTICATED"
+  }
+}
 2. [User Roles & Access](#user-roles--access)
 3. [Admin Features](#admin-features)
 4. [Staff Features (Doctors, Nurses, Technicians, Receptionist)](#staff-features)

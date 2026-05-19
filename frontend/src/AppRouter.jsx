@@ -4,6 +4,7 @@ import { useAuth } from './context/AuthContext';
 import { usePermissions } from './components/RoleGuard';
 import Layout from './components/Layout';
 import ErrorBoundary from './components/ErrorBoundary';
+import ChatBot from './components/ChatBot';
 import Login from './pages/Login';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -24,6 +25,13 @@ import AmbulanceManagement from './pages/AmbulanceManagement';
 import DriverDashboard from './pages/DriverDashboard';
 import TrackAmbulance from './pages/TrackAmbulance';
 import AuditLogs from './pages/AuditLogs';
+
+// Small wrapper: send patients straight to their own portal
+const DashboardRouter = () => {
+  const { user } = useAuth();
+  if (user?.role === 'patient') return <Navigate to="/patient-portal" replace />;
+  return <Dashboard />;
+};
 
 // Protected Route with Role Check and 2FA Setup Enforcement
 const ProtectedRoute = ({ children, requiredModule }) => {
@@ -152,6 +160,7 @@ const PublicRoute = ({ children }) => {
 
 const AppRouter = () => {
   return (
+    <>
     <ErrorBoundary>
       <Routes>
         {/* Public Routes */}
@@ -167,7 +176,8 @@ const AppRouter = () => {
             path="dashboard"
             element={
               <ProtectedRoute requiredModule="dashboard">
-                <Dashboard />
+                {/* Patients have their own portal; redirect them away from admin dashboard */}
+                <DashboardRouter />
               </ProtectedRoute>
             }
           />
@@ -222,7 +232,7 @@ const AppRouter = () => {
           <Route
             path="sessions"
             element={
-              <ProtectedRoute requiredModule="queue">
+              <ProtectedRoute>
                 <Sessions />
               </ProtectedRoute>
             }
@@ -301,6 +311,8 @@ const AppRouter = () => {
         <Route path="*" element={<NotFound />} />
       </Routes>
     </ErrorBoundary>
+    <ChatBot />
+  </>
   );
 };
 

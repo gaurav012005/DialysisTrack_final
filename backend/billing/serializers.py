@@ -4,6 +4,7 @@ from .models import Bill, Payment, InsuranceProvider, PatientInsurance
 class BillSerializer(serializers.ModelSerializer):
     patient_name = serializers.SerializerMethodField()
     balance_amount = serializers.SerializerMethodField()
+    payment_method = serializers.SerializerMethodField()
     
     class Meta:
         model = Bill
@@ -15,6 +16,12 @@ class BillSerializer(serializers.ModelSerializer):
     
     def get_balance_amount(self, obj):
         return obj.total_amount - obj.paid_amount
+    
+    def get_payment_method(self, obj):
+        latest_payment = obj.payments.filter(status='completed').order_by('-payment_date').first()
+        if latest_payment:
+            return latest_payment.get_payment_method_display()
+        return None
 
 class PaymentSerializer(serializers.ModelSerializer):
     bill_number = serializers.CharField(source='bill.bill_number', read_only=True)

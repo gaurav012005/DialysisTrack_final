@@ -12,6 +12,7 @@ from .serializers import (
 )
 from .services import PaymentService
 from .upi_qr import UPIQRCodeGenerator, HOSPITAL_UPI_ID, HOSPITAL_NAME
+from notifications.views import create_notification
 
 class BillViewSet(viewsets.ModelViewSet):
     queryset = Bill.objects.all()
@@ -28,6 +29,16 @@ class BillViewSet(viewsets.ModelViewSet):
             queryset = queryset.filter(patient_id=patient_id)
             
         return queryset
+    
+    def perform_create(self, serializer):
+        bill = serializer.save()
+        if hasattr(bill.patient, 'user') and bill.patient.user:
+            create_notification(
+                user=bill.patient.user,
+                notification_type='bill_generated',
+                title='New Bill Generated',
+                message=f"A new bill (amount: ₹{bill.total_amount}) has been generated for you."
+            )
     
     @action(detail=False, methods=['get'])
     def dashboard_stats(self, request):
@@ -114,6 +125,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
                     return Response({'error': 'Invalid payment method'}, status=status.HTTP_400_BAD_REQUEST)
                 
                 if result['success']:
+                    if hasattr(patient, 'user') and patient.user:
+                        create_notification(
+                            user=patient.user,
+                            notification_type='payment_received',
+                            title='✅ Payment Received',
+                            message=f"Payment of ₹{amount:.2f} received via {payment_method.upper()}. Transaction ID: {result.get('transaction_id', 'N/A')}. Bill: {bill.bill_number}."
+                        )
                     result['bill_id'] = bill.id
                     result['bill_number'] = bill.bill_number
                     result['patient_name'] = patient.name
@@ -128,24 +146,37 @@ class PaymentViewSet(viewsets.ModelViewSet):
     
     @action(detail=False, methods=['post'])
     def process_upi_payment(self, request):
-        """Process UPI payment"""
+        """Process UPI payment - supports both UPI ID and QR code confirmation"""
         try:
             bill_id = request.data.get('bill_id')
             amount = float(request.data.get('amount', 0))
-            upi_id = request.data.get('upi_id')
-            
+            upi_id = request.data.get('upi_id', '')
+            qr_confirmed = request.data.get('qr_confirmed', False)  # True when patient scanned QR
+
             if amount <= 0:
                 return Response({'error': 'Amount must be greater than zero'}, status=status.HTTP_400_BAD_REQUEST)
-            
+
             bill = Bill.objects.get(id=bill_id)
-            
+
+            # For QR-based payments, use hospital UPI ID as the transaction reference
+            if qr_confirmed and not upi_id:
+                upi_id = HOSPITAL_UPI_ID  # Use the hospital's own UPI for QR confirmations
+
             result = PaymentService.process_upi_payment(bill, amount, upi_id, request.user)
-            
+
             if result['success']:
+                if hasattr(bill.patient, 'user') and bill.patient.user:
+                    method_desc = 'QR Code Scan' if qr_confirmed else 'UPI'
+                    create_notification(
+                        user=bill.patient.user,
+                        notification_type='payment_received',
+                        title='✅ Payment Received via UPI',
+                        message=f"Payment of ₹{amount:.2f} received via {method_desc}. Transaction ID: {result.get('transaction_id', 'N/A')}. Bill #{bill.bill_number} is now updated."
+                    )
                 return Response(result, status=status.HTTP_201_CREATED)
             else:
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
-                
+
         except Bill.DoesNotExist:
             return Response({'error': 'Bill not found'}, status=status.HTTP_404_NOT_FOUND)
         except Exception as e:
@@ -197,6 +228,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
             result = PaymentService.process_card_payment(bill, amount, card_data, request.user)
             
             if result['success']:
+                if hasattr(bill.patient, 'user') and bill.patient.user:
+                    create_notification(
+                        user=bill.patient.user,
+                        notification_type='payment_received',
+                        title='✅ Payment Received via Card',
+                        message=f"Payment of ₹{amount:.2f} received via Card (**** {card_data.get('last_four','****')}). Transaction ID: {result.get('transaction_id', 'N/A')}."
+                    )
                 return Response(result, status=status.HTTP_201_CREATED)
             else:
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
@@ -222,6 +260,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
             result = PaymentService.process_netbanking_payment(bill, amount, bank_code, request.user)
             
             if result['success']:
+                if hasattr(bill.patient, 'user') and bill.patient.user:
+                    create_notification(
+                        user=bill.patient.user,
+                        notification_type='payment_received',
+                        title='✅ Payment Received via Net Banking',
+                        message=f"Payment of ₹{amount:.2f} received via Net Banking. Transaction ID: {result.get('transaction_id', 'N/A')}."
+                    )
                 return Response(result, status=status.HTTP_201_CREATED)
             else:
                 return Response(result, status=status.HTTP_400_BAD_REQUEST)
@@ -246,6 +291,15 @@ class PaymentViewSet(viewsets.ModelViewSet):
             
             result = PaymentService.process_cash_payment(bill, amount, request.user, notes)
             
+            if result.get('success'):
+                if hasattr(bill.patient, 'user') and bill.patient.user:
+                    create_notification(
+                        user=bill.patient.user,
+                        notification_type='payment_received',
+                        title='✅ Cash Payment Received',
+                        message=f"Cash payment of ₹{amount:.2f} has been received and recorded. Transaction ID: {result.get('transaction_id', 'N/A')}."
+                    )
+
             return Response(result, status=status.HTTP_201_CREATED)
                 
         except Bill.DoesNotExist:

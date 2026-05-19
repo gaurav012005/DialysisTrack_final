@@ -30,6 +30,7 @@ urlpatterns = [
     path('api/notifications/', include('notifications.urls')),
     path('api/two-factor/', include('two_factor.urls')),
     path('api/fleet/', include('fleet.urls')),
+    path('api/chat/', include('chat.urls')),
     
     # API Documentation
     path('swagger/', test_views.api_docs, name='api-docs'),

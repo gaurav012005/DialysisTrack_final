@@ -317,6 +317,7 @@ const Queue = () => {
       <AddPatientToQueueModal
         isOpen={showAddModal}
         onClose={() => setShowAddModal(false)}
+        currentQueue={queue}
         onAdd={(newQueueEntry) => {
           fetchQueue(); // Refresh the list
         }}

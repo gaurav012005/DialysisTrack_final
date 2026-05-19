@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-const AddPatientToQueueModal = ({ isOpen, onClose, onAdd }) => {
+const AddPatientToQueueModal = ({ isOpen, onClose, onAdd, currentQueue = [] }) => {
   const [patientId, setPatientId] = useState('');
   const [priority, setPriority] = useState('scheduled');
   const [patients, setPatients] = useState([]);
@@ -88,21 +88,31 @@ const AddPatientToQueueModal = ({ isOpen, onClose, onAdd }) => {
             <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Select Patient</label>
             {loading ? (
               <div className="text-sm text-gray-500 dark:text-gray-400">Loading patients...</div>
-            ) : (
-              <select
-                value={patientId}
-                onChange={(e) => setPatientId(e.target.value)}
-                className="input-field w-full"
-                required
-              >
-                <option value="">Choose a patient...</option>
-                {patients.map(patient => (
-                  <option key={patient.id} value={patient.id}>
-                    {patient.first_name} {patient.last_name} (ID: {patient.patient_id})
-                  </option>
-                ))}
-              </select>
-            )}
+            ) : (() => {
+              const queuedPatientIds = currentQueue
+                .filter(q => ['waiting', 'in_progress', 'in-progress'].includes(q.status))
+                .map(q => q.patient?.id || q.patient);
+              const availablePatients = patients.filter(p => !queuedPatientIds.includes(p.id));
+
+              return (
+                <select
+                  value={patientId}
+                  onChange={(e) => setPatientId(e.target.value)}
+                  className="input-field w-full"
+                  required
+                >
+                  <option value="">Choose a patient...</option>
+                  {availablePatients.map(patient => (
+                    <option key={patient.id} value={patient.id}>
+                      {patient.first_name} {patient.last_name} (ID: {patient.patient_id})
+                    </option>
+                  ))}
+                  {availablePatients.length === 0 && (
+                    <option value="" disabled>All active patients are already in queue</option>
+                  )}
+                </select>
+              );
+            })()}
           </div>
           <div className="mb-4">
             <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">Priority</label>

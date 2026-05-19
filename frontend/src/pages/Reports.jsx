@@ -16,7 +16,7 @@ const Reports = () => {
 
   const fetchDashboardStats = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('access_token');
       const response = await fetch('http://localhost:8000/api/reports/dashboard-stats/', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -35,7 +35,7 @@ const Reports = () => {
 
   const fetchChartData = async () => {
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('access_token');
       const response = await fetch('http://localhost:8000/api/reports/chart-data/', {
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -55,7 +55,7 @@ const Reports = () => {
   const downloadReport = async (reportType, format) => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('authToken');
+      const token = localStorage.getItem('authToken') || localStorage.getItem('access_token');
       const response = await fetch(
         `http://localhost:8000/api/reports/export/?type=${reportType}&format=${format}`,
         {

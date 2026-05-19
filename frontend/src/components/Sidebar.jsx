@@ -21,6 +21,7 @@ const Sidebar = ({ isOpen, onClose }) => {
   const allMenuItems = [
     { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, module: 'dashboard' },
     { path: '/patients', label: 'Patients', icon: Users, module: 'patients' },
+
     { path: '/queue', label: 'Dialysis Queue', icon: RefreshCw, module: 'queue' },
     { path: '/sessions', label: 'Session Details', icon: ClipboardList, module: 'queue' },
     { path: '/machines', label: 'Machines', icon: Settings, module: 'machines' },
@@ -33,10 +34,9 @@ const Sidebar = ({ isOpen, onClose }) => {
 
   // Patient-specific menu items
   const patientMenuItems = [
-    { path: '/dashboard', label: 'My Dashboard', icon: LayoutDashboard, module: 'dashboard' },
+    { path: '/patient-portal', label: 'Patient Portal', icon: ClipboardList, module: 'dashboard' },
     { path: '/appointments', label: 'My Appointments', icon: Calendar, module: 'appointments' },
     { path: '/billing', label: 'My Bills', icon: DollarSign, module: 'billing' },
-    { path: '/reports', label: 'My Reports', icon: TrendingUp, module: 'reports' },
     { path: '/track-ambulance', label: 'Track Ambulance', icon: Truck, module: 'fleet' },
   ];
 

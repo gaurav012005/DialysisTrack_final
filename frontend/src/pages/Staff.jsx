@@ -58,6 +58,32 @@ const Staff = () => {
     }
   };
 
+  const deleteStaff = async (staffId, staffName) => {
+    if (!window.confirm(`Are you sure you want to permanently delete ${staffName} from the system?`)) {
+      return;
+    }
+    
+    try {
+      const token = localStorage.getItem('authToken');
+      const response = await fetch(`http://localhost:8000/api/auth/users/${staffId}/`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+
+      if (response.ok) {
+        toast.success('Staff member removed successfully');
+        fetchStaff();
+      } else {
+        const errorText = await response.text();
+        toast.error(`Failed to delete staff: ${errorText}`);
+      }
+    } catch (error) {
+      toast.error(`Error deleting staff: ${error.message}`);
+    }
+  };
+
   if (loading) {
     return <LoadingSpinner message="Loading staff..." />;
   }
@@ -158,7 +184,7 @@ const Staff = () => {
                   </span>
                 </div>
               </div>
-              <div className="mt-4 flex space-x-2">
+              <div className="mt-4 flex flex-wrap gap-2">
                 <button
                   onClick={() => setEditingStaff(staff)}
                   className="flex-1 btn-secondary text-sm py-2"
@@ -168,11 +194,17 @@ const Staff = () => {
                 <button
                   onClick={() => toggleStaffStatus(staff.id, staff.status === 'active' ? 'off' : 'active', fetchStaff)}
                   className={`flex-1 text-sm py-2 rounded ${staff.status === 'active'
-                    ? 'bg-red-500 hover:bg-red-600 text-white'
+                    ? 'bg-yellow-500 hover:bg-yellow-600 text-white'
                     : 'bg-green-500 hover:bg-green-600 text-white'
                     }`}
                 >
                   {staff.status === 'active' ? 'Deactivate' : 'Activate'}
+                </button>
+                <button
+                  onClick={() => deleteStaff(staff.id, staff.name)}
+                  className="flex-1 bg-red-500 hover:bg-red-600 text-white text-sm py-2 rounded"
+                >
+                  Delete
                 </button>
               </div>
             </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Shield, Search, Filter, RefreshCw, User, Clock, Activity } from 'lucide-react';
+import { getAuditLogs } from '../api/notifications';
 
 const AuditLogs = () => {
   const [logs, setLogs] = useState([]);
@@ -15,19 +16,12 @@ const AuditLogs = () => {
   const fetchLogs = async () => {
     setLoading(true);
     try {
-      const token = localStorage.getItem('authToken');
-      let url = 'http://localhost:8000/api/notifications/audit-logs/?limit=200';
-      if (moduleFilter) url += `&module=${moduleFilter}`;
-      if (actionFilter) url += `&action=${actionFilter}`;
-
-      const res = await fetch(url, {
-        headers: { 'Authorization': `Bearer ${token}` }
+      const res = await getAuditLogs({
+        module: moduleFilter,
+        action: actionFilter,
+        limit: 200
       });
-
-      if (res.ok) {
-        const data = await res.json();
-        setLogs(data.logs || []);
-      }
+      setLogs(res.data.logs || []);
     } catch (err) {
       console.error('Failed to fetch audit logs:', err);
     }

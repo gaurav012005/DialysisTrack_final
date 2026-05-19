@@ -66,6 +66,7 @@ class Payment(models.Model):
     PAYMENT_METHOD_CHOICES = [
         ('cash', 'Cash'),
         ('upi', 'UPI/Scanner (PhonePe/GPay/Paytm)'),
+        ('razorpay', 'Online Payment (Razorpay)'),
     ]
     
     PAYMENT_STATUS_CHOICES = [
@@ -92,6 +93,11 @@ class Payment(models.Model):
     
     # Card Details
     card_last_four = models.CharField(max_length=4, blank=True, null=True)
+    
+    # Razorpay Details
+    razorpay_order_id = models.CharField(max_length=100, blank=True, null=True)
+    razorpay_payment_id = models.CharField(max_length=100, blank=True, null=True)
+    razorpay_signature = models.CharField(max_length=255, blank=True, null=True)
     
     # Processing Details
     processing_fee = models.DecimalField(max_digits=10, decimal_places=2, default=0.00)

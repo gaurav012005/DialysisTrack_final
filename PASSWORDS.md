@@ -74,16 +74,14 @@ You can manage all data through the Django admin panel at http://localhost:8000/
 
 ---
 
-## 👥 PATIENTS
+## 👥 PATIENTS (Demo Data)
 
-| Patient ID | Name | Email | Password |
-|------------|------|-------|----------|
-| P001 | James Miller | james.miller@email.com | patient123 |
-| P002 | Patricia Martinez | patricia.martinez@email.com | patient123 |
-| P003 | Robert Taylor | robert.taylor@email.com | patient123 |
-| P004 | Linda Thomas | linda.thomas@email.com | patient123 |
-| P005 | William Moore | william.moore@email.com | patient123 |
-| P006 | Jennifer White | jennifer.white@email.com | patient123 |
+| Patient ID | Name | Email | Password | Diagnosis |
+|------------|------|-------|----------|-----------|
+| P001 | Ramesh Patil | ramesh.patil@email.com | patient123 | CKD-5 (Diabetic Nephropathy) |
+| P002 | Anjali Sharma | anjali.sharma@email.com | patient123 | ESRD (Chronic Glomerulonephritis) |
+| P003 | Suresh Kulkarni | suresh.kulkarni@email.com | patient123 | CKD-5 (Hypertensive Nephrosclerosis) |
+| P004 | Priya Deshmukh | priya.deshmukh@email.com | patient123 | ESRD (Lupus Nephritis) |
 
 **Access:** Own appointments, medical records, billing
 
@@ -115,7 +113,7 @@ You can manage all data through the Django admin panel at http://localhost:8000/
    Password: staff123
 
 🔐 Patient Login:
-   Email: james.miller@email.com
+   Email: ramesh.patil@email.com
    Password: patient123
 ```
 
@@ -165,13 +163,13 @@ python manage.py createsuperuser
 
 After running `setup_database.py`, your database contains:
 
-- **Users:** 14 total
+- **Users:** 12 total
   - 1 Admin
   - 2 Doctors
   - 2 Nurses
   - 2 Technicians
   - 1 Receptionist
-  - 6 Patients
+  - 4 Patients
 
 - **Machines:** 6 dialysis machines
   - 4 Available
@@ -198,6 +196,7 @@ For production deployment:
 
 ---
 
-**Last Updated:** January 24, 2026
+**Last Updated:** April 18, 2026
 **Database:** MySQL (dialysistrack_db)
 **Setup Script:** backend/setup_database.py
+**Reset Patient Data:** backend/reset_patient_data.py

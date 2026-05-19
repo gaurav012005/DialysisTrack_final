@@ -53,18 +53,18 @@ class PaymentService:
     
     @staticmethod
     def validate_upi_id(upi_id):
-        """Validate UPI ID format"""
+        """Validate UPI ID format. Accepts any UPI ID with username@provider pattern."""
         if not upi_id or '@' not in upi_id:
             return False
-        
+
         parts = upi_id.split('@')
         if len(parts) != 2:
             return False
-        
+
         username, provider = parts
-        valid_providers = ['paytm', 'phonepe', 'gpay', 'bhim', 'ybl', 'ibl', 'axl']
-        
-        return len(username) >= 3 and provider.lower() in valid_providers
+        # Accept if username is at least 3 chars and provider is at least 2 chars
+        # This covers known providers (paytm, phonepe, gpay, ybl, fam, oksbi, okaxis, etc.)
+        return len(username) >= 3 and len(provider) >= 2
     
     @staticmethod
     def calculate_payment_fee(amount, payment_method):
@@ -239,7 +239,13 @@ class PaymentService:
     
     @staticmethod
     def update_bill_status(bill):
-        """Update bill payment status"""
+        """Update bill payment status.
+        
+        DIALYSIS HEAD RULES:
+        - Track total paid accurately
+        - Detect overpayment and flag it
+        - Proper status transitions
+        """
         total_paid = bill.payments.filter(status='completed').aggregate(
             total=Sum('amount'))['total'] or 0
         
@@ -247,10 +253,21 @@ class PaymentService:
         
         if total_paid >= bill.total_amount:
             bill.status = 'paid'
+            # === DIALYSIS HEAD FIX: Flag overpayment ===
+            if total_paid > bill.total_amount:
+                overpaid = total_paid - bill.total_amount
+                bill.notes = bill.notes or ''
+                if 'OVERPAYMENT' not in bill.notes:
+                    bill.notes += f' [OVERPAYMENT ALERT: ₹{overpaid:.2f} excess received. Please process refund.]'
         elif total_paid > 0:
             bill.status = 'partial'
         else:
             bill.status = 'pending'
+        
+        # === DIALYSIS HEAD FIX: Auto-mark overdue bills ===
+        from datetime import date
+        if bill.status == 'pending' and bill.due_date and bill.due_date < date.today():
+            bill.status = 'overdue'
         
         bill.save()
     

@@ -110,21 +110,65 @@ const Machines = () => {
     }
   };
 
-  const updateMachineStatus = async (machineId, newStatus) => {
+  const updateMachineStatus = async (machineId, action) => {
+    try {
+      const token = localStorage.getItem('authToken');
+      const post = (endpoint) =>
+        fetch(`http://localhost:8000/api/machines/${machineId}/${endpoint}/`, {
+          method: 'POST',
+          headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' }
+        });
+
+      let res;
+      switch (action) {
+        case 'end_session':
+          res = await post('release_patient');
+          break;
+        case 'maintenance':
+          res = await post('start_maintenance');
+          break;
+        case 'complete_maintenance':
+          res = await post('complete_maintenance');
+          break;
+        case 'complete_cleaning':
+          res = await post('complete_cleaning');
+          break;
+        default:
+          // fallback PATCH (e.g. start_use keeps simple status update)
+          res = await fetch(`http://localhost:8000/api/machines/${machineId}/`, {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${token}`, 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: 'in_use' })
+          });
+      }
+
+      // Always refresh after any action
+      fetchMachines();
+      if (res && res.ok) {
+        showSuccess('Machine updated successfully');
+      } else if (res) {
+        const err = await res.json().catch(() => ({}));
+        console.warn('Machine update note:', err.error || res.statusText);
+      }
+    } catch (error) {
+      handleApiError(error);
+    }
+  };
+
+
+  const deleteMachine = async (machineId) => {
     try {
       const token = localStorage.getItem('authToken');
       const response = await fetch(`http://localhost:8000/api/machines/${machineId}/`, {
-        method: 'PATCH',
+        method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
+          'Authorization': `Bearer ${token}`
+        }
       });
 
       if (response.ok) {
+        showSuccess('Machine removed successfully');
         fetchMachines();
-        showSuccess('Machine status updated successfully');
       } else {
         handleApiError(null, response);
       }
@@ -233,6 +277,7 @@ const Machines = () => {
                 key={machine.id}
                 machine={machine}
                 onStatusChange={updateMachineStatus}
+                onDelete={deleteMachine}
               />
             ))}
           </div>

@@ -98,6 +98,34 @@ def dashboard_stats(request):
         'date': today
     }
     
+    # Add clinical alert counts
+    try:
+        from datetime import timedelta
+        three_months_ago = today - timedelta(days=90)
+        
+        infection_positive = Patient.objects.filter(
+            Q(hepatitis_b_status='positive') | Q(hepatitis_c_status='positive') | Q(hiv_status='positive'),
+            is_active=True
+        ).count()
+        
+        consent_issues = Patient.objects.filter(
+            Q(consent_given=False) | Q(consent_expiry_date__lt=today),
+            is_active=True
+        ).count()
+        
+        screening_overdue = Patient.objects.filter(
+            Q(last_infection_screening_date__lt=three_months_ago) | Q(last_infection_screening_date__isnull=True),
+            is_active=True
+        ).count()
+        
+        stats['clinical'] = {
+            'infection_positive': infection_positive,
+            'consent_issues': consent_issues,
+            'screening_overdue': screening_overdue,
+        }
+    except Exception:
+        pass
+    
     return Response(stats)
 
 

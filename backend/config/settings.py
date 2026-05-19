@@ -17,7 +17,8 @@ SECRET_KEY = config('SECRET_KEY')
 DEBUG = config('DEBUG', default=True, cast=bool)
 
 #ALLOWED_HOSTS = ['*']  # tunnel mode
-ALLOWED_HOSTS = ['*']
+# === DIALYSIS HEAD FIX: Restrict to known hosts for security ===
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1', cast=lambda v: [s.strip() for s in v.split(',')])
 #cloudflare testing 
 # Application definition
 INSTALLED_APPS = [
@@ -53,6 +54,7 @@ INSTALLED_APPS = [
     'notifications',
     'two_factor',
     'fleet',
+    'chat',
 ]
 
 ASGI_APPLICATION = 'config.asgi.application'
@@ -130,7 +132,8 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Internationalization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+# === DIALYSIS HEAD FIX: Use Indian Standard Time for dialysis center ===
+TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
 
@@ -259,3 +262,12 @@ if not DEBUG:
     handler500 = 'config.views.handler500'
     handler400 = 'config.views.handler400'
     handler403 = 'config.views.handler403'
+
+# ─── Razorpay Payment Gateway (Test Mode) ────────────────────────────────────
+RAZORPAY_KEY_ID = config('RAZORPAY_KEY_ID', default='')
+RAZORPAY_KEY_SECRET = config('RAZORPAY_KEY_SECRET', default='')
+RAZORPAY_TEST_MODE = True  # Set to False in production
+
+# ─── AI Chat Assistant (Groq - Free) ─────────────────────────────────────────
+GROQ_API_KEY = config('GROQ_API_KEY', default='')
+# trigger reload 2

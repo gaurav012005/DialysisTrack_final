@@ -74,34 +74,15 @@ def login_view(request):
                         'message': '2FA setup is mandatory for all staff members. Please complete setup to continue.'
                     })
                 else:
-                    # Staff user with 2FA enabled - check grace period
-                    reminder, created = TwoFactorReminder.objects.get_or_create(user=user)
+                    # Staff user with 2FA enabled - ALWAYS require verification (no grace period)
+                    refresh = RefreshToken.for_user(user)
+                    temp_token = str(refresh.access_token)
                     
-                    # Check if verification is needed (after 3 logins OR 24 hours)
-                    if reminder.needs_2fa_verification():
-                        # Grace period expired - require 2FA code
-                        refresh = RefreshToken.for_user(user)
-                        temp_token = str(refresh.access_token)
-                        
-                        return Response({
-                            'requires_2fa': True,
-                            'temp_token': temp_token,
-                            'message': 'Please enter your 2FA code'
-                        })
-                    else:
-                        # Still in grace period - allow login without code
-                        reminder.use_grace_login()
-                        remaining = reminder.grace_logins_remaining
-                        
-                        refresh = RefreshToken.for_user(user)
-                        return Response({
-                            'refresh': str(refresh),
-                            'access': str(refresh.access_token),
-                            'user': UserSerializer(user).data,
-                            'requires_2fa': False,
-                            'grace_logins_remaining': remaining,
-                            'message': f'Login successful. {remaining} grace logins remaining before 2FA verification required.' if remaining > 0 else 'Next login will require 2FA verification.'
-                        })
+                    return Response({
+                        'requires_2fa': True,
+                        'temp_token': temp_token,
+                        'message': 'Please enter your 2FA code'
+                    })
             
             # Non-staff users can login normally without 2FA
             refresh = RefreshToken.for_user(user)

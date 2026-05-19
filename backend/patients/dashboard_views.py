@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.http import HttpResponse
 from django.utils import timezone
 from datetime import timedelta
-from django.db.models import Q, Sum, Count
+from django.db.models import Q, Sum, Count, F
 
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.lib import colors
@@ -41,8 +41,11 @@ class PatientDashboardViewSet(viewsets.ViewSet):
     def _get_patient(self, request):
         """Get patient object for current user"""
         try:
-            if request.user.role == 'patient' and hasattr(request.user, 'patient'):
-                return request.user.patient
+            if request.user.role == 'patient':
+                if hasattr(request.user, 'patient_profile'):
+                    return request.user.patient_profile
+                elif hasattr(request.user, 'patient'):
+                    return request.user.patient
             return None
         except:
             return None
@@ -55,10 +58,14 @@ class PatientDashboardViewSet(viewsets.ViewSet):
         """
         patient = self._get_patient(request)
         if not patient:
-            return Response(
-                {'error': 'Patient profile not found'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+            # Return empty structure if patient profile doesn't exist yet
+            return Response({
+                'patient_info': {'name': request.user.get_full_name() or request.user.username},
+                'upcoming_appointments': [],
+                'pending_bills': [],
+                'recent_sessions': [],
+                'statistics': {'total_sessions': 0, 'total_paid': 0.0, 'pending_amount': 0.0, 'next_appointment': None}
+            }, status=status.HTTP_200_OK)
         
         # Upcoming appointments (next 30 days)
         upcoming_appointments = Appointment.objects.filter(
@@ -71,7 +78,7 @@ class PatientDashboardViewSet(viewsets.ViewSet):
         # Pending bills
         pending_bills = Bill.objects.filter(
             patient=patient,
-            balance_amount__gt=0
+            total_amount__gt=F('paid_amount')
         ).order_by('-created_at')[:5]
         
         # Recent sessions (last 10)
@@ -86,13 +93,13 @@ class PatientDashboardViewSet(viewsets.ViewSet):
         ).aggregate(total=Sum('amount'))['total'] or 0
         pending_amount = Bill.objects.filter(
             patient=patient
-        ).aggregate(total=Sum('balance_amount'))['total'] or 0
+        ).aggregate(total=Sum(F('total_amount') - F('paid_amount')))['total'] or 0
         
         # Build response
         data = {
             'patient_info': {
                 'id': patient.id,
-                'name': patient.get_full_name(),
+                'name': patient.name,
                 'patient_id': patient.patient_id,
                 'email': patient.email,
                 'phone': patient.phone_number,
@@ -113,11 +120,11 @@ class PatientDashboardViewSet(viewsets.ViewSet):
                 {
                     'id': bill.id,
                     'bill_number': bill.bill_number,
-                    'date': bill.bill_date,
+                    'date': bill.bill_date if hasattr(bill, 'bill_date') else bill.created_at.date(),
                     'total_amount': float(bill.total_amount),
                     'paid_amount': float(bill.paid_amount),
-                    'balance_amount': float(bill.balance_amount),
-                    'due_date': bill.bill_date + timedelta(days=30),
+                    'balance_amount': float(bill.total_amount - bill.paid_amount),
+                    'due_date': bill.due_date if hasattr(bill, 'due_date') else bill.created_at.date() + timedelta(days=30),
                 } for bill in pending_bills
             ],
             'recent_sessions': [
@@ -148,10 +155,7 @@ class PatientDashboardViewSet(viewsets.ViewSet):
         """
         patient = self._get_patient(request)
         if not patient:
-            return Response(
-                {'error': 'Patient profile not found'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Response([], status=status.HTTP_200_OK)
         
         appointments = Appointment.objects.filter(patient=patient)
         
@@ -192,10 +196,7 @@ class PatientDashboardViewSet(viewsets.ViewSet):
         """
         patient = self._get_patient(request)
         if not patient:
-            return Response(
-                {'error': 'Patient profile not found'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Response([], status=status.HTTP_200_OK)
         
         sessions = DialysisSession.objects.filter(patient=patient)
         
@@ -239,45 +240,42 @@ class PatientDashboardViewSet(viewsets.ViewSet):
         """
         patient = self._get_patient(request)
         if not patient:
-            return Response(
-                {'error': 'Patient profile not found'}, 
-                status=status.HTTP_404_NOT_FOUND
-            )
+            return Response([], status=status.HTTP_200_OK)
         
         bills = Bill.objects.filter(patient=patient)
         
         # Filter by payment status
         payment_status = request.query_params.get('status')
         if payment_status == 'paid':
-            bills = bills.filter(balance_amount=0)
+            bills = bills.filter(total_amount=F('paid_amount'))
         elif payment_status == 'unpaid':
-            bills = bills.filter(paid_amount=0, balance_amount__gt=0)
+            bills = bills.filter(paid_amount=0, total_amount__gt=0)
         elif payment_status == 'partial':
-            bills = bills.filter(paid_amount__gt=0, balance_amount__gt=0)
+            bills = bills.filter(paid_amount__gt=0, total_amount__gt=F('paid_amount'))
         
-        bills = bills.order_by('-bill_date')
+        bills = bills.order_by('-created_at')
         
         data = [
             {
                 'id': bill.id,
                 'bill_number': bill.bill_number,
-                'bill_date': bill.bill_date,
+                'bill_date': bill.created_at.date(),
                 'session_cost': float(bill.session_cost),
-                'medicines_cost': float(bill.medicines_cost),
-                'consultation_fee': float(bill.consultation_fee),
+                'medicines_cost': float(bill.medicine_cost),
+                'consultation_fee': float(bill.consultation_cost),
                 'other_charges': float(bill.other_charges),
                 'subtotal': float(bill.subtotal),
-                'gst_amount': float(bill.gst_amount),
+                'gst_amount': float(bill.tax_amount),
                 'discount': float(bill.discount),
                 'total_amount': float(bill.total_amount),
                 'paid_amount': float(bill.paid_amount),
-                'balance_amount': float(bill.balance_amount),
-                'payment_status': bill.payment_status,
+                'balance_amount': float(bill.total_amount - bill.paid_amount),
+                'payment_status': bill.status,
                 'payments': [
                     {
                         'id': payment.id,
                         'amount': float(payment.amount),
-                        'payment_mode': payment.payment_mode,
+                        'payment_mode': payment.payment_method,
                         'payment_date': payment.payment_date,
                         'transaction_id': payment.transaction_id,
                     } for payment in bill.payments.all()

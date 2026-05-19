@@ -474,6 +474,20 @@ body::after {
   border-radius: 0.5rem;
 }
 
+/* Slide Down Animation for Clinical Panel */
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-12px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 2000px;
+  }
+}
+
 /* Responsive Design */
 @media (max-width: 768px) {
 
@@ -522,4 +536,27 @@ div[style*="z-index"] > div[style*="left:"] {
   color: #e2e8f0 !important;
   border: 1px solid #334155 !important;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+/* ==========================================
+   Razorpay Checkout Modal - Always on top
+   ========================================== */
+.razorpay-container,
+.razorpay-checkout-frame,
+.razorpay-backdrop,
+iframe[src*="razorpay"],
+div[class*="razorpay"] {
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+}
+
+/* Razorpay overlay background */
+.razorpay-container .razorpay-backdrop {
+  z-index: 2147483646 !important;
+}
+
+/* Ensure body pseudo-elements never block the modal */
+body.razorpay-modal-open::before,
+body.razorpay-modal-open::after {
+  display: none !important;
 }

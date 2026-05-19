@@ -5,8 +5,8 @@ import { handleApiError } from '../utils/errorHandler';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { ArrowLeft, Radio, MapPin, Truck, Clock, AlertTriangle, Navigation, Phone, RefreshCw } from 'lucide-react';
 
-// Import Leaflet CSS
-import 'leaflet/dist/leaflet.css';
+// Removed Leaflet CSS
+// Using Google Maps API for tracking instead
 
 const TrackAmbulance = () => {
     const { id } = useParams();
@@ -161,126 +161,101 @@ const TrackAmbulance = () => {
     }, []);
 
     // Initialize map after component mounts
+    // FIX ISSUE 4: Guard against null ride — skip map init if no ride loaded
     useEffect(() => {
-        if (!loading && mapContainerRef.current && !leafletLoaded.current) {
+        if (!loading && ride && mapContainerRef.current && !leafletLoaded.current) {
             initMap();
             leafletLoaded.current = true;
         }
-    }, [loading]);
+    }, [loading, ride]);
 
+    // ── Leaflet (free OpenStreetMap) map initialisation ──────────────────
     const initMap = async () => {
-        const L = await import('leaflet');
-        LRef.current = L;
+        // Inject Leaflet CSS once
+        if (!document.querySelector('link[href*="leaflet"]')) {
+            const link = document.createElement('link');
+            link.rel  = 'stylesheet';
+            link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+            document.head.appendChild(link);
+        }
+        // Inject Leaflet JS once, then initialise
+        if (!window.L) {
+            await new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+                script.onload  = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+        initLeafletMap();
+    };
 
-        // Use saved driver location, or default to Mumbai
+    const initLeafletMap = () => {
+        if (!mapContainerRef.current) {
+            console.warn('[Track] Map container not ready, retrying...');
+            setTimeout(initLeafletMap, 150);
+            return;
+        }
+
+        // Destroy old map instance if present (hot-reload / re-mount guard)
+        if (mapRef.current) {
+            mapRef.current.remove();
+            mapRef.current = null;
+        }
+
         const center = driverLocation
-            ? [driverLocation.lat, driverLocation.lng]
-            : [19.0760, 72.8777];
+            ? [parseFloat(driverLocation.lat), parseFloat(driverLocation.lng)]
+            : [19.0760, 72.8777]; // Mumbai default
 
-        const map = L.map(mapContainerRef.current).setView(center, 14);
+        const map = window.L.map(mapContainerRef.current).setView(center, 14);
 
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+        // Free OpenStreetMap tiles — no API key required
+        window.L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+            maxZoom: 19,
         }).addTo(map);
 
-        // Custom ambulance icon with pulse animation
-        const ambulanceIcon = L.divIcon({
-            className: 'custom-ambulance-marker',
-            html: `<div style="
-                background: linear-gradient(135deg, #06b6d4, #0891b2);
-                width: 42px; height: 42px; border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
-                box-shadow: 0 4px 15px rgba(6, 182, 212, 0.5);
-                border: 3px solid white;
-                animation: pulse-ring 1.5s infinite;
-                position: relative;
-            ">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M10 10H6V14H10V10Z"/><path d="M18 10H14V14H18V10Z"/>
-                    <path d="M7 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M17 18a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/>
-                    <path d="M5 18H3V11L5 6H14L17 11V18H15"/>
-                    <path d="M9 18H15"/>
-                </svg>
-            </div>`,
-            iconSize: [42, 42],
-            iconAnchor: [21, 21],
+        // Emoji div-icons (no external CDN images needed)
+        const makeIcon = (emoji, size = 36) => window.L.divIcon({
+            html: `<span style="font-size:${size}px;line-height:1">${emoji}</span>`,
+            className: '',
+            iconSize:   [size, size],
+            iconAnchor: [size / 2, size / 2],
         });
 
-        // Pickup location icon
-        const pickupIcon = L.divIcon({
-            className: 'custom-pickup-marker',
-            html: `<div style="
-                background: linear-gradient(135deg, #ef4444, #dc2626);
-                width: 32px; height: 32px; border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
-                box-shadow: 0 3px 10px rgba(239, 68, 68, 0.4);
-                border: 2px solid white;
-            ">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="white" stroke="none">
-                    <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
-                    <circle cx="12" cy="10" r="3" fill="#dc2626"/>
-                </svg>
-            </div>`,
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-        });
+        markerRef.current = window.L.marker(center, { icon: makeIcon('🚑') })
+            .addTo(map)
+            .bindPopup('<b>🚑 Ambulance</b><br/>Live Location')
+            .openPopup();
 
-        // Hospital icon
-        const hospitalIcon = L.divIcon({
-            className: 'custom-hospital-marker',
-            html: `<div style="
-                background: linear-gradient(135deg, #10b981, #059669);
-                width: 32px; height: 32px; border-radius: 50%;
-                display: flex; align-items: center; justify-content: center;
-                box-shadow: 0 3px 10px rgba(16, 185, 129, 0.4);
-                border: 2px solid white;
-            ">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-                    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/>
-                    <path d="M2 12l10 5 10-5"/>
-                </svg>
-            </div>`,
-            iconSize: [32, 32],
-            iconAnchor: [16, 32],
-        });
+        hospitalMarkerRef.current = window.L.marker([19.0760, 72.8777], { icon: makeIcon('🏥', 30) })
+            .addTo(map)
+            .bindPopup('<b>🏥 Hospital</b><br/>Dialysis Center');
 
-        // Add ambulance marker
-        markerRef.current = L.marker(center, { icon: ambulanceIcon }).addTo(map);
-        markerRef.current.bindPopup('<b>🚑 Ambulance</b><br/>Live Location').openPopup();
-
-        // Add hospital marker (approximate - center of map area)
-        const hospitalCenter = [19.0760, 72.8777];
-        hospitalMarkerRef.current = L.marker(hospitalCenter, { icon: hospitalIcon }).addTo(map);
-        hospitalMarkerRef.current.bindPopup('<b>🏥 Hospital</b><br/>Dialysis Center');
-
-        // Initialize polyline for route trail
-        polylineRef.current = L.polyline([], {
+        polylineRef.current = window.L.polyline([], {
             color: '#06b6d4',
             weight: 4,
             opacity: 0.7,
-            dashArray: '10, 8',
-            lineCap: 'round'
         }).addTo(map);
 
         mapRef.current = map;
 
-        // If already have location, center on it
-        if (driverLocation) {
-            updateMapMarker(driverLocation);
-        }
+        if (driverLocation) updateMapMarker(driverLocation);
     };
 
     const updateMapMarker = (loc) => {
         if (markerRef.current && mapRef.current) {
-            markerRef.current.setLatLng([loc.lat, loc.lng]);
-            mapRef.current.panTo([loc.lat, loc.lng], { animate: true, duration: 1 });
+            const latlng = [parseFloat(loc.lat), parseFloat(loc.lng)];
+            markerRef.current.setLatLng(latlng);
+            mapRef.current.panTo(latlng);
         }
     };
 
     const updatePolyline = (history) => {
         if (polylineRef.current && history.length > 1) {
-            const latlngs = history.map(p => [p.lat, p.lng]);
-            polylineRef.current.setLatLngs(latlngs);
+            const path = history.map(p => [parseFloat(p.lat), parseFloat(p.lng)]);
+            polylineRef.current.setLatLngs(path);
         }
     };
 
@@ -398,23 +373,21 @@ const TrackAmbulance = () => {
                 </div>
             )}
 
-            {/* Map */}
+            {/* Map — Leaflet / OpenStreetMap (free, no API key) */}
             <div className="card p-0 overflow-hidden rounded-xl" style={{ height: '500px' }}>
-                <div ref={mapContainerRef} style={{ height: '100%', width: '100%' }} />
+                <div ref={mapContainerRef} style={{ height: '100%', width: '100%', zIndex: 0 }} />
                 <style>{`
                     @keyframes pulse-ring {
-                        0% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0.5); }
-                        70% { box-shadow: 0 0 0 14px rgba(6, 182, 212, 0); }
-                        100% { box-shadow: 0 0 0 0 rgba(6, 182, 212, 0); }
+                        0%   { box-shadow: 0 0 0 0 rgba(6,182,212,0.5); }
+                        70%  { box-shadow: 0 0 0 14px rgba(6,182,212,0); }
+                        100% { box-shadow: 0 0 0 0 rgba(6,182,212,0); }
                     }
                     .leaflet-popup-content-wrapper {
                         border-radius: 12px !important;
                         box-shadow: 0 4px 15px rgba(0,0,0,0.15) !important;
                     }
-                    .leaflet-popup-content {
-                        margin: 10px 14px !important;
-                        font-size: 13px !important;
-                    }
+                    .leaflet-popup-content { margin: 10px 14px !important; font-size: 13px !important; }
+                    .leaflet-container { font-family: inherit; }
                 `}</style>
             </div>
 
@@ -508,7 +481,7 @@ const TrackAmbulance = () => {
                             {trackingMode === 'websocket'
                                 ? 'Connected via WebSocket — receiving real-time location updates instantly.'
                                 : trackingMode === 'polling'
-                                ? 'Using HTTP polling — location updates every 3 seconds. For real-time tracking, run the backend with Daphne (ASGI server).'
+                                ? '⚠️ Using HTTP polling (updates every 3s). NOTE: WebSocket requires running the backend with Daphne ASGI server (not standard runserver). Run: daphne -p 8000 config.asgi:application'
                                 : 'Attempting to connect to the live tracking server...'}
                         </p>
                     </div>

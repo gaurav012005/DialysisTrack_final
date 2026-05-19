@@ -28,13 +28,16 @@ A comprehensive hospital management system for dialysis centers, built with Djan
 - 🔑 **JWT Authentication** — Secure token-based API access
 - 🛡️ **Role-Based Access Control** — 6 user roles with granular permissions
 
-### New Features (v2.0)
+### New Features (v3.2)
 - 📧 **Email/SMS Notifications** — Appointment reminders, ambulance dispatch alerts, notification bell with unread badges
 - 🔑 **Forgot Password / Reset** — Token-based password recovery flow via email
 - 📝 **Patient Self-Registration** — Patients can create accounts from the login page
 - 📈 **Real Chart Data** — Reports pull live data from the database (weekly trends, machine utilization)
 - 🛡️ **Audit Log** — Track all user actions (who did what, when, from where) for compliance
 - 🔍 **Search & Filter on All Pages** — Every listing page now has search and filter controls
+- 🚑 **Ambulance Tracking & Dispatch** — Full fleet management with patient selection, live GPS, and driver dashboards.
+- 🎓 **Academic Preparedness** — Included 11-chapter Blackbook documentation, Grayscale UML diagrams, and Viva questions.
+- 👨‍⚕️ **Localized Setup** — Indian names for staff, optimized decimal/float handling for treatment completion, and complete Admin CRUD capabilities.
 
 ---
 
